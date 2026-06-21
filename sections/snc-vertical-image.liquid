@@ -1,0 +1,444 @@
+<style>
+  /* Fix contenedor padre del tema */
+  #shopify-section-{{ section.id }} {
+    overflow: visible !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #alive-gallery-flow-{{ section.id }} {
+    --alive-bg: {{ section.settings.background_color }};
+    --alive-text: {{ section.settings.text_color }};
+    --alive-spacing: {{ section.settings.image_spacing }}vh;
+    --alive-img-width: {{ section.settings.image_width }}%;
+    background-color: var(--alive-bg, #050505);
+    position: relative;
+    overflow: clip;
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__inner {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20vh 0 60vh;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__text-container {
+    position: sticky;
+    top: 15vh;
+    width: {{ section.settings.text_max_width }}px;
+    max-width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    z-index: 100;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__title {
+    font-family: var(--font-heading-family, 'Playfair Display', serif);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--alive-text, #ffffff);
+    line-height: 1.2;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.3em;
+    pointer-events: auto;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.9);
+    transition: transform 0.1s linear;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__static {
+    opacity: 0.95;
+    display: block;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__word-wrapper {
+    display: inline;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__word {
+    display: none;
+    color: var(--word-color, #d4af37);
+    font-weight: 400;
+    white-space: nowrap;
+    text-shadow: 0 0 40px var(--word-color, #d4af37);
+    transition: opacity 0.5s ease;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__word.is-active {
+    display: inline;
+    opacity: 1;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__word.is-prev,
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__word.is-next {
+    display: none;
+    opacity: 0;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__word.is-active:hover {
+    transform: translateX(-50%) translateY(-5px) scale(1.1);
+    text-shadow: 0 0 60px var(--word-color), 0 0 100px var(--word-color);
+    letter-spacing: 0.05em;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__word.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--word-color);
+    transform: translateX(-50%);
+    transition: width 0.4s ease;
+    box-shadow: 0 0 15px var(--word-color);
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__word.is-active:hover::after {
+    width: 100%;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__images {
+    position: relative;
+    width: 100%;
+    margin-top: 10vh;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item {
+    width: var(--alive-img-width, 40%);
+    margin-bottom: var(--alive-spacing, 80vh);
+    position: relative;
+    opacity: 0;
+    transform: translateY(60px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item[data-side="left"] {
+    margin-right: auto;
+    margin-left: 5%;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item[data-side="right"] {
+    margin-left: auto;
+    margin-right: 5%;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    filter: brightness(0.9);
+    transition: all 0.5s ease;
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item:hover img {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
+  }
+
+  #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__placeholder {
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #444;
+    font-size: 2.5rem;
+    border-radius: 4px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item {
+      width: 75%;
+      margin-bottom: 50vh;
+    }
+
+    #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item[data-side="left"],
+    #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item[data-side="right"] {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__title {
+      font-size: clamp(1.5rem, 6vw, 2.2rem);
+    }
+
+    /* Remove heavy box-shadow on mobile — too strong on small screens */
+    #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__image-item img {
+      box-shadow: none;
+    }
+
+    /* Disable the underline pseudo-element on word hover — no hover on touch */
+    #alive-gallery-flow-{{ section.id }} .alive-gallery-flow__word.is-active::after {
+      display: none;
+    }
+  }
+</style>
+
+<div id="alive-gallery-flow-{{ section.id }}" class="alive-gallery-flow">
+  <div class="alive-gallery-flow__inner">
+
+    <div class="alive-gallery-flow__text-container" id="alive-text-{{ section.id }}">
+      <h2 class="alive-gallery-flow__title">
+        <span class="alive-gallery-flow__static">{{ section.settings.static_text }}</span>
+        <span class="alive-gallery-flow__word-wrapper">
+          {% assign word_counter = 0 %}
+          {% for block in section.blocks %}
+            {% if block.type == 'word' %}
+              <span class="alive-gallery-flow__word"
+                    data-word-index="{{ word_counter }}"
+                    style="--word-color: {{ block.settings.color }};">
+                {{ block.settings.word }}
+              </span>
+              {% assign word_counter = word_counter | plus: 1 %}
+            {% endif %}
+          {% endfor %}
+        </span>
+      </h2>
+    </div>
+
+    <div class="alive-gallery-flow__images">
+      {% assign image_counter = 0 %}
+      {% for block in section.blocks %}
+        {% if block.type == 'image' %}
+          {% assign side = image_counter | modulo: 2 %}
+          <div class="alive-gallery-flow__image-item"
+               data-index="{{ image_counter }}"
+               data-side="{% if side == 0 %}left{% else %}right{% endif %}">
+
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 1000 | image_tag:
+                loading: 'lazy',
+                alt: block.settings.caption | escape
+              }}
+            {% else %}
+              <div class="alive-gallery-flow__placeholder" style="background: {{ block.settings.placeholder_color }};">
+                <span>{{ image_counter | plus: 1 }}</span>
+              </div>
+            {% endif %}
+          </div>
+          {% assign image_counter = image_counter | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<script>
+  (function() {
+    var sectionId = 'alive-gallery-flow-{{ section.id }}';
+    var section = document.getElementById(sectionId);
+    var textContainer = document.getElementById('alive-text-{{ section.id }}');
+    var title = textContainer.querySelector('.alive-gallery-flow__title');
+
+    if (!section || !textContainer) return;
+
+    var words = section.querySelectorAll('.alive-gallery-flow__word');
+    var images = section.querySelectorAll('.alive-gallery-flow__image-item');
+
+    if (words.length === 0 || images.length === 0) return;
+
+    function updateTextPosition() {
+      var rect = section.getBoundingClientRect();
+      var sectionHeight = section.offsetHeight;
+      var windowHeight = window.innerHeight;
+
+      if (rect.top < windowHeight && rect.bottom > 0) {
+        var scrolled = windowHeight - rect.top;
+        var totalScrollable = sectionHeight + windowHeight;
+        var progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+        var moveY = progress * 40;
+        title.style.transform = 'translateY(' + moveY + 'vh)';
+      }
+    }
+
+    window.addEventListener('scroll', updateTextPosition, { passive: true });
+    updateTextPosition();
+
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    images.forEach(function(img) {
+      revealObserver.observe(img);
+    });
+
+    var wordObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var index = parseInt(entry.target.dataset.index);
+          updateWord(index);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '-40% 0px -40% 0px',
+      threshold: 0
+    });
+
+    images.forEach(function(img) {
+      wordObserver.observe(img);
+    });
+
+    function updateWord(activeIndex) {
+      words.forEach(function(word, i) {
+        word.classList.remove('is-active', 'is-prev', 'is-next');
+        if (i === activeIndex) {
+          word.classList.add('is-active');
+        } else if (i < activeIndex) {
+          word.classList.add('is-prev');
+        } else {
+          word.classList.add('is-next');
+        }
+      });
+    }
+
+    if (words.length > 0) {
+      updateWord(0);
+      if (images[0]) images[0].classList.add('is-visible');
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "SNC Vertical Image",
+  "tag": "section",
+  "class": "section-snc-vertical-image",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#050505"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "static_text",
+      "label": "Static text",
+      "default": "Every Piece Is"
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "label": "Max text width",
+      "min": 200,
+      "max": 800,
+      "step": 20,
+      "default": 600,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_spacing",
+      "label": "Image spacing",
+      "min": 50,
+      "max": 150,
+      "step": 10,
+      "default": 80,
+      "unit": "vh"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width",
+      "min": 30,
+      "max": 50,
+      "step": 5,
+      "default": 40,
+      "unit": "%"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Alt text",
+          "default": "Joya"
+        },
+        {
+          "type": "color",
+          "id": "placeholder_color",
+          "label": "Placeholder color",
+          "default": "#1a1a1a"
+        }
+      ]
+    },
+    {
+      "type": "word",
+      "name": "Dynamic word",
+      "settings": [
+        {
+          "type": "text",
+          "id": "word",
+          "label": "Word",
+          "default": "Alive"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#d4af37"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Vertical Image",
+      "blocks": [
+        { "type": "image" },
+        { "type": "word", "settings": { "word": "Alive", "color": "#d4af37" } },
+        { "type": "image" },
+        { "type": "word", "settings": { "word": "Eternal", "color": "#c0c0c0" } },
+        { "type": "image" },
+        { "type": "word", "settings": { "word": "Yours", "color": "#d4af37" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

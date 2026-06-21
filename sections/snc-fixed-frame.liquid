@@ -1,0 +1,428 @@
+{% comment %}
+  Section: SNC Fixed Frame
+  Imagen fija a la izquierda, contenido scrolleable a la derecha
+{% endcomment %}
+
+<style>
+  .snc-fixed-frame-section {
+    background-color: {{ section.settings.background_color | default: '#ffffff' }};
+    position: relative;
+  }
+
+  .snc-fixed-frame-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+  }
+
+  @media screen and (min-width: 990px) {
+    .snc-fixed-frame-container {
+      grid-template-columns: {{ section.settings.image_width | default: 50 }}fr {{ section.settings.content_width | default: 50 }}fr;
+      min-height: auto;
+    }
+  }
+
+  /* Columna Izquierda - Imagen Fija */
+  .snc-fixed-frame-image-wrapper {
+    position: relative;
+    height: 50vh;
+    order: -1;
+  }
+
+  @media screen and (min-width: 990px) {
+    .snc-fixed-frame-image-wrapper {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      order: 0;
+    }
+  }
+
+  .snc-fixed-frame-image-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: {{ section.settings.image_background | default: '#f5f5f5' }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    box-sizing: border-box;
+  }
+
+  .snc-fixed-frame-image {
+    width: 564px;
+    height: 590px;
+    object-fit: cover;
+    {% if section.settings.enable_parallax %}
+      transform: scale(1.1);
+    {% endif %}
+  }
+
+  .snc-fixed-frame-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e0e0e0 0%, #f0f0f0 100%);
+  }
+
+  .snc-fixed-frame-placeholder svg {
+    width: 30%;
+    height: 30%;
+    fill: #999;
+  }
+
+  /* Columna Derecha - Contenido Scrolleable */
+  .snc-fixed-frame-content-wrapper {
+    position: relative;
+  }
+
+  /* Cada Slide de Información */
+  .snc-fixed-frame-slide {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 2rem;
+    opacity: 0.3;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transform: translateY(30px);
+  }
+
+  @media screen and (min-width: 990px) {
+    .snc-fixed-frame-slide {
+      padding: 6rem 4rem;
+      min-height: 100vh;
+    }
+  }
+
+  /* Slide activo (visible) */
+  .snc-fixed-frame-slide.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Alternar fondos opcionalmente */
+  {% for block in section.blocks %}
+    .snc-fixed-frame-slide[data-index="{{ forloop.index0 }}"] {
+      background-color: {{ block.settings.background_color | default: 'transparent' }};
+    }
+  {% endfor %}
+
+  .snc-fixed-frame-slide-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: {{ section.settings.title_size | default: 32 }}px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: {{ section.settings.title_color | default: '#1a1a1a' }};
+    margin: 0 0 1.5rem 0;
+    line-height: 1.2;
+  }
+
+  @media screen and (min-width: 750px) {
+    .snc-fixed-frame-slide-title {
+      font-size: {{ section.settings.title_size | default: 40 }}px;
+    }
+  }
+
+  .snc-fixed-frame-slide-text {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: {{ section.settings.text_size | default: 16 }}px;
+    line-height: 1.8;
+    color: {{ section.settings.text_color | default: '#666666' }};
+    margin: 0;
+    max-width: 500px;
+  }
+
+  .snc-fixed-frame-slide-text p {
+    margin: 0 0 1rem 0;
+  }
+
+  .snc-fixed-frame-slide-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Responsive móvil: apilado sin sticky */
+  @media screen and (max-width: 989px) {
+    .snc-fixed-frame-slide {
+      min-height: auto;
+      opacity: 1;
+      transform: none;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .snc-fixed-frame-slide:last-child {
+      border-bottom: none;
+    }
+  }
+</style>
+
+<div class="snc-fixed-frame-section" data-section-id="{{ section.id }}">
+  
+  <div class="snc-fixed-frame-container">
+    
+    {% comment %} Columna Izquierda: Imagen/Video Fija {% endcomment %}
+    <div class="snc-fixed-frame-image-wrapper">
+      <div class="snc-fixed-frame-image-container">
+        {%- if section.settings.media_type == 'video' and section.settings.video != blank -%}
+          <div class="snc-fixed-frame-video">
+            {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true }}
+          </div>
+        {%- elsif section.settings.image != blank -%}
+          <img 
+            srcset="{%- if section.settings.image.width >= 550 -%}{{ section.settings.image | image_url: width: 550 }} 550w,{%- endif -%}
+              {%- if section.settings.image.width >= 1100 -%}{{ section.settings.image | image_url: width: 1100 }} 1100w,{%- endif -%}
+              {%- if section.settings.image.width >= 1500 -%}{{ section.settings.image | image_url: width: 1500 }} 1500w,{%- endif -%}
+              {{ section.settings.image | image_url }} {{ section.settings.image.width }}w"
+            src="{{ section.settings.image | image_url: width: 1100 }}"
+            sizes="(min-width: 990px) 50vw, 100vw"
+            alt="{{ section.settings.image.alt | escape }}"
+            loading="eager"
+            width="{{ section.settings.image.width }}"
+            height="{{ section.settings.image.height }}"
+            class="snc-fixed-frame-image"
+          >
+        {%- else -%}
+          <div class="snc-fixed-frame-placeholder">
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {% comment %} Columna Derecha: Contenido Scrolleable {% endcomment %}
+    <div class="snc-fixed-frame-content-wrapper">
+      {%- for block in section.blocks -%}
+        <div 
+          class="snc-fixed-frame-slide" 
+          data-index="{{ forloop.index0 }}"
+          {{ block.shopify_attributes }}
+        >
+          {%- if block.settings.title != blank -%}
+            <h2 class="snc-fixed-frame-slide-title">{{ block.settings.title | escape }}</h2>
+          {%- endif -%}
+          
+          {%- if block.settings.text != blank -%}
+            <div class="snc-fixed-frame-slide-text rte">
+              {{ block.settings.text }}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const section = document.querySelector('.snc-fixed-frame-section[data-section-id="{{ section.id }}"]');
+    if (!section) return;
+
+    const slides = section.querySelectorAll('.snc-fixed-frame-slide');
+    // Intersection Observer para detectar slides visibles
+    const observerOptions = {
+      root: null,
+      rootMargin: '-40% 0px -40% 0px',
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Remover clase active de todos
+          slides.forEach(slide => slide.classList.remove('is-visible'));
+          
+          // Agregar a slide actual
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, observerOptions);
+
+    slides.forEach(slide => observer.observe(slide));
+
+    // Marcar primero como visible al cargar
+    if (slides.length > 0) {
+      slides[0].classList.add('is-visible');
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "SNC Fixed Frame",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Fixed Media"
+    },
+    {
+      "type": "radio",
+      "id": "media_type",
+      "label": "Media type",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "This image will remain fixed while scrolling"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "info": "This video will remain fixed while scrolling"
+    },
+    {
+      "type": "color",
+      "id": "image_background",
+      "default": "#f5f5f5",
+      "label": "Image background color"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "default": false,
+      "label": "Subtle parallax effect",
+      "info": "Slightly increases image scale for a depth effect"
+    },
+
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "unit": "%",
+      "default": 50,
+      "label": "Image width (desktop)"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "unit": "%",
+      "default": 50,
+      "label": "Content width (desktop)"
+    },
+
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 24,
+      "max": 56,
+      "step": 4,
+      "unit": "px",
+      "default": 32,
+      "label": "Title size"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16,
+      "label": "Text size"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "default": "#ffffff",
+      "label": "General background color"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "default": "#1a1a1a",
+      "label": "Title color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "default": "#666666",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "default": "#1a1a1a",
+      "label": "Accent color"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "content_slide",
+      "name": "Content slide",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "WHAT IT PRESERVES",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>A bond that does not dissolve.<br>Love, not as fusion — but as continuity.</p>",
+          "label": "Text"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "default": "transparent",
+          "label": "Specific background color",
+          "info": "Optional: allows differentiating this slide from the rest"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Fixed Frame",
+      "blocks": [
+        {
+          "type": "content_slide",
+          "settings": {
+            "title": "WHAT IT PRESERVES",
+            "text": "<p>A bond that does not dissolve.<br>Love, not as fusion — but as continuity.</p>"
+          }
+        },
+        {
+          "type": "content_slide",
+          "settings": {
+            "title": "MATERIALS",
+            "text": "<p>Crafted in 18k gold.</p><p>Yellow, rose, or white.<br>Plain gold, diamond-set, or encrusted with a trillion-cut stone in the D.<br>Twelve carats minimum. One band.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1008 @@
+{% schema %}
+{
+  "name": "SNC Mixed Grid",
+  "class": "section--snc-mixed-grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Our Products"
+    },
+    {
+      "type": "select",
+      "id": "title_style",
+      "label": "Title style",
+      "options": [
+        { "value": "h1", "label": "Main title" },
+        { "value": "h2", "label": "Secondary title" },
+        { "value": "h3", "label": "Small title" },
+        { "value": "body", "label": "Paragraph" }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text / Paragraph"
+    },
+    {
+      "type": "select",
+      "id": "text_style",
+      "label": "Text style",
+      "options": [
+        { "value": "body", "label": "Paragraph" },
+        { "value": "small", "label": "Small paragraph" },
+        { "value": "h3", "label": "Small title" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "range",
+      "id": "text_width",
+      "min": 200,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "label": "Text max width",
+      "default": 800
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "header_gap",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between header and grid",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Grid Configuration"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Leave blank to auto-detect the product's collection. WARNING: Selecting a collection here will FORCE it to show everywhere this section is used."
+    },
+    {
+      "type": "select",
+      "id": "visual_pattern",
+      "label": "Visual pattern",
+      "options": [
+        { "value": "4-4-4-4", "label": "4 × 4 — Luxury Grid (Home Showcase style)" },
+        { "value": "3-2-3-2", "label": "3 - 2 - 3 - 2 (Alternating)" },
+        { "value": "3-3-3-3", "label": "3 - 3 - 3 - 3 (Uniform)" }
+      ],
+      "default": "4-4-4-4",
+      "info": "4×4: cards idénticas a Home Showcase. 3-2-3-2: filas alternas. 3-3-3-3: uniforme."
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Rows to display",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "gap_horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Horizontal gap between products",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "gap_vertical",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Vertical gap between products",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Product Card"
+    },
+    {
+      "type": "select",
+      "id": "image_height_mode",
+      "label": "Image height mode",
+      "options": [
+        { "value": "aspect_ratio", "label": "Aspect ratio" },
+        { "value": "fixed", "label": "Fixed height (px)" }
+      ],
+      "default": "aspect_ratio"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "4/5", "label": "Portrait (4:5)" },
+        { "value": "16/9", "label": "Landscape (16:9)" }
+      ],
+      "default": "3/4",
+      "info": "Applies if mode is 'Aspect ratio'"
+    },
+    {
+      "type": "range",
+      "id": "image_height_desktop",
+      "min": 100,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Fixed height (Desktop)",
+      "default": 400,
+      "info": "Applies if mode is 'Fixed height'"
+    },
+    {
+      "type": "range",
+      "id": "image_height_mobile",
+      "min": 100,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Fixed height (Mobile)",
+      "default": 300,
+      "info": "Applies if mode is 'Fixed height'"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Style Dividers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_style_dividers",
+      "label": "Show style dividers",
+      "default": false,
+      "info": "Auto-inserts a label row when the product style changes. Requires products sorted by style in Shopify Admin."
+    },
+    {
+      "type": "text",
+      "id": "style_keywords",
+      "label": "Style keywords (comma-separated)",
+      "default": "Puro,Segreto,Regale,Essenza",
+      "info": "Detected from product titles."
+    },
+    {
+      "type": "header",
+      "content": "Preorder / Interest"
+    },
+    {
+      "type": "checkbox",
+      "id": "disable_links_mobile",
+      "label": "Disable product links (Mobile)",
+      "default": false,
+      "info": "When enabled, product cards are not clickable on mobile (wishlist button still works)."
+    },
+    {
+      "type": "checkbox",
+      "id": "email_capture_enabled",
+      "label": "Show email capture form",
+      "default": false,
+      "info": "Displays an email signup form below the grid to capture interest for preorder/upcoming products."
+    },
+    {
+      "type": "text",
+      "id": "lead_gen_heading",
+      "label": "Form heading",
+      "default": "Register your interest"
+    },
+    {
+      "type": "text",
+      "id": "lead_gen_placeholder",
+      "label": "Input placeholder",
+      "default": "Your email address"
+    },
+    {
+      "type": "text",
+      "id": "lead_gen_button",
+      "label": "Submit button text",
+      "default": "Notify me"
+    },
+    {
+      "type": "text",
+      "id": "lead_gen_success",
+      "label": "Success message",
+      "default": "Thank you. We will notify you when these products are available."
+    },
+    {
+      "type": "text",
+      "id": "customer_tag",
+      "label": "Customer tag",
+      "default": "product-interest",
+      "info": "Tag applied to submitted emails (no spaces)."
+    },
+    {
+      "type": "header",
+      "content": "Overlay Gradient"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_1",
+      "label": "Gradient color 1",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_2",
+      "label": "Gradient color 2",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "gradient_direction",
+      "label": "Gradient direction",
+      "options": [
+        { "value": "to-top", "label": "Top" },
+        { "value": "to-bottom", "label": "Bottom" },
+        { "value": "to-left", "label": "Left" },
+        { "value": "to-right", "label": "Right" }
+      ],
+      "default": "to-top"
+    },
+    {
+      "type": "range",
+      "id": "gradient_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Gradient opacity",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Mixed Grid"
+    }
+  ]
+}
+{% endschema %}
+
+{%- liquid
+  assign rows = section.settings.rows
+  assign visual_pattern = section.settings.visual_pattern | default: '4-4-4-4'
+
+  if visual_pattern == '4-4-4-4'
+    assign limit = rows | times: 4
+  elsif visual_pattern == '3-3-3-3'
+    assign limit = rows | times: 3
+  else
+    case rows
+      when 1
+        assign limit = 3
+      when 2
+        assign limit = 5
+      when 3
+        assign limit = 8
+      when 4
+        assign limit = 10
+    endcase
+  endif
+  
+  assign collection = section.settings.collection
+  if collection == blank and product != blank
+    assign collection = product.collections.first
+  endif
+  
+  assign gradient_opacity_dec = section.settings.gradient_opacity | divided_by: 100.0
+  assign gradient_rgba_1 = section.settings.gradient_color_1 | color_modify: 'alpha', gradient_opacity_dec
+  assign gradient_rgba_2 = section.settings.gradient_color_2 | color_modify: 'alpha', gradient_opacity_dec
+  assign wishlist_icon_version = settings.global_wishlist_icon_version | default: 'dark'
+  if wishlist_icon_version == 'light'
+    assign global_icon_wishlist = settings.global_icon_wishlist_light
+  else
+    assign global_icon_wishlist = settings.global_icon_wishlist_dark
+  endif
+  assign wishlist_bg_enabled = settings.global_wishlist_bg_enabled
+  assign wishlist_bg_color = settings.global_wishlist_bg_color | default: '#FFFFFF'
+  assign wishlist_inset = settings.global_wishlist_inset | default: 20
+  assign wishlist_padding = settings.global_wishlist_padding | default: 8
+  assign wishlist_radius = settings.global_wishlist_radius | default: 0
+  assign wishlist_size = settings.global_wishlist_size | default: 40
+-%}
+
+<style>
+  /* Ensure the section wrapper has a solid background so it always
+     fully covers the sticky hero beneath it at all viewport widths. */
+  #shopify-section-{{ section.id }} {
+    background-color: var(--color-background, #ffffff);
+  }
+
+  .snc-mixed-grid {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  .snc-mixed-grid__header { margin-bottom: {{ section.settings.header_gap }}px; padding: 0 20px; text-align: {{ section.settings.header_alignment }}; }
+  .snc-mixed-grid__title { margin: 0 0 15px; }
+  .snc-mixed-grid__text { max-width: {{ section.settings.text_width }}px; margin: 0 auto; }
+  {% if section.settings.header_alignment == 'left' %}
+    .snc-mixed-grid__text { margin-left: 0; }
+  {% elsif section.settings.header_alignment == 'right' %}
+    .snc-mixed-grid__text { margin-right: 0; }
+  {% endif %}
+
+  .snc-mixed-grid__card {
+    position: relative;
+    height: 100%;
+    background: linear-gradient({% case section.settings.gradient_direction %}{% when 'to-top' %}to top{% when 'to-bottom' %}to bottom{% when 'to-left' %}to left{% when 'to-right' %}to right{% endcase %}, {{ gradient_rgba_1 }} 0%, {{ gradient_rgba_2 }} 100%);
+    border-radius: {{ section.settings.image_border_radius }}px;
+    overflow: hidden;
+  }
+  .snc-mixed-grid__card-link {
+    display: block;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+  }
+  .snc-mixed-grid__container {
+    padding: 0;
+    max-width: 100%;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    margin-left: -50vw;
+    box-sizing: border-box;
+  }
+
+  .snc-mixed-grid__grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    column-gap: 1px;
+    row-gap: 1px;
+  }
+
+{% if section.settings.visual_pattern == '3-3-3-3' %}
+  .snc-mixed-grid__item { grid-column: span 2; }
+{% else %}
+  .snc-mixed-grid__item:nth-child(1), .snc-mixed-grid__item:nth-child(2), .snc-mixed-grid__item:nth-child(3) { grid-column: span 2; }
+  .snc-mixed-grid__item:nth-child(4), .snc-mixed-grid__item:nth-child(5) { grid-column: span 3; }
+  .snc-mixed-grid__item:nth-child(6), .snc-mixed-grid__item:nth-child(7), .snc-mixed-grid__item:nth-child(8) { grid-column: span 2; }
+  .snc-mixed-grid__item:nth-child(9), .snc-mixed-grid__item:nth-child(10) { grid-column: span 3; }
+{% endif %}
+
+  .snc-mixed-grid__image-wrapper { 
+    position: relative; 
+    width: 100%; 
+    {% if section.settings.image_height_mode == 'aspect_ratio' %}aspect-ratio: {{ section.settings.image_ratio | replace: '/', '/' }}; height: auto;{% else %}height: {{ section.settings.image_height_desktop }}px;{% endif %}
+    overflow: hidden; 
+    background: transparent; 
+  }
+  .snc-mixed-grid__image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    z-index: 5;
+  }
+  .snc-mixed-grid__card-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 4px;
+    line-height: 1.3;
+    color: #000000;
+    transition: opacity 0.4s ease;
+  }
+  .snc-mixed-grid__card-price {
+    font-size: 14px;
+    color: #000000;
+    font-weight: 400;
+    transition: opacity 0.4s ease;
+  }
+
+  /* Placeholder degradado cuando no hay segunda imagen */
+  .snc-mixed-grid__image--placeholder {
+    background: linear-gradient(135deg, #1e2a3a 0%, #3a2a4a 50%, #1a1a2e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading-family, serif);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+  }
+  .snc-mixed-grid__image--placeholder::after {
+    content: 'No Image';
+  }
+
+  /* Imagen principal y hover */
+  .snc-mixed-grid__image {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: opacity 0.4s ease;
+  }
+  .snc-mixed-grid__image--primary { opacity: 1; z-index: 1; }
+  .snc-mixed-grid__image--hover { opacity: 0; z-index: 2; }
+  .snc-mixed-grid__card:hover .snc-mixed-grid__image--primary { opacity: 0; }
+  .snc-mixed-grid__card:hover .snc-mixed-grid__image--hover { opacity: 1; }
+  .snc-mixed-grid__card:hover .snc-mixed-grid__card-title,
+  .snc-mixed-grid__card:hover .snc-mixed-grid__card-price { opacity: 0; transition: opacity 0.4s ease; }
+
+  .snc-plp--favorite-button {
+    position: absolute;
+    top: {{ wishlist_inset }}px;
+    right: {{ wishlist_inset }}px;
+    background: {% if wishlist_bg_enabled %}{{ wishlist_bg_color }}{% else %}none{% endif %};
+    border: none;
+    padding: {% if wishlist_bg_enabled %}{{ wishlist_padding }}px{% else %}0{% endif %};
+    cursor: pointer;
+    z-index: 10;
+    width: {% if wishlist_bg_enabled %}{{ wishlist_size }}px{% else %}23px{% endif %};
+    height: {% if wishlist_bg_enabled %}{{ wishlist_size }}px{% else %}20px{% endif %};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    border-radius: {{ wishlist_radius }}px;
+  }
+  .snc-plp--favorite-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 23px 20px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .snc-plp--favorite-button.is-active::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='{{ settings.global_wishlist_active_color | default: '#DA4B4B' | url_encode }}'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+    opacity: 1;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+  }
+  .snc-plp--favorite-button.is-bouncing { animation: bounce 0.4s ease-in-out; }
+  .snc-plp--favorite-button:hover { transform: scale(1.1); opacity: 0.8; }
+  .snc-plp--favorite-icon { width: 23px; height: 20px; display: block; object-fit: contain; }
+
+  /* ── Style divider ── */
+  .snc-mg-style-divider {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 0 10px;
+  }
+  .snc-mg-style-divider__line { flex: 1; height: 1px; background: rgba(0,0,0,0.10); }
+  .snc-mg-style-divider__label {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #8a8a8a;
+    white-space: nowrap;
+  }
+  @media (max-width: 768px) {
+    .snc-mg-style-divider { padding: 20px 0 6px; gap: 14px; }
+    .snc-mg-style-divider__label { font-size: 9px; letter-spacing: 0.22em; }
+  }
+
+  /* Interest capture (preorder lead gen) */
+  .snc-mixed-grid__lead-gen {
+    padding: 56px 20px 0;
+    text-align: center;
+  }
+  .snc-mixed-grid__lead-gen-inner {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .snc-mixed-grid__lead-gen-heading {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 0 0 20px;
+    color: #000000;
+  }
+  .snc-mixed-grid__lead-gen-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    gap: 16px;
+    min-height: 54px;
+  }
+  .snc-mixed-grid__lead-gen-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    color: #000000;
+    padding: 16px 0;
+    height: 54px;
+    box-sizing: border-box;
+  }
+  .snc-mixed-grid__lead-gen-input::placeholder { color: rgba(0,0,0,0.35); }
+  .snc-mixed-grid__lead-gen-submit {
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 16px 0;
+    color: #000000;
+    white-space: nowrap;
+    opacity: 0.9;
+    height: 54px;
+    box-sizing: border-box;
+  }
+  .snc-mixed-grid__lead-gen-success,
+  .snc-mixed-grid__lead-gen-error {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    margin-top: 14px;
+  }
+  .snc-mixed-grid__lead-gen-error { color: #c00; }
+
+{% if section.settings.visual_pattern == '4-4-4-4' %}
+  /* ══════════════════════════════════════════════════════════════
+     4×4 Luxury Grid — Home Showcase DNA, scoped to this section
+     Cards: aspect-ratio 4/5 · warm gradient bg · cover image
+     Overlay transparent at bottom · fades on hover · image zooms
+  ══════════════════════════════════════════════════════════════ */
+
+  #shopify-section-{{ section.id }} .snc-mixed-grid__grid {
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 1px;
+    row-gap: 1px;
+  }
+  #shopify-section-{{ section.id }} .snc-mixed-grid__item {
+    grid-column: span 1 !important;
+  }
+
+  /* Single-container card: image fills 100%, text overlays bottom */
+  #shopify-section-{{ section.id }} .snc-mixed-grid__card {
+    position: relative !important;
+    aspect-ratio: 4 / 5 !important;
+    height: auto !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    background: linear-gradient(180deg, #e2e0df 0%, #e8e6e3 14%, #f3f1ef 60%, #f8f7f5 100%) !important;
+  }
+  #shopify-section-{{ section.id }} .snc-mixed-grid__card-link {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  #shopify-section-{{ section.id }} .snc-mixed-grid__image-wrapper {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: unset !important;
+    background: transparent !important;
+    overflow: hidden !important;
+  }
+  #shopify-section-{{ section.id }} .snc-mixed-grid__image--primary,
+  #shopify-section-{{ section.id }} .snc-mixed-grid__image--hover {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    padding: 0 !important;
+  }
+  #shopify-section-{{ section.id }} .snc-mixed-grid__image--primary {
+    transition: transform 600ms cubic-bezier(.22, .61, .36, 1), opacity 0.4s ease !important;
+  }
+  #shopify-section-{{ section.id }} .snc-mixed-grid__card:hover .snc-mixed-grid__image--primary {
+    transform: scale(1.03) !important;
+    opacity: 0 !important;
+  }
+  #shopify-section-{{ section.id }} .snc-mixed-grid__card:hover .snc-mixed-grid__image--hover {
+    opacity: 1 !important;
+    transform: scale(1.03) !important;
+  }
+
+  /* Overlay: transparent, anchored to bottom, fades on hover */
+  #shopify-section-{{ section.id }} .snc-mixed-grid__image-overlay {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    padding: 14px 14px 18px !important;
+    background: transparent !important;
+    z-index: 5 !important;
+    transition: opacity 0.4s ease !important;
+  }
+  #shopify-section-{{ section.id }} .snc-mixed-grid__card:hover .snc-mixed-grid__image-overlay {
+    opacity: 0 !important;
+  }
+
+  /* Typography: quiet Futura PT, identical to Home Showcase */
+  #shopify-section-{{ section.id }} .snc-mixed-grid__card-title {
+    font-family: 'Futura PT', var(--font-main, sans-serif) !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.04em !important;
+    color: #1a1a1a !important;
+    margin: 0 0 4px !important;
+    line-height: 1.35 !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+  #shopify-section-{{ section.id }} .snc-mixed-grid__card-price {
+    font-family: 'Futura PT', var(--font-main, sans-serif) !important;
+    font-size: 12px !important;
+    font-weight: 300 !important;
+    color: #3a3a3a !important;
+    letter-spacing: 0.03em !important;
+    opacity: 0.85 !important;
+    transition: none !important;
+  }
+
+  /* Wishlist button: 12px inset, matches Home Showcase */
+  #shopify-section-{{ section.id }} .snc-plp--favorite-button {
+    top: 12px !important;
+    right: 12px !important;
+  }
+
+  /* Mobile 4×4: 2-column, keep aspect-ratio card style */
+  @media (max-width: 768px) {
+    #shopify-section-{{ section.id }} .snc-mixed-grid__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      column-gap: 1px !important;
+      row-gap: 1px !important;
+    }
+    #shopify-section-{{ section.id }} .snc-mixed-grid__item { grid-column: auto !important; }
+    #shopify-section-{{ section.id }} .snc-mixed-grid__card { aspect-ratio: 4/5 !important; overflow: hidden !important; }
+    #shopify-section-{{ section.id }} .snc-mixed-grid__card-link { display: block !important; position: absolute !important; inset: 0 !important; height: 100% !important; }
+    #shopify-section-{{ section.id }} .snc-mixed-grid__image-wrapper { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; overflow: hidden !important; background: transparent !important; }
+    #shopify-section-{{ section.id }} .snc-mixed-grid__image { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; padding: 0 !important; }
+    #shopify-section-{{ section.id }} .snc-mixed-grid__image-overlay { position: absolute !important; bottom: 0 !important; padding: 12px 12px 14px !important; background: linear-gradient(to top, rgba(248,247,245,0.92) 0%, rgba(248,247,245,0.5) 60%, transparent 100%) !important; }
+    /* Neutralize all :hover effects on touch — tap = navigate only */
+    #shopify-section-{{ section.id }} .snc-mixed-grid__card:hover .snc-mixed-grid__image--primary { opacity: 1 !important; transform: none !important; }
+    #shopify-section-{{ section.id }} .snc-mixed-grid__card:hover .snc-mixed-grid__image-overlay { opacity: 1 !important; }
+    #shopify-section-{{ section.id }} .snc-mixed-grid__card:hover .snc-mixed-grid__card-title,
+    #shopify-section-{{ section.id }} .snc-mixed-grid__card:hover .snc-mixed-grid__card-price { opacity: 1 !important; }
+  }
+{% endif %}
+
+  @media (max-width: 768px) {
+    .snc-mixed-grid__container { padding: 0; }
+    .snc-mixed-grid__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 1px;
+      row-gap: 1px;
+    }
+    .snc-mixed-grid__item { grid-column: auto !important; }
+
+    /* Prevent tall empty cards on mobile */
+    .snc-mixed-grid__card,
+    .snc-mixed-grid__card-link {
+      height: auto;
+    }
+
+    /* Favorite button hidden on mobile */
+    .snc-plp--favorite-button { display: none !important; }
+
+    /* Mobile: keep images fully visible (no cropping) */
+    .snc-mixed-grid__image-wrapper {
+      height: auto !important;
+      aspect-ratio: auto !important;
+      overflow: hidden !important;
+    }
+
+    /* No hover on touch screens */
+    .snc-mixed-grid__image--hover { display: none !important; }
+    .snc-mixed-grid__card:hover .snc-mixed-grid__image--primary { opacity: 1 !important; transform: none !important; }
+    .snc-mixed-grid__card:hover .snc-mixed-grid__image-overlay { opacity: 1 !important; }
+    .snc-mixed-grid__image {
+      position: static !important;
+      width: 100% !important;
+      height: auto !important;
+      object-fit: contain !important;
+    }
+
+    .snc-mixed-grid__image-overlay {
+      position: static !important;
+      padding: 12px 2px 0;
+      z-index: auto;
+    }
+    .snc-mixed-grid__card-title {
+      font-family: 'Futura PT', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin: 0 0 3px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+    .snc-mixed-grid__card-price {
+      font-family: 'Futura PT', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.75;
+    }
+
+    /* button hidden above — no mobile styles needed */
+    .snc-plp--favorite-button.is-active {
+      background-size: 18px 16px;
+    }
+    .snc-plp--favorite-button::after { background-size: 18px 16px; }
+    .snc-plp--favorite-icon {
+      width: 18px;
+      height: 16px;
+    }
+
+    .snc-mixed-grid__lead-gen { padding: 40px 16px 0; }
+    .snc-mixed-grid__lead-gen-row { gap: 10px; }
+
+    {% if section.settings.disable_links_mobile %}
+      .snc-mixed-grid__card-link { pointer-events: none; }
+    {% endif %}
+  }
+</style>
+
+<div class="snc-mixed-grid full-width color-{{ section.settings.color_scheme }}">
+  <div class="snc-mixed-grid__header">
+    {% if section.settings.title != blank %}<h2 class="snc-mixed-grid__title {{ section.settings.title_style }}">{{ section.settings.title }}</h2>{% endif %}
+    {% if section.settings.text != blank %}<div class="snc-mixed-grid__text {{ section.settings.text_style }}">{{ section.settings.text }}</div>{% endif %}
+  </div>
+
+  <div class="snc-mixed-grid__container">
+    <div class="snc-mixed-grid__grid">
+      {%- assign mg_current_style = '' -%}
+      {%- assign mg_show_dividers = section.settings.show_style_dividers -%}
+      {%- assign mg_keywords = section.settings.style_keywords | default: 'Puro,Segreto,Regale,Essenza' | split: ',' -%}
+      {% for product in collection.products limit: limit %}
+        {%- if mg_show_dividers -%}
+          {%- assign mg_detected = '' -%}
+          {%- for kw in mg_keywords -%}
+            {%- assign kw_t = kw | strip -%}
+            {%- if product.title contains kw_t -%}
+              {%- assign mg_detected = kw_t -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if mg_detected != '' and mg_detected != mg_current_style -%}
+            {%- assign mg_current_style = mg_detected -%}
+            <div class="snc-mg-style-divider">
+              <span class="snc-mg-style-divider__line"></span>
+              <span class="snc-mg-style-divider__label">{{ mg_detected | upcase }}</span>
+              <span class="snc-mg-style-divider__line"></span>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+        <div class="snc-mixed-grid__item">
+          <div class="snc-mixed-grid__card">
+            <a href="{{ product.url }}" class="snc-mixed-grid__card-link">
+              <div class="snc-mixed-grid__image-wrapper">
+
+                {% if product.featured_image != blank %}
+                  {{- product.featured_image | image_url: width: 800 | image_tag:
+                    class: 'snc-mixed-grid__image snc-mixed-grid__image--primary',
+                    loading: 'lazy',
+                    alt: product.title | escape
+                  -}}
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag: 'snc-mixed-grid__image snc-mixed-grid__image--primary' }}
+                {% endif %}
+
+                {% if product.images[1] != blank %}
+                  {{- product.images[1] | image_url: width: 800 | image_tag:
+                    class: 'snc-mixed-grid__image snc-mixed-grid__image--hover',
+                    loading: 'lazy',
+                    alt: product.title | escape
+                  -}}
+                {% else %}
+                  <div class="snc-mixed-grid__image snc-mixed-grid__image--hover snc-mixed-grid__image--placeholder"></div>
+                {% endif %}
+
+              </div>
+              <div class="snc-mixed-grid__image-overlay">
+                <h3 class="snc-mixed-grid__card-title">{{ product.title }}</h3>
+                {% if section.settings.show_price %}<div class="snc-mixed-grid__card-price">{{ product.price | money }}</div>{% endif %}
+              </div>
+            </a>
+            <button class="snc-plp--favorite-button" type="button" data-favorite-handle="{{ product.handle }}">
+              <img src="{% if global_icon_wishlist != blank %}{{ global_icon_wishlist | image_url: width: 46 }}{% else %}{{ 'Frameinvertido-1.svg' | asset_url }}{% endif %}" alt="Add to favorites" class="snc-plp--favorite-icon">
+            </button>
+          </div>
+        </div>
+      {% else %}
+        {% for i in (1..limit) %}
+          <div class="snc-mixed-grid__item">
+            <div class="snc-mixed-grid__card">
+              <div class="snc-mixed-grid__image-wrapper">
+                {{ 'product-' | append: i | placeholder_svg_tag: 'snc-mixed-grid__image snc-mixed-grid__image--primary' }}
+              </div>
+              <div class="snc-mixed-grid__image-overlay">
+                <h3 class="snc-mixed-grid__card-title">Product example {{ i }}</h3>
+                {% if section.settings.show_price %}<div class="snc-mixed-grid__card-price">$999.00</div>{% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if section.settings.email_capture_enabled %}
+    {% assign lead_form_id = 'snc-mixed-grid-lead-' | append: section.id %}
+    <div class="snc-mixed-grid__lead-gen">
+      <div class="snc-mixed-grid__lead-gen-inner">
+        {% if section.settings.lead_gen_heading != blank %}
+          <p class="snc-mixed-grid__lead-gen-heading">{{ section.settings.lead_gen_heading }}</p>
+        {% endif %}
+
+        {% form 'customer', id: lead_form_id %}
+          <input type="hidden" name="contact[tags]" value="{{ section.settings.customer_tag | default: 'product-interest' }}">
+          <input type="hidden" name="contact[accepts_marketing]" value="true">
+
+          {% if form.posted_successfully? %}
+            <p class="snc-mixed-grid__lead-gen-success">
+              {{ section.settings.lead_gen_success | default: 'Thank you. We will notify you when these products are available.' }}
+            </p>
+          {% else %}
+            <div class="snc-mixed-grid__lead-gen-row">
+              <input
+                type="email"
+                name="contact[email]"
+                class="snc-mixed-grid__lead-gen-input"
+                placeholder="{{ section.settings.lead_gen_placeholder | default: 'Your email address' }}"
+                autocomplete="email"
+                required
+              >
+              <button type="submit" class="snc-mixed-grid__lead-gen-submit">
+                {{ section.settings.lead_gen_button | default: 'Notify me' }}
+              </button>
+            </div>
+
+            {% if form.errors %}
+              <p class="snc-mixed-grid__lead-gen-error">
+                {{ form.errors.translated_fields['email'] | default: 'Email' }}: {{ form.errors.messages['email'] | default: form.errors.messages.first }}
+              </p>
+            {% endif %}
+          {% endif %}
+        {% endform %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  (function() {
+    const STORAGE_KEY = 'snc_favorites';
+    const sectionEl = document.getElementById('shopify-section-{{ section.id }}');
+    if (!sectionEl) return;
+    const buttons = Array.from(sectionEl.querySelectorAll('.snc-plp--favorite-button'));
+    if (!buttons.length) return;
+
+    function readFavorites() {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (error) { return []; }
+    }
+
+    function writeFavorites(list) {
+      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch (error) {}
+    }
+
+    function renderState() {
+      const favorites = readFavorites();
+      buttons.forEach(btn => {
+        const handle = btn.dataset.favoriteHandle;
+        btn.classList.toggle('is-active', handle && favorites.includes(handle));
+      });
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const handle = this.dataset.favoriteHandle;
+        if (!handle) return;
+        const favorites = readFavorites();
+        const index = favorites.indexOf(handle);
+        if (index >= 0) { favorites.splice(index, 1); } else { favorites.push(handle); }
+        writeFavorites(favorites);
+        renderState();
+        this.classList.add('is-bouncing');
+        this.addEventListener('animationend', () => { this.classList.remove('is-bouncing'); }, { once: true });
+        window.dispatchEvent(new CustomEvent('snc:wishlist-updated', { bubbles: true }));
+      });
+    });
+
+    window.addEventListener('snc:wishlist-updated', renderState);
+    window.addEventListener('storage', function(event) {
+      if (event.key === STORAGE_KEY) { renderState(); }
+    });
+
+    renderState();
+
+  })();
+</script>

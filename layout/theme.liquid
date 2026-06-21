@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    {% comment %} Critical CSS — Futura PT universal font (loads before any external stylesheet) {% endcomment %}
+    <style>
+      @font-face {
+        font-family: 'Futura PT';
+        src: url('{{ settings.custom_font_body_url }}') format('woff');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Futura PT';
+        src: url('{{ settings.custom_font_heading_url }}') format('woff');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+      :root {
+        --font-body-family: 'Futura PT', sans-serif;
+        --font-heading-family: 'Futura PT', sans-serif;
+        --font-main: 'Futura PT', sans-serif;
+        --font-nunito: 'Futura PT', sans-serif;
+      }
+      html, body, * {
+        font-family: 'Futura PT', sans-serif !important;
+      }
+    </style>
+
+    {% # Inlined CSS Variables %}
+    {% render 'css-variables' %}
+
+    {% comment %} Custom Fonts Injection {% endcomment %}
+    {% if settings.custom_font_heading_url != blank or settings.custom_font_body_url != blank %}
+      <style>
+        {% if settings.custom_font_heading_url != blank %}
+          @font-face {
+            font-family: '{{ settings.custom_font_heading_name }}';
+            src: url('{{ settings.custom_font_heading_url }}') format('{% if settings.custom_font_heading_url contains ".woff2" %}woff2{% else %}woff{% endif %}');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+          }
+          :root {
+            --font-heading-family: '{{ settings.custom_font_heading_name }}', sans-serif;
+          }
+          h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+            font-family: '{{ settings.custom_font_heading_name }}', sans-serif !important;
+          }
+        {% endif %}
+
+        {% if settings.custom_font_body_url != blank %}
+          @font-face {
+            font-family: '{{ settings.custom_font_body_name }}';
+            src: url('{{ settings.custom_font_body_url }}') format('{% if settings.custom_font_body_url contains ".woff2" %}woff2{% else %}woff{% endif %}');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+          }
+          :root {
+            --font-body-family: '{{ settings.custom_font_body_name }}', sans-serif;
+          }
+          body, p, li, a, .body {
+            font-family: '{{ settings.custom_font_body_name }}', sans-serif !important;
+          }
+        {% endif %}
+      </style>
+    {% endif %}
+
+    {% comment %} Global Typography Styles {% endcomment %}
+    <style>
+      :root {
+        --main-title-size: {{ settings.main_title_size }}px;
+        --main-title-weight: {{ settings.main_title_weight }};
+        --main-title-spacing: {{ settings.main_title_spacing }}px;
+        --main-title-height: {{ settings.main_title_height }};
+
+        --secondary-title-size: {{ settings.secondary_title_size }}px;
+        --secondary-title-weight: {{ settings.secondary_title_weight }};
+        --secondary-title-spacing: {{ settings.secondary_title_spacing }}px;
+        --secondary-title-height: {{ settings.secondary_title_height }};
+
+        --small-title-size: {{ settings.small_title_size }}px;
+        --small-title-weight: {{ settings.small_title_weight }};
+        --small-title-spacing: {{ settings.small_title_spacing }}px;
+        --small-title-height: {{ settings.small_title_height }};
+
+        --paragraph-size: {{ settings.paragraph_size }}px;
+        --paragraph-weight: {{ settings.paragraph_weight }};
+        --paragraph-spacing: {{ settings.paragraph_spacing }}px;
+        --paragraph-height: {{ settings.paragraph_height }};
+        
+        --button-size: {{ settings.button_size }}px;
+        --button-weight: {{ settings.button_weight }};
+        --button-spacing: {{ settings.button_spacing }}px;
+        --button-transform: {{ settings.button_transform }};
+
+        /* Default colors fallback */
+        --main-title-color: var(--color-foreground);
+        --secondary-title-color: var(--color-foreground);
+        --small-title-color: var(--color-foreground);
+        --paragraph-color: var(--color-foreground);
+        --small-paragraph-color: var(--color-foreground);
+        --emphasis-color: var(--color-foreground);
+      }
+
+      h1, .h1 { font-size: var(--main-title-size); font-weight: {{ settings.heading_font_weight | default: 'var(--main-title-weight)' }}; letter-spacing: var(--main-title-spacing); line-height: var(--main-title-height); color: var(--main-title-color); }
+      h2, .h2 { font-size: var(--secondary-title-size); font-weight: {{ settings.heading_font_weight | default: 'var(--secondary-title-weight)' }}; letter-spacing: var(--secondary-title-spacing); line-height: var(--secondary-title-height); color: var(--secondary-title-color); }
+      h3, .h3, h4, .h4 { font-size: var(--small-title-size); font-weight: {{ settings.heading_font_weight | default: 'var(--small-title-weight)' }}; letter-spacing: var(--small-title-spacing); line-height: var(--small-title-height); color: var(--small-title-color); }
+
+      body, p, .body {
+        font-size: {{ settings.body_font_size | default: 15 }}px;
+        font-weight: {{ settings.body_font_weight | default: 300 }};
+        letter-spacing: var(--paragraph-spacing);
+        line-height: var(--paragraph-height);
+        color: var(--paragraph-color);
+      }
+
+      button, .btn, .button { font-size: var(--button-size); font-weight: var(--button-weight); letter-spacing: var(--button-spacing); text-transform: var(--button-transform); }
+      small, .small, .caption { font-size: {{ settings.small_paragraph_size }}px; font-weight: {{ settings.small_paragraph_weight }}; color: var(--small-paragraph-color); }
+      .emphasis { font-size: {{ settings.emphasis_size }}px; font-weight: {{ settings.emphasis_weight }}; color: var(--emphasis-color); }
+
+      /* Anti-FOUC: key rules from critical.css mirrored inline so the first render
+         matches the final layout — eliminates the unstyled flash before external CSS loads. */
+      *, *::before, *::after { box-sizing: border-box; }
+      * { margin: 0; }
+      img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+      body { background-color: var(--color-background); overflow-x: hidden; }
+      p, h1, h2, h3, h4, h5, h6, span, button, a, input, textarea, select { letter-spacing: -0.04em; overflow-wrap: break-word; }
+      .shopify-section { position: relative; display: grid; width: 100%;
+        --content-width: min(calc(var(--page-width) - var(--page-margin) * 2), calc(100% - var(--page-margin) * 2));
+        --content-margin: minmax(var(--page-margin), 1fr);
+        grid-template-columns: var(--content-margin) var(--content-width) var(--content-margin); }
+      .shopify-section > * { grid-column: 2; }
+      .shopify-section > .full-width { grid-column: 1 / -1; }
+
+      /* Button Presets */
+      {% for i in (1..3) %}
+        {% capture border_width_key %}btn{{ i }}_border_width{% endcapture %}
+        {% capture border_pos_key %}btn{{ i }}_border_position{% endcapture %}
+        {% capture radius_key %}btn{{ i }}_radius{% endcapture %}
+        {% capture pad_v_key %}btn{{ i }}_padding_v{% endcapture %}
+        {% capture pad_h_key %}btn{{ i }}_padding_h{% endcapture %}
+
+        .btn-preset-{{ i }} {
+          padding: {{ settings[pad_v_key] }}px {{ settings[pad_h_key] }}px;
+          border-radius: {{ settings[radius_key] }}px;
+          {% if settings[border_pos_key] == 'all' %}
+            border: {{ settings[border_width_key] }}px solid var(--color-button-border);
+          {% else %}
+            border: 0;
+            border-{{ settings[border_pos_key] }}: {{ settings[border_width_key] }}px solid var(--color-button-border);
+          {% endif %}
+          transition: opacity 0.2s;
+          text-decoration: none;
+          display: inline-block;
+        }
+        .btn-preset-{{ i }}:hover { opacity: 0.9; }
+      {% endfor %}
+
+      .btn-preset-1 {
+        background-color: var(--color-button);
+        color: var(--color-button-text);
+      }
+      .btn-preset-2 {
+        background-color: transparent;
+        color: var(--color-secondary-button-text);
+      }
+       .btn-preset-3 {
+        background-color: transparent;
+        color: var(--color-secondary-button-text);
+      }
+
+      /* Color Schemes Generation */
+      {% for scheme in settings.color_schemes %}
+        .color-{{ scheme.id }}, .gradient.color-{{ scheme.id }} {
+          --color-background: {{ scheme.settings.background }};
+          --gradient-background: {{ scheme.settings.background }};
+          --color-foreground: {{ scheme.settings.text }};
+          
+          /* Scheme colors */
+          --color-button: {{ scheme.settings.button_background }};
+          --color-button-text: {{ scheme.settings.button_label }};
+          --color-button-border: {{ scheme.settings.secondary_button_label }};
+          --color-secondary-button-text: {{ scheme.settings.secondary_button_label }};
+          --color-shadow: {{ scheme.settings.shadow }};
+
+          /* Override global typography colors locally */
+          --main-title-color: {{ scheme.settings.title_color | default: scheme.settings.text }};
+          --secondary-title-color: {{ scheme.settings.subtitle_color | default: scheme.settings.text }};
+          --small-title-color: {{ scheme.settings.subtitle_color | default: scheme.settings.text }};
+          --paragraph-color: {{ scheme.settings.text }};
+          --small-paragraph-color: {{ scheme.settings.text }};
+          --emphasis-color: {{ scheme.settings.text }};
+          
+          /* Aplicar colores a elementos */
+          color: var(--color-foreground);
+          background: var(--gradient-background);
+        }
+      {% endfor %}
+    </style>
+
+    {% comment %}
+      Font preloading:
+      1. Preconnect to font CDN for faster connection
+      2. Preload only the critical font variant (base weight)
+      3. Additional variants load on-demand via @font-face
+    {% endcomment %}
+    {% unless settings.type_primary_font.system? %}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+
+      {% comment %} Preload the base font variant for initial page render {% endcomment %}
+      {{ settings.type_primary_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
+    {% endunless %}
+
+    {% # Load and preload the critical CSS %}
+    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'fonts.css.liquid' | asset_url | stylesheet_tag: preload: true }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" integrity="sha384-gAPqlBuTCdtVcYt9ocMOYWrnBZ4XSL6q+4eXqwNycOr4iFczhNKtnYhF3NEXJM51" crossorigin="anonymous">
+
+    {% # Social, title, etc. %}
+    {% render 'meta-tags' %}
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" sizes="32x32" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+      <link rel="icon" sizes="48x48" href="{{ settings.favicon | image_url: width: 48, height: 48 }}">
+      <link rel="icon" sizes="96x96" href="{{ settings.favicon | image_url: width: 96, height: 96 }}">
+      <link rel="shortcut icon" href="{{ settings.favicon | image_url: width: 48, height: 48 }}">
+      <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+    {%- endif -%}
+
+    {{ content_for_header }}
+
+    <!-- Google tag (gtag.js) — Consent Mode v2 -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      // Default: deny all consent until the user accepts via the banner.
+      // This prevents GA4 from setting third-party cookies on first paint,
+      // which is the primary cause of the low Lighthouse Best Practices score.
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
+      });
+      gtag('js', new Date());
+      gtag('config', 'G-KE0J6SSN1B', { send_page_view: false });
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KE0J6SSN1B"></script>
+
+    {% comment %} De Leville: typographic normalization — loads LAST so it overrides every per-section CSS rule (LV-style hierarchy: mixed case, max weight Medium, no shouting). {% endcomment %}
+    {{ 'de-leville-typography.css' | asset_url | stylesheet_tag }}
+
+    <!-- De Leville SEO: Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": ["Organization", "JewelryStore"],
+      "@id": "https://deleville.co/#organization",
+      "name": "De Leville",
+      "url": "https://deleville.co",
+      "logo": "{{ 'de-leville-logo.png' | asset_url }}",
+      "foundingDate": "1975",
+      "foundingLocation": {
+        "@type": "Place",
+        "name": "Rome, Italy"
+      },
+      "description": "De Leville is a luxury Italian jewelry house founded in Rome in 1975 by Eliau Labi at Piazza Esquilino 10. The maison crafts handmade 18-karat gold rings — Incontro, Classico, and Mezza Luna collections — made to order. Each piece carries a Digital Soul, a blockchain-authenticated certificate of origin and provenance. De Leville sells directly to clients worldwide.",
+      "priceRange": "$$$",
+      "knowsAbout": ["18-karat gold jewelry", "Italian craftsmanship", "luxury rings", "blockchain authentication", "made to order jewelry"],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "De Leville Collections",
+        "itemListElement": [
+          { "@type": "OfferCatalog", "name": "Incontro" },
+          { "@type": "OfferCatalog", "name": "Classico" },
+          { "@type": "OfferCatalog", "name": "Mezza Luna" },
+          { "@type": "OfferCatalog", "name": "Chains" },
+          { "@type": "OfferCatalog", "name": "Bags" }
+        ]
+      },
+      "sameAs": [
+        "https://instagram.com/delevilleofficial",
+        "https://www.pinterest.com/deleville",
+        "https://www.linkedin.com/company/deleville"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "concierge@deleville.co",
+        "contactType": "customer service",
+        "availableLanguage": ["English", "Spanish"]
+      }
+    }
+    </script>
+
+
+      
+  
+    <!-- De Leville: Luxury Refinements (LV-Benchmarked) -->
+    <style>
+    /* === FIX 1: Neutralize negative letter-spacing from fonts.css === */
+    /* fonts.css sets -0.04em globally. LV uses +0.4px. We go +0.02em for Futura PT. */
+    html, body, * { letter-spacing: 0.02em !important; }
+
+    /* === FIX 2: Heading Weight — Luxury brands never shout === */
+    /* LV uses weight 400 everywhere. We lighten headings only. */
+    h1, h2, h3, h4, h5, h6 { font-weight: 400 !important; letter-spacing: 0.04em !important; }
+    h1 { letter-spacing: 0.06em !important; }
+
+    /* === FIX 3: Body text refinement === */
+    p, li, td { line-height: 1.65 !important; }
+
+    /* === FIX 4: Navigation — light, airy, LV-style === */
+    nav a, .nav a, [class*="nav"] a, [class*="header"] a,
+    header a { font-weight: 400 !important; letter-spacing: 0.03em !important; }
+
+    /* === FIX 5: Buttons/CTAs — understated elegance === */
+    button, .btn, [class*="button"], [class*="btn"],
+    input[type="submit"], [class*="cta"] {
+      font-weight: 400 !important;
+      letter-spacing: 0.08em !important;
+    }
+
+    /* === FIX 6: Price styling — clean, confident === */
+    [class*="price"], [class*="Price"] {
+      font-weight: 400 !important;
+      letter-spacing: 0.02em !important;
+    }
+
+    /* === FIX 7: Soft black text (LV uses rgb(26,26,26) not pure black) === */
+    body { color: #1a1a1a !important; }
+
+    /* ==========================================================
+       De Leville — Mobile Pacing + Scroll Reveal (April 16, 2026)
+       ========================================================== */
+
+    /* Mobile: breathing room between sections, but the hero always sits flush.
+       Strategy: apply top padding only to a content section that follows another content
+       section — never to the first content section right after the header group. */
+    @media (max-width: 900px) {
+      /* Headers, announcement, footer wrappers — never pad. */
+      .shopify-section-group-header-group,
+      .shopify-section-group-footer-group,
+      body > .shopify-section:first-of-type,
+      body > .shopify-section.header-wrapper,
+      .shopify-section[id*="header"],
+      .shopify-section[id*="announcement"],
+      .shopify-section[id*="footer"] {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+      }
+
+      /* Every content section that FOLLOWS another content section gets breathing room. */
+      body > .shopify-section + .shopify-section:not([id*="header"]):not([id*="announcement"]):not([id*="footer"]):not(.shopify-section-group-header-group):not(.shopify-section-group-footer-group) {
+        padding-top: clamp(40px, 9vw, 88px);
+        padding-bottom: clamp(40px, 9vw, 88px);
+      }
+
+      /* Override: if the preceding section was a header/announcement group, sit flush. */
+      .shopify-section-group-header-group + .shopify-section,
+      .shopify-section[id*="header"] + .shopify-section,
+      .shopify-section[id*="announcement"] + .shopify-section {
+        padding-top: 0 !important;
+      }
+
+      /* Typography on mobile — a touch more air. */
+      h1, h2, h3 { line-height: 1.2 !important; }
+      p, li { line-height: 1.7 !important; }
+    }
+
+    /* Scroll-reveal base state. JS adds .dl-in once the section is in view. */
+    .dl-reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 800ms cubic-bezier(.22,.61,.36,1),
+                  transform 800ms cubic-bezier(.22,.61,.36,1);
+      will-change: opacity, transform;
+    }
+    .dl-reveal.dl-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Digital Soul page: all sections are dark — disable reveal to avoid white flash between sections. */
+    body.template-suffix-nft .dl-reveal,
+    body.template-suffix-nft .dl-reveal.dl-in {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+
+    /* Respect users who ask for less motion. */
+    @media (prefers-reduced-motion: reduce) {
+      .dl-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
+
+    /* Focus states — keyboard navigation only, invisible for mouse users */
+    :focus { outline: none; }
+    :focus-visible {
+      outline: 1.5px solid #1a1a1a !important;
+      outline-offset: 3px !important;
+      border-radius: 2px;
+    }
+    /* Cards get a slightly thicker outline to be visible over images */
+    a:focus-visible,
+    button:focus-visible {
+      outline-width: 2px !important;
+    }
+
+    /* PDP mobile fix: the product image was sliding behind the transparent
+       header. A small offset clears the header without adding visible white space
+       (the header is solid on PDP, so minimal padding is enough). */
+    @media (max-width: 900px) {
+      body.template-product .shopify-section:not(.shopify-section-group-header-group):not([id*="header"]):first-of-type,
+      body.template-product .shopify-section[id*="pdp-hero"],
+      body.template-product [data-section-type="snc-pdp-hero"],
+      body.template-product .pdp-hero--root {
+        padding-top: 0 !important;
+      }
+    }
+    </style>
+
+    <!-- De Leville: urgency/trust CSS injections removed -->
+</head>
+
+  <body class="template-{{ template.name }}{% if template.suffix != blank %} template-suffix-{{ template.suffix }}{% endif %}">
+
+    {%- comment -%}
+      De Leville — Page loader (Glow pulse).
+      Appears ONLY when a page genuinely takes time to render.
+      - Skipped on the homepage (IntroVideo handles the index opener).
+      - On other pages: hidden initially; shown only if the page has not
+        finished rendering after 200ms. Fast loads never flash the loader.
+      - Fades out immediately on window.load. Safety timeout at 3500ms.
+      - Respects prefers-reduced-motion.
+    {%- endcomment -%}
+    {%- unless template.name == 'index' -%}
+    <div class="dl-site-loader" id="dlSiteLoader" aria-hidden="true">
+      <img class="dl-site-loader__mark" src="{{ 'Monogram_De_Leville.png' | asset_url }}" alt="" width="60" height="54">
+    </div>
+
+    <style>
+      .dl-site-loader {
+        position: fixed; inset: 0; z-index: 99999;
+        background: #fafaf7;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 400ms cubic-bezier(.22,.61,.36,1);
+      }
+      .dl-site-loader.is-visible {
+        opacity: 1;
+        visibility: visible;
+      }
+      .dl-site-loader.is-done {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .dl-site-loader__mark {
+        width: 60px; height: auto; display: block;
+        user-select: none; pointer-events: none;
+        animation: dlSiteLoaderGlow 2400ms cubic-bezier(.45,.05,.55,.95) infinite;
+      }
+      @keyframes dlSiteLoaderGlow {
+        0%, 100% { opacity: 0.55; }
+        50%      { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .dl-site-loader__mark { animation: none; opacity: 1; }
+      }
+    </style>
+
+    <script>
+      (function () {
+        var loader = document.getElementById('dlSiteLoader');
+        if (!loader) return;
+        var REVEAL_AFTER_MS = 200;   // only show if page hasn't rendered in this time
+        var MAX_WAIT = 3500;
+        var finished = false;
+        var revealTimer = setTimeout(function () {
+          if (!finished) loader.classList.add('is-visible');
+        }, REVEAL_AFTER_MS);
+        function hide() {
+          finished = true;
+          clearTimeout(revealTimer);
+          loader.classList.add('is-done');
+        }
+        if (document.readyState === 'complete') hide();
+        else window.addEventListener('load', hide);
+        setTimeout(hide, MAX_WAIT);
+      })();
+    </script>
+    {%- endunless -%}
+
+
+    <!-- De Leville SEO: Breadcrumbs Schema (product pages use their own in snc-pdp-hero) -->
+    {% unless template == 'index' or template.name == 'product' %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ shop.url }}"
+        }
+        {% if template contains 'collection' %}
+        ,{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "{{ collection.title }}",
+          "item": "{{ shop.url }}{{ collection.url }}"
+        }
+        {% elsif template contains 'product' %}
+        {% if product.collections.size > 0 %}
+        ,{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "{{ product.collections.first.title }}",
+          "item": "{{ shop.url }}{{ product.collections.first.url }}"
+        }
+        {% endif %}
+        ,{
+          "@type": "ListItem",
+          "position": 3,
+          "name": "{{ product.title }}",
+          "item": "{{ shop.url }}{{ product.url }}"
+        }
+        {% elsif template contains 'page' %}
+        ,{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "{{ page.title }}",
+          "item": "{{ shop.url }}{{ page.url }}"
+        }
+        {% endif %}
+      ]
+    }
+    </script>
+    {% endunless %}
+
+    {% sections 'header-group' %}
+
+    {{ content_for_layout }}
+
+    {% sections 'footer-group' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" integrity="sha384-2UI1PfnXFjVMQ7/ZDEF70CR943oH3v6uZrFQGGqJYlvhh4g6z6uVktxYbOlAczav" crossorigin="anonymous"></script>
+    {{ 'snc-sections.js' | asset_url | script_tag }}
+
+    <!-- De Leville: Founding 100 / sticky-ATC / urgency JS injections removed -->
+
+    <!-- De Leville: Trust Machine & Bags Waitlist JS injections removed -->
+
+    <!-- ==========================================================
+         De Leville — Scroll Reveal (April 16, 2026)
+         Fades each top-level section into view as the user scrolls.
+         Runs only on viewports <= 1024px to keep desktop untouched.
+         ========================================================== -->
+    <script>
+      (function () {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        // Tag every top-level section so the stylesheet can hide it.
+        // Target every top-level Shopify section, skip header/footer wrappers and the first visible section (hero).
+        var allSections = Array.prototype.slice.call(
+          document.querySelectorAll('body > .shopify-section')
+        );
+        var targets = allSections.filter(function (el) {
+          var id = (el.id || '').toLowerCase();
+          if (id.indexOf('header') > -1 || id.indexOf('announcement') > -1 || id.indexOf('footer') > -1) return false;
+          if (el.classList.contains('shopify-section-group-header-group')) return false;
+          if (el.classList.contains('shopify-section-group-footer-group')) return false;
+          return true;
+        });
+        // Skip the very first visible section (hero) so there is no flash above the fold.
+        for (var i = 1; i < targets.length; i++) {
+          targets[i].classList.add('dl-reveal');
+        }
+
+        if (!('IntersectionObserver' in window)) {
+          // Fallback: reveal everything.
+          targets.forEach(function (t) { t.classList.add('dl-in'); });
+          return;
+        }
+
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('dl-in');
+              io.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.12,
+          rootMargin: '0px 0px -10% 0px'
+        });
+
+        targets.forEach(function (t) { io.observe(t); });
+      })();
+    </script>
+
+    {%- comment -%}
+      De Leville · Header mode controller (April 20, 2026)
+      Decides whether the header is transparent or solid based on:
+      1. Page type. Pages with a dark hero at top get transparent mode when
+         the hero is in view; everyone else stays solid.
+      2. Scroll. Once the user scrolls past any element marked
+         data-dl-dark-hero, flip to solid. Returning to the hero flips back.
+    {%- endcomment -%}
+
+    {%- comment -%}
+      De Leville header hero-theme flag:
+        'dark'   — hero image / video is mostly dark → use WHITE logo + icons when transparent
+        'light'  — hero is mostly light/white → use BLACK logo + icons when transparent
+        'none'   — no hero → header stays solid from the top
+    {%- endcomment -%}
+    {%- assign dl_hero_theme = 'none' -%}
+    {%- assign dl_force_solid_header_suffixes = 'the-maison,pelletteria-di-lusso,product-care,shipping-policy,returns-and-exchanges,sizing-guide,about' | split: ',' -%}
+    {%- assign dl_dark_hero_page_suffixes = 'chains,bags,classico,incontro,mezza-luna' | split: ',' -%}
+    {%- assign dl_always_transparent_dark_suffixes = 'nft' | split: ',' -%}
+    {%- if template.name == 'page' and dl_force_solid_header_suffixes contains template.suffix -%}
+      {%- assign dl_hero_theme = 'none' -%}
+    {%- elsif template.name == 'page' and dl_always_transparent_dark_suffixes contains template.suffix -%}
+      {%- assign dl_hero_theme = 'always-dark' -%}
+    {%- elsif template.name == 'page' and dl_dark_hero_page_suffixes contains template.suffix -%}
+      {%- assign dl_hero_theme = 'dark' -%}
+    {%- elsif template.name == 'index' -%}
+      {%- assign dl_hero_theme = 'dark' -%}
+    {%- elsif template.name == 'collection' -%}
+      {%- comment -%}
+        All collection templates now use snc-plp (white bg grid, no dark hero).
+        Solid header from the top — black logo + icons.
+      {%- endcomment -%}
+      {%- assign dl_hero_theme = 'none' -%}
+    {%- elsif template.name == 'list-collections' -%}
+      {%- comment -%}
+        /collections page uses Collections Editorial section with white background.
+        Solid header from the top — black logo + icons.
+      {%- endcomment -%}
+      {%- assign dl_hero_theme = 'none' -%}
+    {%- endif -%}
+
+    <script>
+      (function () {
+        var html = document.documentElement;
+        var heroTheme = {{ dl_hero_theme | json }};
+
+        // Expose for applyAutoTheme() in snc-header.liquid so it knows which pages
+        // allow scroll-driven updates to data-dl-header-mode.
+        window.__dlHeroTheme = heroTheme;
+
+        function setMode(mode) {
+          if (html.getAttribute('data-dl-header-mode') !== mode) {
+            html.setAttribute('data-dl-header-mode', mode);
+          }
+        }
+
+        if (heroTheme === 'none') {
+          setMode('solid');
+          return;
+        }
+
+        // Pages that must stay transparent-dark regardless of scroll (e.g. Digital Soul).
+        if (heroTheme === 'always-dark') {
+          setMode('transparent-dark');
+          return;
+        }
+
+        // Set initial mode only. applyAutoTheme() in snc-header.liquid owns all
+        // scroll-based updates via data-dl-header-mode.
+        var transparentMode = 'transparent-' + heroTheme;
+        setMode(transparentMode);
+      })();
+    </script>
+
+    {%- comment -%}
+      De Leville · Cookie consent banner (April 20, 2026)
+      White background, Futura PT + Cormorant Garamond, Accept / Decline pair.
+      Wired to Shopify's Customer Privacy API so analytics/marketing consent
+      flows through the native Shopify mechanism.
+    {%- endcomment -%}
+    <div class="dl-consent" id="dlConsent" aria-hidden="true" role="dialog" aria-label="Cookie preferences">
+      <div class="dl-consent__inner">
+        <div class="dl-consent__copy">
+          <p class="dl-consent__title">We use cookies.</p>
+          <p class="dl-consent__body">Some to make the site work, some to understand how it is used. You can accept or decline. Your choice is remembered.</p>
+          <p class="dl-consent__link"><a href="/policies/privacy-policy">Read our Privacy Policy.</a></p>
+        </div>
+        <div class="dl-consent__actions">
+          <button type="button" class="dl-consent__btn dl-consent__btn--secondary" id="dlConsentDecline">Decline</button>
+          <button type="button" class="dl-consent__btn dl-consent__btn--primary" id="dlConsentAccept">Accept</button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .dl-consent {
+        position: fixed; left: 0; right: 0; bottom: 0;
+        z-index: 99998;
+        background: #ffffff;
+        border-top: 1px solid #ececec;
+        box-shadow: 0 -8px 28px rgba(0,0,0,0.05);
+        transform: translateY(100%);
+        transition: transform 500ms cubic-bezier(.22,.61,.36,1);
+      }
+      .dl-consent.is-visible { transform: translateY(0); }
+      .dl-consent__inner {
+        max-width: 1200px; margin: 0 auto;
+        padding: 22px 32px;
+        display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center;
+      }
+      .dl-consent__copy { color: #1a1a1a; }
+      .dl-consent__title {
+        font-family: var(--font-main);
+        font-weight: 300; font-size: 22px; margin: 0 0 8px; color: #1a1a1a;
+        letter-spacing: 0.005em;
+      }
+      .dl-consent__body {
+        font-family: 'Futura PT', 'Jost', sans-serif; font-weight: 300; font-size: 14px;
+        line-height: 1.6; color: #3a3a3a; margin: 0 0 6px; max-width: 640px;
+      }
+      .dl-consent__link { margin: 0; font-size: 12px; }
+      .dl-consent__link a {
+        color: #1a1a1a; text-decoration: underline; text-underline-offset: 3px;
+        font-family: 'Futura PT', 'Jost', sans-serif;
+      }
+      .dl-consent__actions { display: flex; gap: 10px; }
+      .dl-consent__btn {
+        font-family: 'Futura PT', 'Jost', sans-serif; font-weight: 400;
+        font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+        padding: 12px 26px; cursor: pointer; border: 1px solid #1a1a1a;
+        transition: background 0.2s, color 0.2s;
+      }
+      .dl-consent__btn--primary { background: #1a1a1a; color: #ffffff; }
+      .dl-consent__btn--primary:hover { background: #000; }
+      .dl-consent__btn--secondary { background: #ffffff; color: #1a1a1a; }
+      .dl-consent__btn--secondary:hover { background: #1a1a1a; color: #ffffff; }
+      @media (max-width: 720px) {
+        .dl-consent__inner {
+          grid-template-columns: 1fr; gap: 18px; padding: 20px;
+        }
+        .dl-consent__actions { justify-content: flex-end; }
+        .dl-consent__title { font-size: 20px; }
+      }
+    </style>
+
+    <script>
+      (function () {
+        var banner = document.getElementById('dlConsent');
+        if (!banner) return;
+        var STORAGE_KEY = 'dl_consent_v1';
+        var saved = null;
+        try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+        function grantGtag(accepted) {
+          if (typeof gtag !== 'function') return;
+          var state = accepted ? 'granted' : 'denied';
+          gtag('consent', 'update', {
+            analytics_storage: state,
+            ad_storage: state,
+            ad_user_data: state,
+            ad_personalization: state
+          });
+          // Fire page view only after analytics consent is granted
+          if (accepted) gtag('event', 'page_view');
+        }
+
+        function applyConsent(accepted) {
+          grantGtag(accepted);
+          if (window.Shopify && Shopify.customerPrivacy && Shopify.customerPrivacy.setTrackingConsent) {
+            Shopify.customerPrivacy.setTrackingConsent({
+              analytics: accepted, marketing: accepted, preferences: accepted, sale_of_data: false
+            }, function () {});
+          }
+        }
+
+        function applyChoice(accepted) {
+          try { localStorage.setItem(STORAGE_KEY, accepted ? 'accept' : 'decline'); } catch (e) {}
+          applyConsent(accepted);
+        }
+
+        // Always load the consent API so it's ready regardless of visitor state
+        if (window.Shopify && Shopify.loadFeatures) {
+          Shopify.loadFeatures([{ name: 'consent-tracking-api', version: '0.1' }], function () {
+            if (saved === 'accept' || saved === 'decline') {
+              applyConsent(saved === 'accept');
+            }
+          });
+        }
+
+        // Returning visitor — re-grant immediately without showing banner
+        if (saved === 'accept') { grantGtag(true); return; }
+        if (saved === 'decline') return;
+
+        setTimeout(function () {
+          banner.classList.add('is-visible');
+          banner.setAttribute('aria-hidden', 'false');
+        }, 2000);
+
+        document.getElementById('dlConsentAccept').addEventListener('click', function () {
+          applyChoice(true); banner.classList.remove('is-visible');
+        });
+        document.getElementById('dlConsentDecline').addEventListener('click', function () {
+          applyChoice(false); banner.classList.remove('is-visible');
+        });
+      })();
+    </script>
+
+    <!-- De Leville: Concierge badge -->
+    <style>
+      /* ── Desktop badge — pill expand on hover ── */
+      #dl-clarity-badge {
+        position: fixed;
+        bottom: 24px;
+        right: 20px;
+        z-index: 2147483640;
+        height: 52px;
+        max-width: 52px;
+        background: #000;
+        border-radius: 999px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.28);
+        transition: max-width 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+                    box-shadow 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+      @media (pointer: fine) {
+        #dl-clarity-badge:hover {
+          max-width: 220px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.38);
+        }
+        #dl-clarity-badge:hover .dl-badge__label {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .dl-badge__circle {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .dl-badge__circle img {
+        width: 52%;
+        height: 52%;
+        object-fit: contain;
+        display: block;
+        filter: invert(1);
+        mix-blend-mode: screen;
+      }
+      .dl-badge__label {
+        font-family: 'Futura PT', 'Futura', sans-serif;
+        font-size: 9.5px;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #fff;
+        white-space: nowrap;
+        padding-right: 20px;
+        opacity: 0;
+        transform: translateX(-6px);
+        transition: opacity 0.3s ease 0.15s,
+                    transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) 0.1s;
+      }
+      @media (pointer: coarse) { #dl-clarity-badge { display: none !important; } }
+
+      /* ── Mobile concierge pill ── */
+      #dl-concierge-tab {
+        display: none;
+        position: fixed;
+        bottom: 28px;
+        right: 16px;
+        z-index: 2147483640;
+        background: #000;
+        border-radius: 999px;
+        padding: 13px 18px 13px 14px;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(10px);
+        min-height: 52px;
+        max-width: 260px;
+        overflow: hidden;
+        transition: opacity 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+                    transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+                    max-width 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+                    padding-left 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+                    padding-right 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        box-shadow: 0 6px 28px rgba(0,0,0,0.5);
+      }
+      #dl-concierge-tab.dl-tab--visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      #dl-concierge-tab.dl-tab--collapsed {
+        max-width: 52px;
+        padding-left: 17px;
+        padding-right: 17px;
+      }
+      #dl-concierge-tab .dl-tab__logo {
+        width: 18px;
+        height: 16px;
+        display: block;
+        flex-shrink: 0;
+        filter: invert(1);
+        opacity: 0.92;
+      }
+      #dl-concierge-tab .dl-tab__text {
+        font-family: 'Futura PT', 'Futura', sans-serif;
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #fff;
+        white-space: nowrap;
+        transition: opacity 0.2s ease;
+      }
+      #dl-concierge-tab .dl-tab__close {
+        font-size: 10px;
+        color: rgba(255,255,255,0.35);
+        margin-left: 2px;
+        line-height: 1;
+        padding: 2px 0 2px 6px;
+        border-left: 1px solid rgba(255,255,255,0.15);
+        transition: opacity 0.2s ease;
+      }
+      #dl-concierge-tab.dl-tab--collapsed .dl-tab__text,
+      #dl-concierge-tab.dl-tab--collapsed .dl-tab__close {
+        opacity: 0;
+        pointer-events: none;
+      }
+      @media (pointer: fine) { #dl-concierge-tab { display: none !important; } }
+    </style>
+
+    <!-- Desktop badge -->
+    <div id="dl-clarity-badge" role="button" aria-label="Your Concierge">
+      <div class="dl-badge__circle">
+        <img src="{{ 'Monogram_De_Leville.png' | asset_url }}" alt="">
+      </div>
+      <span class="dl-badge__label">Your Concierge</span>
+    </div>
+
+    <script>
+      (function () {
+        // #ads-agent-host is the shadow DOM host for Clarity's badge.
+        // We hide it by scaling the HOST (not the internal badge) — Clarity doesn't watch host styles.
+        // While chat is open we pause hiding so the user can interact normally.
+        var _chatOpen = false;
+
+        function hideHost() {
+          if (_chatOpen) return;
+          var host = document.getElementById('ads-agent-host');
+          if (host && host.style.getPropertyValue('transform') !== 'scale(0)') {
+            host.style.setProperty('transform', 'scale(0)', 'important');
+            host.style.setProperty('pointer-events', 'none', 'important');
+          }
+        }
+
+        hideHost();
+
+        new MutationObserver(hideHost).observe(document.body, { childList: true });
+
+        var _savedScrollY = 0;
+        var _isMobile = window.matchMedia('(pointer: coarse)').matches;
+
+        function lockBodyScroll() {
+          _savedScrollY = window.scrollY || window.pageYOffset;
+          if (_isMobile) {
+            document.body.style.setProperty('position', 'fixed', 'important');
+            document.body.style.setProperty('top', '-' + _savedScrollY + 'px', 'important');
+            document.body.style.setProperty('width', '100%', 'important');
+            document.body.style.setProperty('overflow-y', 'scroll', 'important');
+          }
+        }
+
+        function unlockBodyScroll() {
+          if (_isMobile) {
+            document.body.style.removeProperty('position');
+            document.body.style.removeProperty('top');
+            document.body.style.removeProperty('width');
+            document.body.style.removeProperty('overflow-y');
+          }
+          window.scrollTo(0, _savedScrollY);
+        }
+
+        function openClarityChat() {
+          var host = document.getElementById('ads-agent-host');
+          if (!host || !host.shadowRoot) return;
+          var sr = host.shadowRoot;
+          var ourBadge = document.getElementById('dl-clarity-badge');
+
+          lockBodyScroll();
+          _chatOpen = true;
+          host.style.setProperty('transform', 'none', 'important');
+          host.style.setProperty('pointer-events', 'auto', 'important');
+          if (ourBadge) ourBadge.style.setProperty('display', 'none', 'important');
+
+          var btn = sr.querySelector('[role="button"]');
+          if (btn) {
+            // Double rAF ensures the CSS lock is committed to the rendering engine
+            // before Clarity's React processes the event and iOS can reset scroll.
+            requestAnimationFrame(function() {
+              requestAnimationFrame(function() {
+                ['pointerdown','pointerup','click'].forEach(function(type) {
+                  btn.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, composed: true, view: window, isPrimary: true }));
+                });
+              });
+            });
+          }
+
+          setTimeout(function() {
+            var obs = new MutationObserver(function() {
+              if (sr.querySelectorAll('[data-testid]').length <= 1) {
+                obs.disconnect();
+                host.style.setProperty('opacity', '0', 'important');
+                setTimeout(function() {
+                  _chatOpen = false;
+                  unlockBodyScroll();
+                  host.style.setProperty('transform', 'scale(0)', 'important');
+                  host.style.setProperty('pointer-events', 'none', 'important');
+                  host.style.removeProperty('opacity');
+                  if (ourBadge) ourBadge.style.removeProperty('display');
+                  var tab = document.getElementById('dl-concierge-tab');
+                  var dismissKey = 'dl-tab-dismissed-' + window.location.pathname;
+                  if (tab && window.matchMedia('(pointer: coarse)').matches && !sessionStorage.getItem(dismissKey)) {
+                    tab.classList.add('dl-tab--collapsed');
+                    tab.style.display = 'flex';
+                    setTimeout(function() { tab.classList.add('dl-tab--visible'); }, 80);
+                  }
+                }, 80);
+              }
+            });
+            obs.observe(sr, { childList: true, subtree: true });
+          }, 600);
+        }
+
+        window._dlOpenChat = openClarityChat;
+
+        var badge = document.getElementById('dl-clarity-badge');
+        if (badge) badge.addEventListener('click', openClarityChat);
+      })();
+    </script>
+
+    <!-- ── Mobile Concierge Pill ── -->
+    <div id="dl-concierge-tab" role="button" aria-label="Your Concierge">
+      <img class="dl-tab__logo" src="{{ 'Monogram_De_Leville.png' | asset_url }}" alt="" width="16" height="14">
+      <span class="dl-tab__text">Your Concierge</span>
+      <span class="dl-tab__close" aria-label="Dismiss">✕</span>
+    </div>
+    <script>
+      (function () {
+        if (!window.matchMedia('(pointer: coarse)').matches) return;
+        var dismissKey = 'dl-tab-dismissed-' + window.location.pathname;
+        if (sessionStorage.getItem(dismissKey)) return;
+        var tab = document.getElementById('dl-concierge-tab');
+        if (!tab) return;
+
+        var _collapseTimer = null;
+
+        function collapseTab() {
+          if (tab.classList.contains('dl-tab--collapsed')) return;
+          tab.classList.add('dl-tab--collapsed');
+          if (_collapseTimer) { clearTimeout(_collapseTimer); _collapseTimer = null; }
+          window.removeEventListener('scroll', onFirstScroll);
+        }
+
+        function onFirstScroll() { collapseTab(); }
+
+        tab.style.display = 'flex';
+
+        setTimeout(function () {
+          tab.classList.add('dl-tab--visible');
+          // Collapse after 3s of being visible, or on first scroll — whichever comes first
+          _collapseTimer = setTimeout(collapseTab, 3000);
+          window.addEventListener('scroll', onFirstScroll, { once: true, passive: true });
+        }, 2500);
+
+        tab.querySelector('.dl-tab__close').addEventListener('click', function (e) {
+          e.stopPropagation();
+          collapseTab(); // clean up listeners before hiding
+          tab.classList.remove('dl-tab--visible');
+          setTimeout(function () { tab.style.display = 'none'; }, 450);
+          sessionStorage.setItem(dismissKey, '1');
+        });
+
+        tab.addEventListener('click', function (e) {
+          if (e.target.classList.contains('dl-tab__close')) return;
+          collapseTab(); // clean up listeners
+          tab.classList.remove('dl-tab--visible');
+          setTimeout(function() { tab.style.display = 'none'; }, 450);
+          if (window._dlOpenChat) window._dlOpenChat();
+        });
+      })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "main": {
+      "type": "snc-plp",
+      "settings": {
+        "layout_preset": "4-all",
+        "hide_quick_add": true,
+        "full_width": false,
+        "content_padding_vertical": 40,
+        "content_padding_horizontal": 20,
+        "section_margin_top": 0,
+        "section_margin_bottom": 40,
+        "story_cta_text": "The craft behind the piece",
+        "story_cta_url": "/pages/bags"
+      }
+    }
+  },
+  "order": ["main"]
+}

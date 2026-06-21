@@ -1,0 +1,1608 @@
+{% comment %}
+  SNC Horizontal Slides
+  layout_type: "scroll" → horizontal slides with sticky scroll
+  layout_type: "buttons" → text + media + category buttons
+{% endcomment %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    margin-top: 0 !important;
+  }
+  #section-{{ section.id }} {
+    margin-top: 0 !important;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  {% if template.suffix == 'incontro' or template.suffix == 'mezza-luna' or template.suffix == 'classico' or template.suffix == 'bags' or template.suffix == 'chains' %}
+  @media (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      position: relative;
+      z-index: 2;
+    }
+  }
+  {% endif %}
+
+  /* ============================================
+     SHARED
+     ============================================ */
+  .test-preview-section {
+    position: relative;
+    width: 100%;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    background: {{ section.settings.background_color | default: '#fafafa' }};
+  }
+
+  /* Fix ancestros del tema */
+  #section-{{ section.id }},
+  body, main, #MainContent, #main, .main-content, .page-width {
+    overflow-x: visible !important;
+    clip-path: none !important;
+  }
+
+  /* ============================================
+     LAYOUT: SCROLL HORIZONTAL
+     ============================================ */
+  .tp-layout-scroll {
+    /* 100vh sticky + pausa inicial + scroll para el movimiento horizontal + pausa final */
+    height: calc(100vh + {{ section.settings.slide_gap | default: 0 }}vw * 3 + {{ section.settings.initial_pause | default: 50 }}vh + {{ section.settings.pause_duration | default: 100 }}vh);
+  }
+
+  .test-preview-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .test-preview-child {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    height: 100%;
+    will-change: transform;
+    transform: translateX(0);
+  }
+
+  :root {
+    --tp-slide-gap: {{ section.settings.slide_gap | default: 0 }}vw;
+  }
+
+  .test-preview-slide {
+    width: 100vw;
+    flex-shrink: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .test-preview-slide-1 {
+    padding: 0 {{ section.settings.slide_1_padding | default: 60 }}px;
+    padding-right: calc({{ section.settings.slide_1_padding | default: 60 }}px + var(--tp-slide-gap) / 2);
+    gap: {{ section.settings.slide_1_inner_gap | default: 60 }}px;
+    justify-content: flex-start;
+  }
+
+  /* Text always anchored to the left, never shrinks */
+  .tp-text-1 {
+    flex-shrink: 0;
+  }
+
+  /* Media takes up remaining space and is pushed to the right */
+  .tp-media-1 {
+    margin-left: auto;
+  }
+
+  .test-preview-slide-2 {
+    padding: 0 {{ section.settings.slide_2_padding | default: 60 }}px;
+    padding-left: calc({{ section.settings.slide_2_padding | default: 60 }}px + var(--tp-slide-gap) / 2);
+    gap: {{ section.settings.slide_2_inner_gap | default: 60 }}px;
+    justify-content: flex-start;
+    {% if template.name == 'collection' and template.suffix == 'chains' %}
+    padding-right: 0 !important;
+    {% endif %}
+  }
+
+  .tp-text-2 {
+    flex-shrink: 0;
+  }
+
+  {% if section.settings.slide_2_reverse %}
+  .test-preview-slide-2 { flex-direction: row-reverse; }
+  {% endif %}
+
+  /* ============================================
+     TEXT - SLIDE 1
+     ============================================ */
+  .tp-text-1 {
+    flex: 0 0 {{ section.settings.text_1_width | default: 35 }}vw;
+    max-width: {{ section.settings.text_1_max_width | default: 500 }}px;
+    text-align: {{ section.settings.text_1_align | default: 'left' }};
+  }
+  .tp-title-1 {
+    font-family: var(--font-heading-family, serif);
+    font-size: {{ section.settings.title_1_size | default: 48 }}px;
+    font-weight: {{ section.settings.title_1_weight | default: 400 }};
+    color: {{ section.settings.title_1_color | default: '#1a1a1a' }};
+    line-height: {{ section.settings.title_1_line_height | default: 1.1 }};
+    letter-spacing: {{ section.settings.title_1_letter_spacing | default: 0 }}em;
+    margin: 0;
+    {% if section.settings.title_1_uppercase %}text-transform: uppercase;{% endif %}
+  }
+  .tp-desc-1 {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: {{ section.settings.desc_1_size | default: 16 }}px;
+    font-weight: {{ section.settings.desc_1_weight | default: 300 }};
+    color: {{ section.settings.desc_1_color | default: '#4a4a4a' }};
+    line-height: {{ section.settings.desc_1_line_height | default: 1.6 }};
+    letter-spacing: {{ section.settings.desc_1_letter_spacing | default: 0 }}em;
+    margin-top: {{ section.settings.desc_1_margin_top | default: 20 }}px;
+    {% if section.settings.desc_1_uppercase %}text-transform: uppercase;{% endif %}
+  }
+
+  /* ============================================
+     TEXT - SLIDE 2
+     ============================================ */
+  .tp-text-2 {
+    flex: 0 0 {{ section.settings.text_2_width | default: 35 }}vw;
+    max-width: {{ section.settings.text_2_max_width | default: 500 }}px;
+    text-align: {{ section.settings.text_2_align | default: 'left' }};
+  }
+  .tp-title-2 {
+    font-family: var(--font-heading-family, serif);
+    font-size: {{ section.settings.title_2_size | default: 48 }}px;
+    font-weight: {{ section.settings.title_2_weight | default: 400 }};
+    color: {{ section.settings.title_2_color | default: '#1a1a1a' }};
+    line-height: {{ section.settings.title_2_line_height | default: 1.1 }};
+    letter-spacing: {{ section.settings.title_2_letter_spacing | default: 0 }}em;
+    margin: 0;
+    {% if section.settings.title_2_uppercase %}text-transform: uppercase;{% endif %}
+  }
+  .tp-desc-2 {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: {{ section.settings.desc_2_size | default: 16 }}px;
+    font-weight: {{ section.settings.desc_2_weight | default: 300 }};
+    color: {{ section.settings.desc_2_color | default: '#4a4a4a' }};
+    line-height: {{ section.settings.desc_2_line_height | default: 1.6 }};
+    letter-spacing: {{ section.settings.desc_2_letter_spacing | default: 0 }}em;
+    margin-top: {{ section.settings.desc_2_margin_top | default: 20 }}px;
+    {% if section.settings.desc_2_uppercase %}text-transform: uppercase;{% endif %}
+  }
+
+  /* ============================================
+     MEDIA - SLIDE 1 y 2
+     ============================================ */
+  .tp-media-1 {
+    flex: 0 0 {{ section.settings.media_1_width | default: 600 }}px;
+    height: {{ section.settings.media_1_height | default: 400 }}px;
+    overflow: hidden;
+  }
+  .tp-media-2 {
+    flex: 0 0 {{ section.settings.media_2_width | default: 600 }}px;
+    height: {{ section.settings.media_2_height | default: 400 }}px;
+    overflow: hidden;
+    {% if template.name == 'collection' and template.suffix == 'chains' %}
+    margin-left: auto;
+    {% endif %}
+  }
+  .tp-media-1 img, .tp-media-1 video {
+    width: 100%; height: 100%;
+    object-fit: {{ section.settings.media_1_object_fit | default: 'cover' }};
+    object-position: center;
+    transform: rotate({{ section.settings.media_1_rotate | default: 0 }}deg);
+    transform-origin: center center;
+  }
+  .tp-media-2 img, .tp-media-2 video {
+    width: 100%; height: 100%;
+    object-fit: {{ section.settings.media_2_object_fit | default: 'cover' }};
+    object-position: center;
+    transform: rotate({{ section.settings.media_2_rotate | default: 0 }}deg);
+    transform-origin: center center;
+  }
+
+  /* ============================================
+     BUTTONS MODE — scroll-driven height
+     ============================================ */
+
+  {% if section.settings.layout_type == 'buttons' %}
+  /* Desktop: tall wrapper gives scroll room for N-button progression */
+  .tp-layout-scroll {
+    height: {{ section.settings.buttons_scroll_height | default: 320 }}vh;
+  }
+  {% endif %}
+
+  /* ── Video crossfade: all items kept rendered (display:block) so videos
+     stay buffered — only opacity toggles. Snappier 0.25s for mobile feel. ── */
+  .tp-layout-buttons .tp-btn-media-wrap {
+    position: relative;
+  }
+  .tp-layout-buttons .tp-media-item {
+    display: block !important; /* override general display:none — keeps video buffered */
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .tp-layout-buttons .tp-media-item.tp-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── Text: smooth fade on button change ── */
+  .tp-btn-title,
+  .tp-btn-desc,
+  .tp-btn-desc * {
+    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .tp-btn-text.is-transitioning .tp-btn-title,
+  .tp-btn-text.is-transitioning .tp-btn-desc {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  /* ── Active button indicator ── */
+  .tp-cat-btn {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* ── Progress dots ── */
+  .tp-dots {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+    align-items: center;
+  }
+  .tp-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.18);
+    transition: background 0.4s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: block;
+  }
+  .tp-dot.tp-dot-active {
+    background: #1a1a1a;
+    transform: scale(1.5);
+  }
+
+  /* Mobile: hide dots, layout uses tap instead */
+  @media (max-width: 989px) {
+    .tp-dots { display: none; }
+  }
+
+  /* ============================================
+     SLIDE 1 — BUTTONS MODE
+     ============================================ */
+
+  /* FIX 1: Usar btn_layout_padding y btn_layout_gap correctamente */
+  .tp-layout-buttons .test-preview-slide-1 {
+    padding: 0 {{ section.settings.btn_layout_padding | default: 60 }}px !important;
+    gap: {{ section.settings.btn_layout_gap | default: 80 }}px !important;
+    justify-content: space-between !important;
+  }
+
+  .tp-btn-text {
+    flex: 1 1 40%;
+    max-width: 800px;
+    max-width: none;
+  }
+
+  .tp-btn-title {
+    font-family: var(--font-heading-family, serif);
+    font-size: {{ section.settings.btn_title_size | default: 48 }}px;
+    font-weight: {{ section.settings.btn_title_weight | default: 400 }};
+    color: {{ section.settings.btn_title_color | default: '#1a1a1a' }};
+    line-height: {{ section.settings.btn_title_line_height | default: 1.1 }};
+    letter-spacing: {{ section.settings.btn_title_letter_spacing | default: 0 }}em;
+    margin: 0;
+    {% if section.settings.btn_title_uppercase %}text-transform: uppercase;{% endif %}
+  }
+
+  .tp-btn-desc {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: {{ section.settings.btn_desc_size | default: 16 }}px;
+    font-weight: {{ section.settings.btn_desc_weight | default: 300 }};
+    color: {{ section.settings.btn_desc_color | default: '#4a4a4a' }};
+    line-height: {{ section.settings.btn_desc_line_height | default: 1.6 }};
+    margin-top: {{ section.settings.btn_desc_margin_top | default: 20 }}px;
+  }
+
+  .tp-btn-media-wrap {
+    flex: 1 1 35%;
+    max-width: 600px;
+    flex: 1 1 40%;
+    max-width: none;
+    height: {{ section.settings.btn_media_height | default: 500 }}px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .tp-btn-media-wrap img,
+  .tp-btn-media-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: {{ section.settings.btn_media_object_fit | default: 'cover' }};
+    object-position: center;
+  }
+
+  .tp-media-item {
+    display: none;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .tp-media-item.tp-active {
+    display: block;
+  }
+
+  .tp-media-item img,
+  .tp-media-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: {{ section.settings.btn_media_object_fit | default: 'cover' }};
+    object-position: center;
+  }
+
+  .tp-btn-list {
+    flex: 0 0 {{ section.settings.btn_col_width | default: 220 }}px;
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.btn_gap | default: 12 }}px;
+  }
+
+  .tp-cat-btn {
+    width: 100%;
+    padding: {{ section.settings.btn_padding_v | default: 18 }}px {{ section.settings.btn_padding_h | default: 24 }}px;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: {{ section.settings.btn_font_size | default: 14 }}px;
+    font-weight: {{ section.settings.btn_font_weight | default: 400 }};
+    letter-spacing: {{ section.settings.btn_letter_spacing | default: 0.1 }}em;
+    cursor: pointer;
+    border: 1px solid {{ section.settings.btn_border_color | default: '#1a1a1a' }};
+    background: transparent;
+    color: {{ section.settings.btn_text_color | default: '#1a1a1a' }};
+    text-align: center;
+    transition: background 0.15s, color 0.15s;
+    {% if section.settings.btn_uppercase %}text-transform: uppercase;{% endif %}
+  }
+
+  .tp-cat-btn.tp-btn-active {
+    background: {{ section.settings.btn_active_bg | default: '#1a1a1a' }};
+    color: {{ section.settings.btn_active_color | default: '#ffffff' }};
+  }
+
+  /* ============================================
+     MOBILE
+     ============================================ */
+  @media screen and (max-width: 989px) {
+    .tp-layout-scroll { height: auto; }
+
+    .test-preview-sticky {
+      position: relative;
+      height: auto;
+      overflow: visible;
+    }
+    .test-preview-child {
+      flex-direction: column;
+      width: 100%;
+      transform: none !important;
+    }
+    .test-preview-slide,
+    .test-preview-slide-1,
+    .test-preview-slide-2 {
+      width: 100%;
+      min-height: auto;
+      flex-direction: column !important;
+      padding: 0 20px 30px 20px !important;
+      gap: 20px !important;
+      justify-content: flex-start;
+    }
+    .tp-text-1, .tp-text-2 {
+      flex: none !important; 
+      width: 100% !important; 
+      max-width: 100% !important; 
+      text-align: center !important;
+    }
+    .tp-title-1, .tp-title-2, .tp-btn-title { font-size: clamp(28px, 8vw, 40px) !important; }
+    
+    .tp-desc-1, .tp-desc-2, .tp-btn-desc,
+    .tp-desc-1 *, .tp-desc-2 *, .tp-btn-desc * {
+      font-size: 14px !important;
+      line-height: 1.45 !important;
+    }
+
+    .tp-media-1, .tp-media-2 { 
+      flex: none !important; 
+      width: 100% !important; 
+      max-width: 100% !important; 
+      height: auto !important; 
+      aspect-ratio: 1/1; 
+      max-height: 50vh;
+      border-radius: 8px;
+    }
+
+    /* ══════════════════════════════════════════════════
+       BUTTONS MODE — mobile redesign
+       Optimised for narrow screens (Galaxy Z Fold outer ~344px)
+       and standard phones. Sticky full-screen scroll experience.
+    ══════════════════════════════════════════════════ */
+    .tp-layout-buttons { padding-top: 0 !important; padding-bottom: 0 !important; }
+    .tp-layout-buttons .tp-layout-scroll { height: 400vh !important; }
+    .tp-layout-buttons .test-preview-sticky {
+      position: sticky !important;
+      top: 0 !important;
+      height: 100svh !important; /* svh respects mobile browser chrome */
+      height: 100vh !important;  /* fallback */
+      overflow: hidden !important;
+    }
+    .tp-layout-buttons .test-preview-slide-1 {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      padding: 0 !important;
+      gap: 0 !important;
+      height: 100% !important;
+    }
+
+    /* 1 — Video: tall, full-bleed, no aspect-ratio constraint */
+    .tp-layout-buttons .tp-btn-media-wrap {
+      width: 100% !important;
+      flex: 1 1 0 !important;      /* fills all available height */
+      min-height: 0 !important;
+      height: auto !important;
+      aspect-ratio: unset !important;
+      max-height: none !important;
+      border-radius: 0 !important;
+      overflow: hidden !important;
+      order: 1;
+    }
+    .tp-layout-buttons .tp-btn-media-wrap video,
+    .tp-layout-buttons .tp-btn-media-wrap img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+
+    /* 2 — Variant selector: 4 equal tabs with top-border active indicator */
+    .tp-layout-buttons .tp-btn-list {
+      flex: none !important;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      scrollbar-width: none !important;
+      border-top: none !important;
+      border-bottom: none !important;
+      order: 2;
+    }
+    .tp-layout-buttons .tp-btn-list::-webkit-scrollbar { display: none; }
+
+    .tp-layout-buttons .tp-cat-btn {
+      flex: 1 1 0 !important;
+      padding: 11px 2px !important;
+      font-size: clamp(8px, 2.3vw, 10px) !important;
+      letter-spacing: 0.14em !important;
+      text-transform: uppercase !important;
+      white-space: nowrap !important;
+      border-radius: 0 !important;
+      border: none !important;
+      border-top: 2px solid transparent !important;
+      margin-top: 0 !important;
+      background: transparent !important;
+      color: rgba(0,0,0,0.28) !important;
+      transition: color 0.3s ease, border-color 0.3s ease !important;
+      text-align: center !important;
+      cursor: pointer !important;
+    }
+    .tp-layout-buttons .tp-cat-btn.tp-btn-active {
+      color: #1a1a1a !important;
+      border-top-color: #1a1a1a !important;
+    }
+
+    /* 3 — Text block hidden on mobile: video + tabs occupy 100% viewport.
+       No second scroll container — the page scroll is the only scroll. */
+    .tp-layout-buttons .tp-btn-text {
+      display: none !important;
+    }
+  }
+
+  {% if template.name == 'collection' and template.suffix == 'chains' %}
+  #shopify-section-{{ section.id }},
+  #section-{{ section.id }} {
+    padding-top: 0 !important;
+  }
+  .tp-media-1 img, .tp-media-1 video {
+    object-position: top !important;
+  }
+  @media screen and (min-width: 990px) {
+    .tp-media-1 {
+      display: none !important;
+    }
+  }
+  @media screen and (max-width: 989px) {
+    .test-preview-slide-1 {
+      background-image: none !important;
+      padding-top: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      margin-top: 0 !important;
+      gap: 0 !important;
+    }
+    .tp-media-1 {
+      display: block !important;
+      order: -1;
+      border-radius: 0 !important;
+      max-height: 60vh !important;
+      max-height: 30vh !important;
+      margin: 0 !important;
+    }
+    .tp-text-1 {
+      padding: 40px 20px 20px 20px !important;
+    }
+  }
+  {% endif %}
+
+  {% if template.name == 'page' and template.suffix == 'chains' %}
+  /* Chains editorial page — image flush with top so chains appear to fall from hero video */
+  #shopify-section-{{ section.id }},
+  #section-{{ section.id }} {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .test-preview-sticky {
+    align-items: flex-start !important;
+  }
+  .test-preview-slide-1 {
+    align-items: flex-start !important;
+  }
+  .tp-media-1 img, .tp-media-1 video {
+    object-position: top center !important;
+  }
+  {% endif %}
+</style>
+
+<div class="test-preview-section {% if section.settings.layout_type == 'buttons' %}tp-layout-buttons{% endif %}" data-section-id="{{ section.id }}" id="section-{{ section.id }}">
+
+  <div class="tp-layout-scroll">
+    <div class="test-preview-sticky">
+      <div class="test-preview-child" id="child-{{ section.id }}">
+
+        <!-- ===== SLIDE 1 ===== -->
+        {%- if template.name == 'collection' and template.suffix == 'chains' and section.settings.layout_type == 'scroll' and section.settings.media_1_image != blank -%}
+          <style>
+            #section-{{ section.id }} .test-preview-slide-1 {
+              background-image: url('{{ section.settings.media_1_image | image_url: width: 2000 }}'); background-position: top right; background-repeat: no-repeat; background-size: 79%;
+            }
+          </style>
+        {%- endif -%}
+
+        <div class="test-preview-slide test-preview-slide-1">
+
+          {% if section.settings.layout_type == 'buttons' %}
+
+            <!-- MODO BOTONES -->
+            <div class="tp-btn-text" id="tp-btn-text-{{ section.id }}">
+              <h2 class="tp-btn-title" id="tp-dyn-title-{{ section.id }}">
+                {% if section.blocks.first %}{{ section.blocks.first.settings.cat_title }}{% endif %}
+              </h2>
+              <div class="tp-btn-desc" id="tp-dyn-desc-{{ section.id }}">
+                {% if section.blocks.first %}{{ section.blocks.first.settings.cat_desc }}{% endif %}
+              </div>
+            </div>
+
+            <div class="tp-btn-media-wrap" id="tp-media-wrap-{{ section.id }}">
+              {% for block in section.blocks %}
+                {% if block.settings.cat_media_type == 'video' and block.settings.cat_video != blank %}
+                  <div class="tp-media-item {% if forloop.first %}tp-active{% endif %}" data-cat="{{ block.id }}" style="width: {{ block.settings.cat_media_width | default: 600 }}px; height: {{ block.settings.cat_media_height | default: 500 }}px;">
+                    {{ block.settings.cat_video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false }}
+                  </div>
+                {% elsif block.settings.cat_image != blank %}
+                  <div class="tp-media-item {% if forloop.first %}tp-active{% endif %}" data-cat="{{ block.id }}" style="width: {{ block.settings.cat_media_width | default: 600 }}px; height: {{ block.settings.cat_media_height | default: 500 }}px;">
+                    <img
+                      src="{{ block.settings.cat_image | image_url: width: 1200 }}"
+                      alt="{{ block.settings.cat_title | escape }}"
+                      loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                    >
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <!-- Botones: FIX 3 — data-desc sin escape para preservar HTML del richtext -->
+            <div class="tp-btn-list">
+              {% for block in section.blocks %}
+                <button class="tp-cat-btn {% if forloop.first %}tp-btn-active{% endif %}" data-cat="{{ block.id }}" data-title="{{ block.settings.cat_title | escape }}" data-desc="{{ block.settings.cat_desc | escape }}" {{ block.shopify_attributes }}>
+                  {{ block.settings.cat_btn_label | default: block.settings.cat_title }}
+                </button>
+              {% endfor %}
+            </div>
+
+            <!-- Progress dots — minimal luxury indicator -->
+            <div class="tp-dots" id="tp-dots-{{ section.id }}" aria-hidden="true">
+              {% for block in section.blocks %}
+                <span class="tp-dot{% if forloop.first %} tp-dot-active{% endif %}" data-cat="{{ block.id }}"></span>
+              {% endfor %}
+            </div>
+
+          {% else %}
+
+            <!-- MODO NORMAL -->
+            {% if section.settings.text_1_content != blank %}
+              <div class="tp-text-1">
+                <h2 class="tp-title-1">{{ section.settings.text_1_content }}</h2>
+                {% if section.settings.description_1_content != blank %}
+                  <div class="tp-desc-1">{{ section.settings.description_1_content }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+            <div class="tp-media-1">
+              {% if section.settings.media_1_type == 'video' and section.settings.media_1_video != blank %}
+                {{ section.settings.media_1_video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false }}
+              {% elsif section.settings.media_1_image != blank %}
+                <img
+                  src="{{ section.settings.media_1_image | image_url: width: 1200 }}"
+                  srcset="{{ section.settings.media_1_image | image_url: width: 600 }} 600w, {{ section.settings.media_1_image | image_url: width: 900 }} 900w, {{ section.settings.media_1_image | image_url: width: 1200 }} 1200w"
+                  sizes="{{ section.settings.media_1_width | default: 600 }}px"
+                  alt="{{ section.settings.text_1_content | escape }}"
+                  loading="eager"
+                >
+              {% endif %}
+            </div>
+
+          {% endif %}
+
+        </div>
+
+        <!-- ===== SLIDE 2: hidden in buttons mode (content moves to snc-scroll-video) ===== -->
+        {% unless section.settings.layout_type == 'buttons' %}
+        <div class="test-preview-slide test-preview-slide-2">
+          {% if section.settings.text_2_content != blank %}
+            <div class="tp-text-2">
+              <h2 class="tp-title-2">{{ section.settings.text_2_content }}</h2>
+              {% if section.settings.description_2_content != blank %}
+                <div class="tp-desc-2">{{ section.settings.description_2_content }}</div>
+              {% endif %}
+            </div>
+          {% endif %}
+          <div class="tp-media-2">
+            {% if section.settings.media_2_type == 'video' and section.settings.media_2_video != blank %}
+              {{ section.settings.media_2_video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false }}
+            {% elsif section.settings.media_2_image != blank %}
+              <img
+                src="{{ section.settings.media_2_image | image_url: width: 1200 }}"
+                srcset="{{ section.settings.media_2_image | image_url: width: 600 }} 600w, {{ section.settings.media_2_image | image_url: width: 900 }} 900w, {{ section.settings.media_2_image | image_url: width: 1200 }} 1200w"
+                sizes="{{ section.settings.media_2_width | default: 600 }}px"
+                alt="{{ section.settings.text_2_content | escape }}"
+                loading="lazy"
+              >
+            {% endif %}
+          </div>
+        </div>
+        {% endunless %}
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var sectionId = '{{ section.id }}';
+  var sectionEl = document.getElementById('section-' + sectionId);
+  if (!sectionEl) return;
+
+  /* ============================================
+     FIX ANCESTROS
+     ============================================ */
+  (function fixAncestorOverflow(el) {
+    var node = el.parentElement;
+    while (node && node !== document.documentElement) {
+      var computed = window.getComputedStyle(node);
+      if (computed.overflowX === 'hidden' || computed.overflowX === 'clip') {
+        node.style.overflowX = 'visible';
+      }
+      node = node.parentElement;
+    }
+  })(sectionEl);
+
+  /* ============================================
+     FIX 4: LAYOUT BUTTONS — fuera del guard de mobile
+     Buttons must work on ALL sizes
+     ============================================ */
+  var layout = '{{ section.settings.layout_type | default: "scroll" }}';
+
+  if (layout === 'buttons') {
+    var buttons = sectionEl.querySelectorAll('.tp-cat-btn');
+    var mediaItems = sectionEl.querySelectorAll('.tp-media-item');
+    var titleEl = document.getElementById('tp-dyn-title-' + sectionId);
+    var descEl = document.getElementById('tp-dyn-desc-' + sectionId);
+
+    /* ── Autoplay fix: ensure all videos have required attributes ── */
+    sectionEl.querySelectorAll('video').forEach(function (v) {
+      v.muted = true;
+      v.setAttribute('playsinline', '');
+      v.setAttribute('webkit-playsinline', '');
+      v.setAttribute('preload', 'auto');
+    });
+
+    /* ── Safe play helper: handles Promise rejection (autoplay policy) ── */
+    function safePlay(video) {
+      if (!video) return;
+      video.muted = true;
+      var p = video.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+
+    /* ── Force-play the initially active video on load ── */
+    function playActiveVideo() {
+      var activeItem = sectionEl.querySelector('.tp-media-item.tp-active');
+      if (activeItem) {
+        var v = activeItem.querySelector('video');
+        safePlay(v);
+      }
+    }
+
+    /* Attempt 1: immediate */
+    playActiveVideo();
+    /* Attempt 2: on window load (DOM fully painted) */
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', playActiveVideo, { once: true });
+    }
+    /* Attempt 3: on first user interaction — scoped to section to avoid
+       global listener accumulation when multiple button sections exist */
+    sectionEl.addEventListener('touchstart', function onFirstTouch() {
+      playActiveVideo();
+      sectionEl.removeEventListener('touchstart', onFirstTouch);
+    }, { once: true, passive: true });
+    sectionEl.addEventListener('click', function onFirstClick() {
+      playActiveVideo();
+      sectionEl.removeEventListener('click', onFirstClick);
+    }, { once: true });
+
+    /* ── IntersectionObserver: play/pause when section enters/leaves view ── */
+    if (!sectionEl) return;
+    var ioButtons = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          playActiveVideo();
+        } else {
+          sectionEl.querySelectorAll('.tp-media-item video').forEach(function (v) {
+            v.pause();
+          });
+        }
+      });
+    }, { threshold: 0.1 });
+    ioButtons.observe(sectionEl);
+
+    /* ── Button click: switch active video ── */
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var cat = btn.getAttribute('data-cat');
+
+        buttons.forEach(function (b) { b.classList.remove('tp-btn-active'); });
+        btn.classList.add('tp-btn-active');
+
+        mediaItems.forEach(function (m) {
+          var video = m.querySelector('video');
+          if (m.getAttribute('data-cat') === cat) {
+            m.classList.add('tp-active');
+            safePlay(video);
+          } else {
+            m.classList.remove('tp-active');
+            if (video) { video.pause(); video.currentTime = 0; }
+          }
+        });
+
+        /* Smooth text transition on click */
+        var btnTextEl = sectionEl.querySelector('.tp-btn-text');
+        if (btnTextEl) {
+          btnTextEl.classList.add('is-transitioning');
+          setTimeout(function () {
+            if (titleEl) titleEl.textContent = btn.getAttribute('data-title') || '';
+            if (descEl) descEl.innerHTML = btn.getAttribute('data-desc') || '';
+            btnTextEl.classList.remove('is-transitioning');
+          }, 180);
+        } else {
+          if (titleEl) titleEl.textContent = btn.getAttribute('data-title') || '';
+          if (descEl) descEl.innerHTML = btn.getAttribute('data-desc') || '';
+        }
+      });
+    });
+
+    /* ────────────────────────────────────────────────────────
+       SCROLL-DRIVEN BUTTON ACTIVATION — desktop only
+       Maps vertical scroll progress → button index.
+       Hysteresis: button changes only after crossing threshold + 4%
+       (prevents accidental skips on fast scroll).
+       Dots update in sync with buttons.
+    ──────────────────────────────────────────────────────── */
+    var dotsEl = document.getElementById('tp-dots-' + sectionId);
+    var dots = dotsEl ? Array.from(dotsEl.querySelectorAll('.tp-dot')) : [];
+
+    /* Sync dots to active button */
+    function syncDots(cat) {
+      dots.forEach(function (d) {
+        d.classList.toggle('tp-dot-active', d.getAttribute('data-cat') === cat);
+      });
+    }
+
+    /* Sync dots on existing click handlers too */
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        syncDots(btn.getAttribute('data-cat'));
+      });
+    });
+
+    if (!window.matchMedia('(max-width: 989px)').matches) {
+      var scrollRaf = null;
+      var lastScrollIdx = 0;
+      var numBtns = buttons.length;
+      var btnTextElScroll = sectionEl.querySelector('.tp-btn-text');
+      /* Hysteresis: each zone is stepSize wide; button advances at zone start + hysteresis */
+      var hysteresis = 0.04; /* 4% of total scroll = require crossing before advancing */
+
+      function activateByIndex(idx) {
+        if (idx < 0 || idx >= numBtns) return;
+        var targetBtn = buttons[idx];
+        if (!targetBtn) return;
+
+        var cat = targetBtn.getAttribute('data-cat');
+        buttons.forEach(function (b) { b.classList.remove('tp-btn-active'); });
+        targetBtn.classList.add('tp-btn-active');
+
+        mediaItems.forEach(function (m) {
+          var v = m.querySelector('video');
+          if (m.getAttribute('data-cat') === cat) {
+            m.classList.add('tp-active');
+            safePlay(v);
+          } else {
+            m.classList.remove('tp-active');
+            if (v) { v.pause(); v.currentTime = 0; }
+          }
+        });
+
+        syncDots(cat);
+
+        if (btnTextElScroll) {
+          btnTextElScroll.classList.add('is-transitioning');
+          setTimeout(function () {
+            if (titleEl) titleEl.textContent = targetBtn.getAttribute('data-title') || '';
+            if (descEl) descEl.innerHTML = targetBtn.getAttribute('data-desc') || '';
+            btnTextElScroll.classList.remove('is-transitioning');
+          }, 180);
+        }
+      }
+
+      function onScrollButtons() {
+        var rect = sectionEl.getBoundingClientRect();
+        var scrolled = -rect.top;
+        var totalRoom = sectionEl.offsetHeight - window.innerHeight;
+        if (totalRoom <= 0 || scrolled < 0 || scrolled > totalRoom) return;
+
+        var progress = scrolled / totalRoom;
+        var stepSize = 1 / numBtns;
+
+        /* Hysteresis: advance to idx only when progress > idx*stepSize + hysteresis */
+        var idx = lastScrollIdx;
+        var next = Math.min(lastScrollIdx + 1, numBtns - 1);
+        var prev = Math.max(lastScrollIdx - 1, 0);
+
+        if (lastScrollIdx < numBtns - 1 && progress > (next * stepSize) + hysteresis) {
+          idx = next;
+        } else if (lastScrollIdx > 0 && progress < (lastScrollIdx * stepSize) - hysteresis) {
+          idx = prev;
+        }
+
+        if (idx !== lastScrollIdx) {
+          lastScrollIdx = idx;
+          activateByIndex(idx);
+        }
+      }
+
+      window.addEventListener('scroll', function () {
+        if (scrollRaf) return;
+        scrollRaf = requestAnimationFrame(function () {
+          onScrollButtons();
+          scrollRaf = null;
+        });
+      }, { passive: true });
+
+      onScrollButtons();
+    }
+
+    /* ────────────────────────────────────────────────────────
+       MOBILE SCROLL-DRIVEN ADVANCEMENT
+       Section is 400vh tall (via CSS) so the page scroll
+       naturally pauses here. Scroll progress → slide index.
+    ──────────────────────────────────────────────────────── */
+    if (window.matchMedia('(max-width: 989px)').matches) {
+      var mobileScrollRaf = null;
+      var mobileLastIdx   = -1;
+
+      function onMobileScroll() {
+        var rect      = sectionEl.getBoundingClientRect();
+        var scrolled  = -rect.top;
+        var totalRoom = sectionEl.offsetHeight - window.innerHeight;
+        if (totalRoom <= 0 || scrolled < 0) return;
+
+        var progress = Math.min(1, scrolled / totalRoom);
+        var idx      = Math.min(buttons.length - 1, Math.floor(progress * buttons.length));
+
+        if (idx === mobileLastIdx) return;
+        mobileLastIdx = idx;
+
+        var targetBtn = buttons[idx];
+        if (!targetBtn) return;
+        var cat = targetBtn.getAttribute('data-cat');
+
+        buttons.forEach(function (b) { b.classList.remove('tp-btn-active'); });
+        targetBtn.classList.add('tp-btn-active');
+        syncDots(cat);
+
+        mediaItems.forEach(function (m) {
+          var v = m.querySelector('video');
+          if (m.getAttribute('data-cat') === cat) {
+            m.classList.add('tp-active');
+            safePlay(v);
+          } else {
+            m.classList.remove('tp-active');
+            if (v) { v.pause(); v.currentTime = 0; }
+          }
+        });
+
+        var btnTextEl = sectionEl.querySelector('.tp-btn-text');
+        if (btnTextEl && titleEl && descEl) {
+          btnTextEl.classList.add('is-transitioning');
+          setTimeout(function () {
+            titleEl.textContent = targetBtn.getAttribute('data-title') || '';
+            descEl.innerHTML    = targetBtn.getAttribute('data-desc') || '';
+            btnTextEl.classList.remove('is-transitioning');
+          }, 180);
+        }
+      }
+
+      window.addEventListener('scroll', function () {
+        if (mobileScrollRaf) return;
+        mobileScrollRaf = requestAnimationFrame(function () {
+          onMobileScroll();
+          mobileScrollRaf = null;
+        });
+      }, { passive: true });
+
+      onMobileScroll();
+    }
+  }
+
+  /* ============================================
+     STICKY EXIT / ENTRY FADE
+     Fades the sticky container out at the end of the section
+     and in at entry — creates a smooth visual handoff to
+     the next section (SNC Scroll Video).
+     Runs for both layout types before the buttons early-return.
+     ============================================ */
+  (function () {
+    var stickyFadeEl = sectionEl.querySelector('.test-preview-sticky');
+    if (!stickyFadeEl) return;
+
+    stickyFadeEl.style.willChange = 'opacity';
+    var efRaf = null;
+
+    function updateFade() {
+      efRaf = null;
+      var rect      = sectionEl.getBoundingClientRect();
+      var scrolled  = -rect.top;
+      var totalRoom = sectionEl.offsetHeight - window.innerHeight;
+      if (totalRoom <= 0) return;
+
+      var p = Math.max(0, Math.min(1, scrolled / totalRoom));
+
+      /* Entry: first 5% of section scroll → fade in from 0 to 1 */
+      var entryT = p < 0.05 ? p / 0.05 : 1;
+
+      /* Exit: last 20% of section scroll → fade out from 1 to 0 */
+      var exitT  = p > 0.80 ? (p - 0.80) / 0.20 : 0;
+
+      stickyFadeEl.style.opacity = Math.max(0, entryT - exitT).toFixed(3);
+    }
+
+    window.addEventListener('scroll', function () {
+      if (efRaf) return;
+      efRaf = requestAnimationFrame(updateFade);
+    }, { passive: true });
+
+    updateFade();
+  })();
+
+  /* ============================================
+     SCROLL HORIZONTAL — solo desktop
+     FIX 5: listener duplicado eliminado —
+     solo se registra dentro del IntersectionObserver
+     ============================================ */
+  /* Buttons mode has only 1 slide — no horizontal scroll needed */
+  if (layout === 'buttons') return;
+
+  if (window.matchMedia('(max-width: 989px)').matches) return;
+
+  var child = document.getElementById('child-' + sectionId);
+  if (!child) return;
+
+  function getScrollParent(el) {
+    var parent = el.parentElement;
+    while (parent && parent !== document.body) {
+      var style = window.getComputedStyle(parent);
+      if (/(auto|scroll)/.test(style.overflow + style.overflowY)) return parent;
+      parent = parent.parentElement;
+    }
+    return window;
+  }
+
+  var scrollTarget = getScrollParent(sectionEl);
+  var ticking = false;
+
+  function getScrollTop() {
+    return scrollTarget === window
+      ? window.scrollY || window.pageYOffset
+      : scrollTarget.scrollTop;
+  }
+
+  function updateScroll() {
+    var scrollTop = getScrollTop();
+    var sectionTop = sectionEl.getBoundingClientRect().top + scrollTop;
+    var scrollableDistance = sectionEl.offsetHeight - window.innerHeight;
+    var scrolled = scrollTop - sectionTop;
+    var progress = 0;
+
+    var gapVw = {{ section.settings.slide_gap | default: 0 }};
+    /* maxTranslate: usar el ancho real del hijo menos el viewport */
+    var childWidth = child.scrollWidth;
+    var vw = window.innerWidth / 100;
+    var maxTranslate = (childWidth - window.innerWidth) / vw;
+
+    /* Fase 1: pausa inicial en Slide 1
+       Fase 2: scroll horizontal
+       Fase 3: pausa fija al final */
+    var initialPauseVh = {{ section.settings.initial_pause | default: 50 }};
+    var initialPausePx = (initialPauseVh / 100) * window.innerHeight;
+
+    var pauseVh = {{ section.settings.pause_duration | default: 100 }};
+    var pausePx = (pauseVh / 100) * window.innerHeight;
+
+    var scrollForMotion = Math.max(1, scrollableDistance - pausePx - initialPausePx);
+
+    var motionProgress = 0;
+    if (scrolled > initialPausePx) {
+      motionProgress = Math.min(1, (scrolled - initialPausePx) / scrollForMotion);
+    }
+
+    child.style.transform = 'translate3d(-' + (motionProgress * maxTranslate) + 'vw, 0, 0)';
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      window.requestAnimationFrame(function () { updateScroll(); ticking = false; });
+      ticking = true;
+    }
+  }
+
+  /* FIX 5: Solo el observer maneja el listener, sin registro inicial duplicado */
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        scrollTarget.addEventListener('scroll', onScroll, { passive: true });
+        updateScroll();
+      } else {
+        scrollTarget.removeEventListener('scroll', onScroll);
+      }
+    });
+  }, { threshold: 0 });
+
+  observer.observe(sectionEl);
+  updateScroll();
+})();
+</script>
+
+{% if template.name == 'collection' and template.suffix == 'mezza-luna' %}
+<style>
+  @media (min-width: 769px) {
+    .custom-header--root.is-mezza-luna-slide,
+    .custom-header--announcement-section.is-mezza-luna-slide,
+    .custom-header--announcement-section.is-mezza-luna-slide .custom-header--announcement {
+      background-color: transparent !important;
+      color: #000000 !important;
+      border-bottom: none !important;
+      box-shadow: none !important;
+    }
+    .custom-header--root.is-mezza-luna-slide::before {
+      display: none !important;
+    }
+    .custom-header--root.is-mezza-luna-slide .custom-header--nav-link,
+    .custom-header--root.is-mezza-luna-slide .custom-header--right-label {
+      color: #000000 !important;
+    }
+    .custom-header--root.is-mezza-luna-slide .custom-header--right-divider {
+      background-color: #000000 !important;
+    }
+    .custom-header--root.is-mezza-luna-slide .icon-static,
+    .custom-header--root.is-mezza-luna-slide .logo-static {
+      display: block !important;
+      filter: brightness(0) !important;
+    }
+    .custom-header--root.is-mezza-luna-slide .icon-sticky,
+    .custom-header--root.is-mezza-luna-slide .logo-sticky {
+      display: none !important;
+    }
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth < 769) return;
+    var header = document.querySelector('.custom-header--root');
+    var announcement = document.querySelector('.custom-header--announcement-section');
+    var section = document.getElementById('section-{{ section.id }}');
+    
+    if (!header || !section) return;
+
+    window.addEventListener('scroll', function() {
+      var rect = section.getBoundingClientRect();
+      var headerHeight = header.offsetHeight || 66;
+      
+      if (rect.top <= headerHeight && rect.bottom >= headerHeight) {
+        header.classList.add('is-mezza-luna-slide');
+        if (announcement) announcement.classList.add('is-mezza-luna-slide');
+      } else {
+        header.classList.remove('is-mezza-luna-slide');
+        if (announcement) announcement.classList.remove('is-mezza-luna-slide');
+      }
+    }, { passive: true });
+  });
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "SNC Horizontal Slides",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+
+    { "type": "header", "content": "General" },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "Layout type",
+      "options": [
+        { "value": "scroll", "label": "Horizontal scroll (2 slides)" },
+        { "value": "buttons", "label": "Categories with buttons" }
+      ],
+      "default": "scroll"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fafafa"
+    },
+
+    { "type": "header", "content": "─── LAYOUT: BUTTONS ────────────────" },
+    { "type": "paragraph", "content": "⚠️ The following settings only apply when the Layout type is \"Categories with buttons\"." },
+    {
+      "type": "range",
+      "id": "btn_layout_padding",
+      "min": 0, "max": 120, "step": 10, "unit": "px",
+      "label": "Side padding", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "btn_layout_gap",
+      "min": 0, "max": 200, "step": 10, "unit": "px",
+      "label": "Column gap", "default": 80
+    },
+
+    { "type": "header", "content": "Text — Buttons mode only" },
+    {
+      "type": "range",
+      "id": "btn_text_width",
+      "min": 10, "max": 80, "step": 5, "unit": "vw",
+      "label": "Text column width", "default": 40
+    },
+    {
+      "type": "range",
+      "id": "btn_text_max_width",
+      "min": 200, "max": 1200, "step": 50, "unit": "px",
+      "label": "Max text width", "default": 700
+    },
+    {
+      "type": "range",
+      "id": "btn_title_size",
+      "min": 16, "max": 120, "step": 2, "unit": "px",
+      "label": "Title size", "default": 48
+    },
+    {
+      "type": "select",
+      "id": "btn_title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "btn_title_color",
+      "label": "Title color", "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "btn_title_line_height",
+      "min": 0.8, "max": 2, "step": 0.1,
+      "label": "Title line height", "default": 1.1
+    },
+    {
+      "type": "range",
+      "id": "btn_title_letter_spacing",
+      "min": 0, "max": 0.3, "step": 0.1, "unit": "em",
+      "label": "Title letter spacing", "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "btn_title_uppercase",
+      "label": "Title uppercase", "default": false
+    },
+    {
+      "type": "range",
+      "id": "btn_desc_size",
+      "min": 10, "max": 32, "step": 1, "unit": "px",
+      "label": "Description size", "default": 16
+    },
+    {
+      "type": "select",
+      "id": "btn_desc_weight",
+      "label": "Description weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" }
+      ],
+      "default": "300"
+    },
+    {
+      "type": "color",
+      "id": "btn_desc_color",
+      "label": "Description color", "default": "#4a4a4a"
+    },
+    {
+      "type": "range",
+      "id": "btn_desc_line_height",
+      "min": 0.8, "max": 2.5, "step": 0.1,
+      "label": "Description line height", "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "btn_desc_margin_top",
+      "min": 0, "max": 80, "step": 4, "unit": "px",
+      "label": "Title → description gap", "default": 20
+    },
+
+    { "type": "header", "content": "Media — Buttons mode only" },
+    {
+      "type": "range",
+      "id": "btn_media_height",
+      "min": 200, "max": 800, "step": 50, "unit": "px",
+      "label": "Media height", "default": 500
+    },
+    {
+      "type": "select",
+      "id": "btn_media_object_fit",
+      "label": "Media fit",
+      "options": [
+        { "value": "cover", "label": "Cover" },
+        { "value": "contain", "label": "Contain" }
+      ],
+      "default": "cover"
+    },
+
+    { "type": "header", "content": "Buttons — Buttons mode only" },
+    {
+      "type": "range",
+      "id": "btn_col_width",
+      "min": 120, "max": 400, "step": 10, "unit": "px",
+      "label": "Button column width", "default": 220
+    },
+    {
+      "type": "range",
+      "id": "btn_gap",
+      "min": 0, "max": 40, "step": 4, "unit": "px",
+      "label": "Button spacing", "default": 12
+    },
+    {
+      "type": "range",
+      "id": "btn_padding_v",
+      "min": 8, "max": 40, "step": 2, "unit": "px",
+      "label": "Button vertical padding", "default": 18
+    },
+    {
+      "type": "range",
+      "id": "btn_padding_h",
+      "min": 8, "max": 60, "step": 4, "unit": "px",
+      "label": "Button horizontal padding", "default": 24
+    },
+    {
+      "type": "range",
+      "id": "btn_font_size",
+      "min": 10, "max": 24, "step": 1, "unit": "px",
+      "label": "Button text size", "default": 14
+    },
+    {
+      "type": "select",
+      "id": "btn_font_weight",
+      "label": "Button text weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "btn_letter_spacing",
+      "min": 0, "max": 0.3, "step": 0.1, "unit": "em",
+      "label": "Button letter spacing", "default": 0.1
+    },
+    {
+      "type": "checkbox",
+      "id": "btn_uppercase",
+      "label": "Button text uppercase", "default": false
+    },
+    {
+      "type": "color",
+      "id": "btn_border_color",
+      "label": "Button border color", "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button text color (inactive)", "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "btn_active_bg",
+      "label": "Active button background", "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "btn_active_color",
+      "label": "Active button text color", "default": "#ffffff"
+    },
+
+    { "type": "header", "content": "─── LAYOUT: BUTTONS (scroll-driven) ─" },
+    {
+      "type": "range",
+      "id": "buttons_scroll_height",
+      "label": "Scroll height (buttons mode)",
+      "min": 300, "max": 700, "step": 50, "unit": "vh", "default": 500,
+      "info": "Total scroll distance. Each button zone = this ÷ 4. Higher = slower / more deliberate scroll between videos."
+    },
+
+    { "type": "header", "content": "─── LAYOUT: SCROLL ─────────────────" },
+    { "type": "paragraph", "content": "⚠️ The following settings only apply when the Layout type is \"Horizontal scroll (2 slides)\"." },
+    {
+      "type": "range",
+      "id": "initial_pause",
+      "min": 0, "max": 200, "step": 10, "unit": "vh",
+      "label": "Initial pause on slide 1", "default": 50
+    },
+    {
+      "type": "range",
+      "id": "pause_duration",
+      "min": 0, "max": 200, "step": 10, "unit": "vh",
+      "label": "Pause on slide 2 before continuing", "default": 100
+    },
+    {
+      "type": "range",
+      "id": "slide_gap",
+      "min": 0, "max": 200, "step": 2, "unit": "vw",
+      "label": "Gap between slide 1 and slide 2", "default": 0
+    },
+
+    { "type": "header", "content": "Slide 1 — Scroll mode only" },
+    {
+      "type": "range",
+      "id": "slide_1_padding",
+      "min": 0, "max": 120, "step": 10, "unit": "px",
+      "label": "Side padding", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "slide_1_inner_gap",
+      "min": 0, "max": 200, "step": 10, "unit": "px",
+      "label": "Text ↔ image gap", "default": 60
+    },
+    { "type": "header", "content": "Title — Slide 1" },
+    { "type": "text", "id": "text_1_content", "label": "Title", "default": "THE FORM" },
+    { "type": "range", "id": "title_1_size", "min": 16, "max": 120, "step": 2, "unit": "px", "label": "Size", "default": 48 },
+    { "type": "select", "id": "title_1_weight", "label": "Weight", "options": [{ "value": "300", "label": "Light" }, { "value": "400", "label": "Regular" }, { "value": "500", "label": "Medium" }, { "value": "600", "label": "Semibold" }, { "value": "700", "label": "Bold" }, { "value": "800", "label": "Extra Bold" }], "default": "400" },
+    { "type": "color", "id": "title_1_color", "label": "Color", "default": "#1a1a1a" },
+    { "type": "range", "id": "title_1_line_height", "min": 0.8, "max": 2, "step": 0.1, "label": "Line height", "default": 1.1 },
+    { "type": "range", "id": "title_1_letter_spacing", "min": 0, "max": 0.3, "step": 0.1, "unit": "em", "label": "Letter spacing", "default": 0 },
+    { "type": "checkbox", "id": "title_1_uppercase", "label": "Uppercase", "default": false },
+    { "type": "header", "content": "Description — Slide 1" },
+    { "type": "richtext", "id": "description_1_content", "label": "Description" },
+    { "type": "range", "id": "desc_1_size", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Size", "default": 16 },
+    { "type": "select", "id": "desc_1_weight", "label": "Weight", "options": [{ "value": "300", "label": "Light" }, { "value": "400", "label": "Regular" }, { "value": "500", "label": "Medium" }, { "value": "600", "label": "Semibold" }, { "value": "700", "label": "Bold" }], "default": "300" },
+    { "type": "color", "id": "desc_1_color", "label": "Color", "default": "#4a4a4a" },
+    { "type": "range", "id": "desc_1_line_height", "min": 0.8, "max": 2.5, "step": 0.1, "label": "Line height", "default": 1.6 },
+    { "type": "range", "id": "desc_1_letter_spacing", "min": 0, "max": 0.3, "step": 0.1, "unit": "em", "label": "Letter spacing", "default": 0 },
+    { "type": "range", "id": "desc_1_margin_top", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Title → description gap", "default": 20 },
+    { "type": "checkbox", "id": "desc_1_uppercase", "label": "Uppercase", "default": false },
+    { "type": "header", "content": "Text block — Slide 1" },
+    { "type": "range", "id": "text_1_width", "min": 10, "max": 60, "step": 5, "unit": "vw", "label": "Block width", "default": 35 },
+    { "type": "range", "id": "text_1_max_width", "min": 200, "max": 900, "step": 50, "unit": "px", "label": "Max width", "default": 500 },
+    { "type": "select", "id": "text_1_align", "label": "Alignment", "options": [{ "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" }], "default": "left" },
+    { "type": "header", "content": "Media — Slide 1" },
+    { "type": "radio", "id": "media_1_type", "label": "Type", "options": [{ "value": "image", "label": "Image" }, { "value": "video", "label": "Video" }], "default": "image" },
+    { "type": "image_picker", "id": "media_1_image", "label": "Image" },
+    { "type": "video", "id": "media_1_video", "label": "Video" },
+    { "type": "range", "id": "media_1_width", "min": 100, "max": 1000, "step": 50, "unit": "px", "label": "Width", "default": 600 },
+    { "type": "range", "id": "media_1_height", "min": 100, "max": 1000, "step": 50, "unit": "px", "label": "Height", "default": 400 },
+    { "type": "select", "id": "media_1_object_fit", "label": "Fit", "options": [{ "value": "cover", "label": "Cover" }, { "value": "contain", "label": "Contain" }], "default": "cover" },
+    { "type": "range", "id": "media_1_rotate", "min": -180, "max": 180, "step": 4, "unit": "°", "label": "Rotation", "default": 0 },
+
+    { "type": "header", "content": "Slide 2 — Scroll mode only" },
+    {
+      "type": "range",
+      "id": "slide_2_padding",
+      "min": 0, "max": 120, "step": 10, "unit": "px",
+      "label": "Side padding", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "slide_2_inner_gap",
+      "min": 0, "max": 200, "step": 10, "unit": "px",
+      "label": "Text ↔ image gap", "default": 60
+    },
+    { "type": "checkbox", "id": "slide_2_reverse", "label": "Reverse order (image left, text right)", "default": false },
+    { "type": "header", "content": "Title — Slide 2" },
+    { "type": "text", "id": "text_2_content", "label": "Title", "default": "TWO FORMS" },
+    { "type": "range", "id": "title_2_size", "min": 16, "max": 120, "step": 2, "unit": "px", "label": "Size", "default": 48 },
+    { "type": "select", "id": "title_2_weight", "label": "Weight", "options": [{ "value": "300", "label": "Light" }, { "value": "400", "label": "Regular" }, { "value": "500", "label": "Medium" }, { "value": "600", "label": "Semibold" }, { "value": "700", "label": "Bold" }, { "value": "800", "label": "Extra Bold" }], "default": "400" },
+    { "type": "color", "id": "title_2_color", "label": "Color", "default": "#1a1a1a" },
+    { "type": "range", "id": "title_2_line_height", "min": 0.8, "max": 2, "step": 0.1, "label": "Line height", "default": 1.1 },
+    { "type": "range", "id": "title_2_letter_spacing", "min": 0, "max": 0.3, "step": 0.1, "unit": "em", "label": "Letter spacing", "default": 0 },
+    { "type": "checkbox", "id": "title_2_uppercase", "label": "Uppercase", "default": false },
+    { "type": "header", "content": "Description — Slide 2" },
+    { "type": "richtext", "id": "description_2_content", "label": "Description" },
+    { "type": "range", "id": "desc_2_size", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Size", "default": 16 },
+    { "type": "select", "id": "desc_2_weight", "label": "Weight", "options": [{ "value": "300", "label": "Light" }, { "value": "400", "label": "Regular" }, { "value": "500", "label": "Medium" }, { "value": "600", "label": "Semibold" }, { "value": "700", "label": "Bold" }], "default": "300" },
+    { "type": "color", "id": "desc_2_color", "label": "Color", "default": "#4a4a4a" },
+    { "type": "range", "id": "desc_2_line_height", "min": 0.8, "max": 2.5, "step": 0.1, "label": "Line height", "default": 1.6 },
+    { "type": "range", "id": "desc_2_letter_spacing", "min": 0, "max": 0.3, "step": 0.1, "unit": "em", "label": "Letter spacing", "default": 0 },
+    { "type": "range", "id": "desc_2_margin_top", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Title → description gap", "default": 20 },
+    { "type": "checkbox", "id": "desc_2_uppercase", "label": "Uppercase", "default": false },
+    { "type": "header", "content": "Text block — Slide 2" },
+    { "type": "range", "id": "text_2_width", "min": 10, "max": 60, "step": 5, "unit": "vw", "label": "Block width", "default": 35 },
+    { "type": "range", "id": "text_2_max_width", "min": 200, "max": 900, "step": 50, "unit": "px", "label": "Max width", "default": 500 },
+    { "type": "select", "id": "text_2_align", "label": "Alignment", "options": [{ "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" }], "default": "left" },
+    { "type": "header", "content": "Media — Slide 2" },
+    { "type": "radio", "id": "media_2_type", "label": "Type", "options": [{ "value": "image", "label": "Image" }, { "value": "video", "label": "Video" }], "default": "image" },
+    { "type": "image_picker", "id": "media_2_image", "label": "Image" },
+    { "type": "video", "id": "media_2_video", "label": "Video" },
+    { "type": "range", "id": "media_2_width", "min": 100, "max": 1000, "step": 50, "unit": "px", "label": "Width", "default": 600 },
+    { "type": "range", "id": "media_2_height", "min": 100, "max": 1000, "step": 50, "unit": "px", "label": "Height", "default": 400 },
+    { "type": "select", "id": "media_2_object_fit", "label": "Fit", "options": [{ "value": "cover", "label": "Cover" }, { "value": "contain", "label": "Contain" }], "default": "cover" },
+    { "type": "range", "id": "media_2_rotate", "min": -180, "max": 180, "step": 4, "unit": "°", "label": "Rotation", "default": 0 },
+
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0, "max": 200, "step": 5, "unit": "px",
+      "label": "Top Padding", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0, "max": 200, "step": 5, "unit": "px",
+      "label": "Bottom Padding", "default": 60
+    }
+
+  ],
+  "blocks": [
+    {
+      "type": "categoria",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "cat_btn_label",
+          "label": "Button name",
+          "default": "Category"
+        },
+        {
+          "type": "text",
+          "id": "cat_title",
+          "label": "Title (left text)",
+          "default": "The Title"
+        },
+        {
+          "type": "richtext",
+          "id": "cat_desc",
+          "label": "Description (left text)"
+        },
+        {
+          "type": "radio",
+          "id": "cat_media_type",
+          "label": "Media type",
+          "options": [
+            { "value": "image", "label": "Image" },
+            { "value": "video", "label": "Video" }
+          ],
+          "default": "image"
+        },
+        {
+          "type": "image_picker",
+          "id": "cat_image",
+          "label": "Image"
+        },
+        {
+          "type": "video",
+          "id": "cat_video",
+          "label": "Video"
+        },
+        {
+          "type": "range",
+          "id": "cat_media_width",
+          "min": 100,
+          "max": 1000,
+          "step": 50,
+          "unit": "px",
+          "label": "Resource width",
+          "default": 600
+        },
+        {
+          "type": "range",
+          "id": "cat_media_height",
+          "min": 100,
+          "max": 1000,
+          "step": 50,
+          "unit": "px",
+          "label": "Resource height",
+          "default": 500
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Horizontal Slides",
+      "blocks": [
+        { "type": "categoria" },
+        { "type": "categoria" }
+      ]
+    }
+  ]
+}
+{% endschema %}

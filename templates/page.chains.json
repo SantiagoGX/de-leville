@@ -1,0 +1,191 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "snc_info_hero_JTL3qQ": {
+      "type": "snc-info-hero",
+      "name": "SNC Info Hero",
+      "settings": {
+        "video": "shopify://files/videos/Animation LD Logo chain moschettone  (1).mp4",
+        "color_scheme": "",
+        "margin_top": 0,
+        "height_vh": 100,
+        "full_width": true,
+        "border_radius": 0,
+        "overlay_type": "solid",
+        "gradient_direction": "to top",
+        "overlay_color": "#000000",
+        "overlay_opacity": 30,
+        "content_vertical_position": "flex-end",
+        "content_horizontal_position": "center",
+        "text_alignment": "center",
+        "title": "The Art of the Chain",
+        "title_max_width": 0,
+        "subtitle": "",
+        "subtitle_max_width": 0,
+        "text": "<p>Long before it became a symbol of fashion, the chain was a symbol of connection, link bound to link, each one dependent on the next, each one strengthening the whole.<br/><br/>In the De Leville tradition, chains are not accessories. They are architecture in miniature, precision metalwork that honors the goldsmith's oldest craft.</p>",
+        "text_max_width": 520,
+        "title_style": "h1",
+        "title_font_weight": "700",
+        "subtitle_style": "body",
+        "subtitle_font_weight": "400",
+        "text_style": "body",
+        "text_font_weight": "400",
+        "button_style": "button",
+        "button_label": "",
+        "button_link": "",
+        "button_preset": "1"
+      }
+    },
+    "snc_fixed_frame_FVVTUB": {
+      "type": "snc-fixed-frame",
+      "blocks": {
+        "content_slide_7Xzwxq": {
+          "type": "content_slide",
+          "settings": {
+            "title": "WHAT IT PRESERVES",
+            "text": "<p>It mirrors a cycle we know well.<br/>Creation, pause, renewal.<br/>De Le Ville follows the same path.<br/>Once present.<br/>Then quiet.<br/>Now returning — not as it was, but as it was meant to be.</p>",
+            "background_color": "rgba(0,0,0,0)"
+          }
+        },
+        "content_slide_ERtqX7": {
+          "type": "content_slide",
+          "settings": {
+            "title": "MATERIALS",
+            "text": "<p>Crafted in 18k gold.</p><p>Designed to endure cycles, not moments.<br/>Available in yellow gold, white gold, and rose gold.</p>",
+            "background_color": "rgba(0,0,0,0)"
+          }
+        }
+      },
+      "block_order": [
+        "content_slide_7Xzwxq",
+        "content_slide_ERtqX7"
+      ],
+      "name": "SNC Fixed Frame",
+      "settings": {
+        "media_type": "video",
+        "video": "shopify://files/videos/CADENA 2 ANIMACIÓN FINAL.mp4",
+        "image_background": "#ffffff",
+        "enable_parallax": false,
+        "image_width": 50,
+        "content_width": 50,
+        "title_size": 32,
+        "text_size": 16,
+        "background_color": "#ffffff",
+        "title_color": "#1a1a1a",
+        "text_color": "#666666",
+        "accent_color": "#1a1a1a"
+      }
+    },
+    "snc_scroll_gallery_kEwRwK": {
+      "type": "snc-scroll-gallery",
+      "blocks": {
+        "image_MnAzye": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/milena3700_luxury_jewelry_object_photographed_with_extreme_pr_28b23288-5659-4566-bde9-071a3a3344ee_3.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        },
+        "image_8b9rxJ": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_2.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        },
+        "image_yBxxxX": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_3.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        },
+        "image_7A7tGC": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_4.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        },
+        "image_dktiHc": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_5.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        }
+      },
+      "block_order": [
+        "image_MnAzye",
+        "image_8b9rxJ",
+        "image_yBxxxX",
+        "image_7A7tGC",
+        "image_dktiHc"
+      ],
+      "name": "SNC Scroll Gallery",
+      "settings": {
+        "titulo": "DIGITAL SOUL",
+        "titulo_size": 36,
+        "titulo_color": "#000000",
+        "titulo_weight": "500",
+        "titulo_uppercase": true,
+        "titulo_spacing": 0.2,
+        "texto_central": "EVERY PIECE IS ALIVE",
+        "texto_central_size": 100,
+        "texto_central_color": "#000000",
+        "texto_central_weight": "700",
+        "texto_central_uppercase": true,
+        "texto_central_spacing": 0.1,
+        "texto_central_line_height": 1.1,
+        "descripcion": "The chains shown here are part of the De Leville collection in development. To be notified when chains launch, subscribe to our newsletter.",
+        "descripcion_size": 15,
+        "descripcion_color": "#333333",
+        "descripcion_width": 500,
+        "descripcion_align": "center",
+        "descripcion_weight": "400",
+        "descripcion_line_height": 1.8,
+        "show_cta": false,
+        "cta_text": "Explore the Collection",
+        "cta_url": "",
+        "image_size": 320,
+        "image_gap": 100,
+        "arc_rotation": 0,
+        "arc_height": 80,
+        "scroll_height": 300,
+        "background_color": "#ffffff"
+      }
+    },
+    "snc_split_story_chains": {
+      "type": "snc-split-story",
+      "name": "SNC Split Story",
+      "settings": {
+        "eyebrow": "The Form",
+        "title": "THE FORM",
+        "text": "<p>Mezza Luna was born from that understanding.<br/>A circle, interrupted.<br/>Not unfinished.<br/>Intentional.<br/>Crafted in solid 18k gold. Available in yellow, white, and rose gold.</p>",
+        "image": "shopify://shop_images/Frame_867_c4e78d60-86bf-4a19-84ac-a931bf6cab94.png",
+        "media_object_fit": "contain",
+        "media_padding": 0,
+        "media_bg": "#ffffff",
+        "media_side": "right",
+        "min_height": 80,
+        "text_padding_h": 80,
+        "padding_bottom": 120,
+        "background_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "snc_info_hero_JTL3qQ",
+    "snc_split_story_chains",
+    "snc_fixed_frame_FVVTUB",
+    "snc_scroll_gallery_kEwRwK"
+  ]
+}

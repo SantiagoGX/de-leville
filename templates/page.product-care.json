@@ -1,0 +1,28 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "snc-product-care-page",
+      "settings": {
+        "eyebrow": "A guide from the maison",
+        "title": "Product Care",
+        "image_1": "shopify://shop_images/De_Leville_Classico_regale_VISTA1TOPYELLOW.png",
+        "image_2": "shopify://shop_images/DE_LEVILLE_INCONTRO_ESSENZA_VISTA_TOP_GOLD.png",
+        "image_3": "shopify://shop_images/De_Leville_Classico_puro_VISTA1TOPYELLOW.png",
+        "concierge_email": "concierge@deleville.co",
+        "signature": "De Leville"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

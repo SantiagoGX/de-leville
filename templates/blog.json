@@ -1,0 +1,74 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "snc_info_hero_86i33m": {
+      "type": "snc-info-hero",
+      "name": "SNC Info Hero",
+      "settings": {
+        "image": "shopify://shop_images/Img_2.png",
+        "color_scheme": "",
+        "margin_top": 0,
+        "height_vh": 60,
+        "full_width": true,
+        "border_radius": 0,
+        "overlay_type": "solid",
+        "gradient_direction": "to top",
+        "overlay_color": "#000000",
+        "overlay_opacity": 30,
+        "content_vertical_position": "flex-end",
+        "content_horizontal_position": "flex-start",
+        "text_alignment": "left",
+        "title": "Blog",
+        "title_max_width": 0,
+        "subtitle": "Latest news",
+        "subtitle_max_width": 0,
+        "text": "",
+        "text_max_width": 0,
+        "title_style": "h1",
+        "title_font_weight": "700",
+        "subtitle_style": "body",
+        "subtitle_font_weight": "400",
+        "text_style": "body",
+        "text_font_weight": "400",
+        "button_style": "button",
+        "button_label": "",
+        "button_link": "",
+        "button_preset": "1"
+      }
+    },
+    "snc_blog_fHdfVJ": {
+      "type": "snc-blog",
+      "name": "SNC Blog Editorial",
+      "settings": {
+        "blog": "news",
+        "posts_per_page": 12,
+        "grid_columns": "3",
+        "show_tags": true,
+        "show_author": true,
+        "show_read_time": true,
+        "show_toggle": true,
+        "accent_color": "#000000",
+        "accent_pale": "#ffffff",
+        "bg_color": "#ffffff",
+        "max_width": 1160,
+        "pad_h": 24,
+        "pad_bottom": 80,
+        "label_all": "All",
+        "label_articles": "articles",
+        "label_read": "Read"
+      }
+    }
+  },
+  "order": [
+    "snc_info_hero_86i33m",
+    "snc_blog_fHdfVJ"
+  ]
+}

@@ -1,0 +1,45 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "snc-shipping-page",
+      "settings": {
+        "eyebrow": "A note from the maison",
+        "title": "Shipping",
+        "intro": "<p>Every De Leville piece is made to order. When the order is placed, the atelier begins. When the piece is ready, it travels to you, fully insured, signed for on arrival.</p>",
+        "stat_1_value": "4 · 6",
+        "stat_1_label": "Weeks to deliver",
+        "stat_2_value": "Worldwide",
+        "stat_2_label": "Complimentary shipping",
+        "stat_3_value": "Fully",
+        "stat_3_label": "Insured, end to end",
+        "made_to_order_title": "Made to order",
+        "made_to_order_text": "<p>No De Leville piece sits in a warehouse waiting to be sold. Each ring is made for the person who commissioned it. The moment your order is confirmed, work begins.</p><p>Delivery takes four to six weeks from the date of order. For pieces with specific stone settings or bespoke requests, we will write to you with a confirmed timeline.</p>",
+        "shipping_title": "Complimentary worldwide shipping",
+        "shipping_text": "<p>Shipping is included, everywhere. No expedited tier, no upgrade. Every piece travels through a trusted insured carrier, with full tracking from the atelier to your door.</p><h3>Signature required</h3><p>Every De Leville order requires a signature on delivery. The package will not be left without one. If nobody is home at the first attempt, the carrier will leave a notice and attempt redelivery, or hold the piece at a local collection point.</p>",
+        "image_1": "shopify://shop_images/De_Leville_FAQ_header.png",
+        "image_1_alt": "De Leville ring",
+        "customs_title": "Customs and duties",
+        "customs_text": "<p>For international orders, duties, import taxes, and customs fees are set by the destination country and are the responsibility of the recipient. These amounts vary by country and are not included in the order total.</p><p>If you need documentation for customs clearance, write to the concierge and we will provide it before the piece ships.</p>",
+        "receive_title": "What you will receive",
+        "receive_text": "<h3>Order confirmation</h3><p>A confirmation email lands in your inbox within minutes of placing the order. This is the moment the atelier begins.</p><h3>Shipping confirmation</h3><p>When the piece is ready and dispatched, we send a second email with your tracking number. From this point you can follow the package door to door.</p><h3>Delivery confirmation</h3><p>Once the package is signed for, a final email confirms safe arrival.</p>",
+        "problems_title": "If something goes wrong",
+        "problems_text": "<p>Every shipment is fully insured for the total value of the order, from the atelier to your door. If a package is lost, damaged, or delayed beyond reasonable time, write to the concierge. We will resolve it, quickly and privately, at no cost to you.</p>",
+        "close_text": "<p>Questions about your order? Write to the concierge.</p>",
+        "concierge_email": "concierge@deleville.co",
+        "signature": "De Leville"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

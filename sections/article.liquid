@@ -1,0 +1,391 @@
+{%- liquid
+  assign wc = article.content | strip_html | split: ' ' | size
+  assign rm = wc | divided_by: 200 | plus: 1
+  assign author_parts = article.author | split: ' '
+  assign ini = ''
+  for part in author_parts limit: 2
+    assign first_char = part | slice: 0
+    assign ini = ini | append: first_char
+  endfor
+  assign ini = ini | upcase
+-%}
+
+
+<style>
+#snc-article-{{ section.id }} {
+  --ac:      {{ section.settings.accent_color | default: '#000000' }};
+  --ac-pale: {{ section.settings.accent_pale  | default: '#edf2ee' }};
+  --ink:     #1c1c1a;
+  --ink2:    #5a5a56;
+  --ink3:    #9a9a94;
+  --rule:    rgba(28,28,26,0.10);
+  --bg:      {{ section.settings.bg_color | default: '#fafaf8' }};
+  --serif:   var(--font-heading-family, 'Futura PT', sans-serif);
+  --sans:    var(--font-body-family, 'Futura PT', sans-serif);
+  --ease:    cubic-bezier(.4,0,.2,1);
+  --pad-h:   {{ section.settings.pad_h | default: 24 }}px;
+  --max-w:   {{ section.settings.max_width | default: 1160 }}px;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--bg);
+  width: 100%;
+  box-sizing: border-box;
+  padding-bottom: {{ section.settings.pad_bottom | default: 80 }}px;
+}
+#snc-article-{{ section.id }} *,
+#snc-article-{{ section.id }} *::before,
+#snc-article-{{ section.id }} *::after {
+  box-sizing: border-box;
+}
+
+.snc__art-bar {
+  display: flex;
+  align-items: center;
+  padding: 1.1rem var(--pad-h);
+  border-bottom: 0.5px solid var(--rule);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.snc__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  text-decoration: none;
+  transition: color .2s;
+  font-family: var(--sans);
+}
+.snc__back:hover       { color: var(--ac); }
+.snc__back svg         { width: 14px; height: 14px; transition: transform .2s; flex-shrink: 0; }
+.snc__back:hover svg   { transform: translateX(-3px); }
+
+.snc__art-header {
+  max-width: 740px;
+  margin: 4rem auto 3.5rem;
+  text-align: center;
+  padding: 0 var(--pad-h);
+}
+.snc__art-tag {
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ac);
+  display: block;
+  margin-bottom: 1.2rem;
+}
+.snc__art-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 1.4rem;
+  letter-spacing: -.02em;
+}
+.snc__art-byline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 12px;
+  color: var(--ink3);
+  flex-wrap: wrap;
+}
+.snc__art-byline-sep { width: 26px; height: 0.5px; background: var(--rule); }
+
+.snc__art-cover {
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto 4rem;
+  padding: 0 var(--pad-h);
+}
+.snc__art-cover-inner {
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #d0d8d2;
+}
+.snc__art-cover-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.snc__art-body {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 var(--pad-h);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.82;
+  color: var(--ink2);
+}
+.snc__art-lede {
+  font-family: var(--serif);
+  font-size: 1.32rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 2.25rem;
+  padding-bottom: 2.25rem;
+  border-bottom: 0.5px solid var(--rule);
+}
+.snc__art-body h1, .snc__art-body h2, .snc__art-body h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  color: var(--ink);
+  margin: 2.5rem 0 1rem;
+}
+.snc__art-body h1 { font-size: 2rem; }
+.snc__art-body h2 { font-size: 1.6rem; }
+.snc__art-body h3 { font-size: 1.25rem; }
+.snc__art-body p  { margin-bottom: 1.5rem; }
+.snc__art-body a  {
+  color: var(--ac);
+  text-decoration: underline;
+  text-decoration-color: rgba(0,0,0,.2);
+  text-underline-offset: 3px;
+  transition: text-decoration-color .2s;
+}
+.snc__art-body a:hover { text-decoration-color: var(--ac); }
+.snc__art-body blockquote {
+  border-left: 2px solid var(--ac);
+  padding: 1.25rem 0 1.25rem 1.75rem;
+  margin: 2.5rem 0;
+}
+.snc__art-body blockquote p {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: .5rem;
+}
+.snc__art-body ul, .snc__art-body ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.snc__art-body li  { margin-bottom: .4rem; }
+.snc__art-body img { width: 100%; height: auto; display: block; margin: 2.5rem 0; border-radius: 2px; }
+
+.snc__art-foot {
+  max-width: 680px;
+  margin: 3.5rem auto 0;
+  padding: 2rem var(--pad-h) 0;
+  border-top: 0.5px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.snc__author-row { display: flex; align-items: center; gap: 12px; }
+.snc__avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--ac-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ac);
+  flex-shrink: 0;
+  font-family: var(--sans);
+}
+.snc__author-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+.snc__author-role { font-size: 11px; color: var(--ink3); }
+
+@media (max-width: 600px) {
+  .snc__art-cover-inner { aspect-ratio: 4/3; }
+}
+</style>
+
+<div id="snc-article-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="snc-article" data-header-theme="{{ section.settings.header_theme | default: 'light' }}">
+
+  <div class="snc__art-bar">
+    <a class="snc__back" href="{{ blog.url }}">
+      <svg viewBox="0 0 14 14" fill="none">
+        <path d="M10 7H4M4 7l3-3M4 7l3 3" stroke="#9a9a94" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      {{ section.settings.label_back | default: 'Back to journal' }}
+    </a>
+  </div>
+
+  <div class="snc__art-header">
+    {%- if article.tags.size > 0 -%}
+      <span class="snc__art-tag">{{ article.tags | first }}</span>
+    {%- endif -%}
+    <h1 class="snc__art-title">{{ article.title }}</h1>
+    <div class="snc__art-byline">
+      <span>{{ article.author }}</span>
+      <span class="snc__art-byline-sep"></span>
+      <span>{{ article.published_at | date: '%B %d, %Y' }}</span>
+      <span class="snc__art-byline-sep"></span>
+      <span>{{ rm }}&thinsp;min read</span>
+    </div>
+  </div>
+
+  {%- if article.image -%}
+    <div class="snc__art-cover">
+      <div class="snc__art-cover-inner">
+        {{ article.image | image_url: width: 1440 | image_tag:
+            loading: 'eager',
+            alt: article.image.alt | default: article.title }}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="snc__art-body">
+    {%- if article.excerpt != blank -%}
+      <p class="snc__art-lede">{{ article.excerpt | strip_html }}</p>
+    {%- endif -%}
+    {{ article.content }}
+  </div>
+
+  <div class="snc__art-foot">
+    <div class="snc__author-row">
+      <div class="snc__avatar">{{ ini }}</div>
+      <div>
+        <div class="snc__author-name">{{ article.author }}</div>
+        <div class="snc__author-role">{{ section.settings.author_label | default: 'Author' }}</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ article.title | json }},
+  "datePublished": "{{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%z' }}",
+  "dateModified": "{{ article.updated_at | date: '%Y-%m-%dT%H:%M:%S%z' }}",
+  "author": {
+    "@type": "Person",
+    "name": {{ article.author | json }}
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://deleville.co/#organization",
+    "name": "De Leville",
+    "url": "https://deleville.co"
+  },
+  "description": {{ article.excerpt | default: article.content | strip_html | truncate: 200 | json }},
+  "url": "{{ shop.url }}{{ article.url }}"
+  {%- if article.image -%}
+  ,"image": "https:{{ article.image | image_url: width: 1200 }}"
+  {%- endif -%}
+}
+</script>
+
+{% schema %}
+{
+  "name": "SNC Article",
+  "tag": "section",
+  "class": "section--snc-article",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_theme",
+      "label": "Header icon theme",
+      "info": "Sets whether the header shows light or dark icons when this section is at the top of the viewport.",
+      "options": [
+        { "value": "dark", "label": "Dark background (light icons)" },
+        { "value": "light", "label": "Light background (dark icons)" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent_pale",
+      "label": "Pale accent color",
+      "default": "#edf2ee"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#fafaf8"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max content width",
+      "min": 800,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "default": 1160
+    },
+    {
+      "type": "range",
+      "id": "pad_h",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Texts"
+    },
+    {
+      "type": "text",
+      "id": "label_back",
+      "label": "Back button label",
+      "default": "Back to journal"
+    },
+    {
+      "type": "text",
+      "id": "author_label",
+      "label": "Author role label",
+      "default": "Author"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Article"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["article"]
+  }
+}
+{% endschema %}

@@ -1,0 +1,564 @@
+{% comment %}
+  SNC Custom Content - Texto con estilo editorial
+  Diseño: Fondo oscuro, título destacado, texto secundario con línea decorativa
+{% endcomment %}
+
+<style>
+  .snc-custom-content {
+    position: relative;
+    width: 100%;
+    min-height: {{ section.settings.section_min_height | default: 100 }}vh;
+    background-color: {{ section.settings.background_color | default: '#000000' }};
+    {% if section.settings.background_image != blank %}
+    background-image: url('{{ section.settings.background_image | image_url: width: 1920 }}');
+    background-size: {{ section.settings.background_size | default: 'cover' }};
+    background-position: {{ section.settings.background_position | default: 'center center' }};
+    background-repeat: no-repeat;
+    {% endif %}
+    display: flex;
+    align-items: {{ section.settings.vertical_align | default: 'center' }};
+    justify-content: center;
+    padding: {{ section.settings.padding_vertical | default: 100 }}px {{ section.settings.padding_horizontal | default: 60 }}px;
+    box-sizing: border-box;
+  }
+  
+  .snc-custom-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: {{ section.settings.background_color | default: '#000000' }};
+    opacity: {{ section.settings.background_opacity | default: 1 }};
+    z-index: 0;
+  }
+  
+  .snc-custom-content__container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: {{ section.settings.content_max_width | default: 900 }}px;
+    display: flex;
+    flex-direction: column;
+    align-items: {{ section.settings.container_align | default: 'flex-start' }};
+    gap: {{ section.settings.gap_between | default: 60 }}px;
+  }
+
+  /* Label superior */
+  .snc-custom-content__label {
+    font-family: {{ section.settings.label_font | default: 'var(--font-body-family, sans-serif)' }};
+    font-size: {{ section.settings.label_size | default: 12 }}px;
+    font-weight: {{ section.settings.label_weight | default: 400 }};
+    letter-spacing: {{ section.settings.label_letter_spacing | default: 0.2 }}em;
+    text-transform: {{ section.settings.label_uppercase | default: true }};
+    color: {{ section.settings.label_color | default: '#ffffff' }};
+    margin: 0;
+    opacity: {{ section.settings.label_opacity | default: 0.8 }};
+  }
+
+  /* Título principal */
+  .snc-custom-content__title {
+    font-family: {{ section.settings.title_font | default: 'var(--font-heading-family, serif)' }};
+    font-size: {{ section.settings.title_size | default: 42 }}px;
+    font-weight: {{ section.settings.title_weight | default: 400 }};
+    line-height: {{ section.settings.title_line_height | default: 1.3 }};
+    letter-spacing: {{ section.settings.title_letter_spacing | default: 0 }}em;
+    color: {{ section.settings.title_color | default: '#ffffff' }};
+    margin: 0;
+    max-width: {{ section.settings.title_max_width | default: 800 }}px;
+  }
+
+  /* Bloque inferior con línea decorativa */
+  .snc-custom-content__bottom {
+    display: flex;
+    align-items: flex-start;
+    gap: {{ section.settings.bottom_gap | default: 20 }}px;
+    margin-top: {{ section.settings.bottom_margin_top | default: 20 }}px;
+  }
+
+  /* Línea vertical decorativa */
+  .snc-custom-content__line {
+    width: {{ section.settings.line_width | default: 1 }}px;
+    height: {{ section.settings.line_height | default: 60 }}px;
+    background: {{ section.settings.line_color | default: '#ffffff' }};
+    flex-shrink: 0;
+    opacity: {{ section.settings.line_opacity | default: 0.5 }};
+  }
+
+  /* Texto inferior */
+  .snc-custom-content__body {
+    font-family: {{ section.settings.body_font | default: 'var(--font-body-family, sans-serif)' }};
+    font-size: {{ section.settings.body_size | default: 14 }}px;
+    font-weight: {{ section.settings.body_weight | default: 300 }};
+    line-height: {{ section.settings.body_line_height | default: 1.8 }};
+    letter-spacing: {{ section.settings.body_letter_spacing | default: 0.02 }}em;
+    color: {{ section.settings.body_color | default: '#ffffff' }};
+    margin: 0;
+    opacity: {{ section.settings.body_opacity | default: 0.9 }};
+  }
+
+  .snc-custom-content__body p {
+    margin: 0 0 {{ section.settings.body_paragraph_gap | default: 8 }}px 0;
+  }
+
+  .snc-custom-content__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 749px) {
+    .snc-custom-content {
+      padding: {{ section.settings.padding_vertical | default: 100 | times: 0.6 | round: 0 }}px {{ section.settings.padding_horizontal | default: 60 | times: 0.5 | round: 0 }}px;
+      min-height: auto;
+    }
+
+    .snc-custom-content__container {
+      gap: {{ section.settings.gap_between | default: 60 | times: 0.7 | round: 0 }}px;
+    }
+
+    .snc-custom-content__label {
+      font-size: {{ section.settings.label_size | default: 12 | times: 0.9 | round: 0 }}px;
+    }
+
+    .snc-custom-content__title {
+      font-size: {{ section.settings.title_size | default: 42 | times: 0.7 | round: 0 }}px;
+      line-height: {{ section.settings.title_line_height | default: 1.3 }};
+    }
+
+    .snc-custom-content__body {
+      font-size: {{ section.settings.body_size | default: 14 | times: 0.9 | round: 0 }}px;
+    }
+
+    .snc-custom-content__line {
+      height: {{ section.settings.line_height | default: 60 | times: 0.8 | round: 0 }}px;
+    }
+  }
+</style>
+
+<div class="snc-custom-content color-{{ section.settings.color_scheme | default: 'scheme-1' }}">
+  <div class="snc-custom-content__container">
+    
+    {% if section.settings.label != blank %}
+      <p class="snc-custom-content__label">{{ section.settings.label }}</p>
+    {% endif %}
+    
+    {% if section.settings.title != blank %}
+      <h2 class="snc-custom-content__title">{{ section.settings.title }}</h2>
+    {% endif %}
+    
+    {% if section.settings.body_text != blank %}
+      <div class="snc-custom-content__bottom">
+        {% if section.settings.show_decoration_line %}
+          <div class="snc-custom-content__line"></div>
+        {% endif %}
+        <div class="snc-custom-content__body">
+          {{ section.settings.body_text }}
+        </div>
+      </div>
+    {% endif %}
+    
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "SNC Custom Content",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Top label",
+      "default": "DIGITAL SOUL"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Main title",
+      "default": "The Digital Soul Is The Continuous Identity Of The Object. It Carries Origin, Memory, And Continuity — Not To Add Meaning, But To Preserve It."
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>Nothing is optional.</p><p>Nothing is added later.</p><p>The soul exists from the beginning.</p>"
+    },
+    {
+      "type": "header",
+      "content": "General Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "select",
+      "id": "background_size",
+      "label": "Background size",
+      "options": [
+        { "value": "cover", "label": "Cover" },
+        { "value": "contain", "label": "Contain" },
+        { "value": "auto", "label": "Auto" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "background_position",
+      "label": "Background position",
+      "options": [
+        { "value": "center center", "label": "Center" },
+        { "value": "top center", "label": "Top" },
+        { "value": "bottom center", "label": "Bottom" },
+        { "value": "left center", "label": "Left" },
+        { "value": "right center", "label": "Right" }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "range",
+      "id": "background_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Background opacity",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "section_min_height",
+      "min": 50,
+      "max": 100,
+      "step": 10,
+      "unit": "vh",
+      "label": "Minimum section height",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "vertical_align",
+      "label": "Vertical content alignment",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "container_align",
+      "label": "Text container alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding vertical",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding horizontal",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 600,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "label": "Max content width",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "gap_between",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "label": "Gap between elements",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Top Label Style"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "label_weight",
+      "label": "Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "label_letter_spacing",
+      "min": 0,
+      "max": 0.5,
+      "step": 0.1,
+      "unit": "em",
+      "label": "Letter spacing",
+      "default": 0.2
+    },
+    {
+      "type": "range",
+      "id": "label_opacity",
+      "min": 0.5,
+      "max": 1,
+      "step": 0.1,
+      "label": "Opacity",
+      "default": 0.8
+    },
+    {
+      "type": "header",
+      "content": "Title Style"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Size",
+      "default": 42
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Line height",
+      "default": 1.3
+    },
+    {
+      "type": "range",
+      "id": "title_letter_spacing",
+      "min": -0.1,
+      "max": 0.2,
+      "step": 0.1,
+      "unit": "em",
+      "label": "Letter spacing",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "title_max_width",
+      "min": 600,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Max width",
+      "default": 800
+    },
+    {
+      "type": "header",
+      "content": "Body Text Style"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "body_weight",
+      "label": "Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" }
+      ],
+      "default": "300"
+    },
+    {
+      "type": "range",
+      "id": "body_line_height",
+      "min": 1.2,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Line height",
+      "default": 1.8
+    },
+    {
+      "type": "range",
+      "id": "body_opacity",
+      "min": 0.5,
+      "max": 1,
+      "step": 0.1,
+      "label": "Opacity",
+      "default": 0.9
+    },
+    {
+      "type": "range",
+      "id": "body_paragraph_gap",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Paragraph gap",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Decorative Line"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_decoration_line",
+      "label": "Show decorative line",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "line_width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Line thickness",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "line_height",
+      "min": 30,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "label": "Line height",
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Line color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "line_opacity",
+      "min": 0.2,
+      "max": 1,
+      "step": 0.1,
+      "label": "Line opacity",
+      "default": 0.5
+    },
+    {
+      "type": "range",
+      "id": "bottom_gap",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between line and text",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "bottom_margin_top",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom block top margin",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Custom Content",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}

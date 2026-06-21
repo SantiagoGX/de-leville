@@ -1,0 +1,45 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "snc-the-maison-page",
+      "settings": {
+        "eyebrow": "The Maison",
+        "title": "A Roman house. Born 1975.",
+        "intro": "<p>Fifty years of Italian craftsmanship. One family. One line, carried forward.</p>",
+        "hero_image": "shopify://shop_images/rome.webp",
+        "hero_image_alt": "Rome",
+        "hero_caption": "Roma",
+        "origins_title": "Origins.",
+        "origins_text": "<p>De Leville was founded in Rome in 1975 by Eliau Labi, at Piazza Esquilino 10. From the beginning, the maison was devoted to objects of beauty — leather goods and accessories shaped by Italian craftsmanship, finished by hand, built to be kept.</p><p>The name above the door was his. The script he drew that year has never been redrawn. It is the same line you see today.</p><p>He believed that objects of beauty hold the power to carry memory. He wanted a house that could sit quietly beside Cartier, Hermès and Bulgari — not louder, not larger, simply as certain.</p><p>He worked with his hands, through his children's hands — drawing, commissioning, supervising — until he could no longer. In the 1990s the atelier fell quiet. The drawings went into a folder. The line was never broken. It was only waiting.</p><p>Before he passed, at home in Rome, he turned to his wife Simcha and said five words. She carried them for years, and then she gave them to his grandson — named for him, Eliau.</p>",
+        "quote_text": "\"I see De Leville going up, and up, and up.\"",
+        "quote_cite": "— Eliau Labi · his last words, to his wife Simcha",
+        "middle_text": "<p>Dreams become real when acted upon. What he had drawn was never small — and the house he began was never meant to end.</p>",
+        "founder_image": "shopify://shop_images/Eliau_Lillo_Labi_colors.png",
+        "founder_image_alt": "Eliau Labi, founder",
+        "founder_caption": "Eliau Labi · Founder · 1975",
+        "today_title": "The Maison today.",
+        "today_text": "<p>De Leville is led today by Eliau Piha — grandson of the founder, named after him. The maison has returned to its work: objects of timeless elegance, made by hand, made to order, made to be kept.</p><p>The line his grandfather drew in 1975 has become the jewelry itself. The <em>Classico</em> is his motif, cut through 18-karat gold. The <em>Incontro</em> is two halves of his signature, meeting. The <em>Mezza Luna</em> is the curve of a letter he drew, made into a ring.</p><p>You are not wearing a ring. You are wearing something he wrote in 1975.</p><p>Every piece is finished by hand and numbered. Each arrives with a Digital Soul — a blockchain-authenticated certificate of origin, ownership and provenance. A permanent record of the object, and of the hand that made it.</p>",
+        "archive_image": "shopify://shop_images/store_archive.webp",
+        "archive_image_alt": "De Leville at Piazza Esquilino 10, Rome, c. 1975",
+        "archive_caption": "Piazza Esquilino 10 · Roma · c. 1975",
+        "heritage_title": "Heritage.",
+        "heritage_text": "<p>Fifty years of artisanal craftsmanship sit behind every piece. The devotion to Italian craftsmanship that began at Piazza Esquilino 10 continues today from our atelier in New York — the same standard, the same hand, the same line.</p><p>Rome gave us the drawing. New York carries it forward.</p><p>A legacy is not a story told once. It is a line that keeps being drawn.</p>",
+        "close_text": "<p>Thank you for carrying it forward.</p>",
+        "concierge_email": "concierge@deleville.co",
+        "signature": "Eliau Piha · Grandson · De Leville"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

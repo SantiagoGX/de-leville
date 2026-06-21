@@ -1,0 +1,430 @@
+{% comment %}
+  Section: SNC Fusion - Tamaños Aumentados
+  Contenedores más grandes, misma separación de esquinas
+{% endcomment %}
+
+<style>
+  .snc-fusion-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 120px 20px;
+    background: {{ section.settings.background_color | default: '#fafafa' }};
+    overflow: visible;
+  }
+
+  .snc-fusion-container {
+    position: relative;
+    max-width: 1512px;
+    margin: 0 auto;
+    min-height: 900px; /* Aumentado para dar más espacio vertical */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 100px;
+  }
+
+  /* Contenido centrado */
+  .snc-fusion-content {
+    text-align: {{ section.settings.text_alignment | default: 'center' }};
+    max-width: {{ section.settings.content_max_width | default: 600 }}px;
+    z-index: 10;
+    padding: 0 40px;
+  }
+
+  .snc-fusion-title {
+    font-family: var(--font-heading-family, 'Times New Roman', serif);
+    font-size: {{ section.settings.title_size | default: 48 }}px;
+    font-weight: {{ section.settings.title_weight | default: 400 }};
+    letter-spacing: {{ section.settings.title_spacing | default: 0.1 }}em;
+    text-transform: uppercase;
+    color: {{ section.settings.title_color | default: '#1a1a1a' }};
+    margin: 0 0 2rem 0;
+    line-height: 1.1;
+  }
+
+  .snc-fusion-text {
+    font-family: var(--font-body-family, 'Helvetica Neue', sans-serif);
+    font-size: {{ section.settings.text_size | default: 14 }}px;
+    font-weight: {{ section.settings.text_weight | default: 300 }};
+    line-height: {{ section.settings.text_line_height | default: 1.8 }};
+    color: {{ section.settings.text_color | default: '#4a4a4a' }};
+    letter-spacing: {{ section.settings.text_spacing | default: 0.1 }}em;
+    margin: 0;
+  }
+
+  .snc-fusion-text p {
+    margin: 0 0 1rem 0;
+  }
+
+  /* WRAPPER PASIVO - TAMAÑOS AUMENTADOS */
+  .snc-fusion-media {
+    position: absolute;
+    width: 550px;  /* AUMENTADO: antes 450px */
+    height: 550px; /* AUMENTADO: antes 450px */
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* SEPARACIÓN DE ESQUINAS - Mantenida igual */
+  .snc-fusion-media.top-right {
+    top: -40px;
+    right: -60px;
+  }
+
+  .snc-fusion-media.bottom-left {
+    bottom: -40px;
+    left: -60px;
+  }
+
+  /* LA IMAGEN ES 100% PASIVA */
+  .snc-fusion-media__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.1));
+  }
+
+  .snc-fusion-media__video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Responsive - TAMAÑOS AUMENTADOS EN TABLET */
+  @media screen and (max-width: 1200px) {
+    .snc-fusion-media {
+      width: 420px; /* AUMENTADO: antes 350px */
+      height: 420px;
+    }
+    .snc-fusion-media.top-right {
+      top: -20px;
+      right: -30px;
+    }
+    .snc-fusion-media.bottom-left {
+      bottom: -20px;
+      left: -30px;
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    .snc-fusion-wrapper {
+      padding: 80px 20px;
+      overflow: hidden;
+    }
+    
+    .snc-fusion-container {
+      min-height: auto;
+      flex-direction: column;
+      gap: 60px;
+      padding: 0;
+    }
+
+    .snc-fusion-content {
+      order: 2;
+      padding: 0;
+    }
+
+    .snc-fusion-media {
+      position: relative;
+      width: 320px; /* AUMENTADO: antes 280px */
+      height: 320px;
+      top: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      left: auto !important;
+      transform: none !important;
+    }
+
+    .snc-fusion-media.top-right {
+      order: 1;
+      align-self: flex-end;
+    }
+
+    .snc-fusion-media.bottom-left {
+      order: 3;
+      align-self: flex-start;
+    }
+
+    .snc-fusion-title {
+      font-size: 32px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .snc-fusion-title {
+      font-size: 28px;
+    }
+    
+    .snc-fusion-media {
+      width: 260px; /* AUMENTADO: antes 220px */
+      height: 260px;
+    }
+  }
+</style>
+
+<div class="snc-fusion-wrapper" data-section-id="{{ section.id }}">
+  <div class="snc-fusion-container">
+    
+    <!-- Imagen Superior Derecha - SRCSET AUMENTADO -->
+    {%- if section.settings.top_right_media_type == 'video' and section.settings.top_right_video != blank -%}
+      <div class="snc-fusion-media top-right">
+        <video 
+          class="snc-fusion-media__video"
+          autoplay 
+          loop 
+          muted 
+          playsinline
+          poster="{{ section.settings.top_right_video.preview_image | image_url: width: 1000 }}"
+        >
+          {%- for source in section.settings.top_right_video.sources -%}
+            <source src="{{ source.url }}" type="{{ source.mime_type }}">
+          {%- endfor -%}
+        </video>
+      </div>
+    {%- elsif section.settings.top_right_image != blank -%}
+      <div class="snc-fusion-media top-right">
+        <img 
+          src="{{ section.settings.top_right_image | image_url: width: 1000 }}"
+          srcset="{{ section.settings.top_right_image | image_url: width: 400 }} 400w,
+                  {{ section.settings.top_right_image | image_url: width: 800 }} 800w,
+                  {{ section.settings.top_right_image | image_url: width: 1000 }} 1000w"
+          sizes="(max-width: 989px) 320px, 550px"
+          alt="{{ section.settings.top_right_alt | escape }}"
+          class="snc-fusion-media__img"
+          width="{{ section.settings.top_right_image.width }}"
+          height="{{ section.settings.top_right_image.height }}"
+          loading="lazy"
+        >
+      </div>
+    {%- endif -%}
+
+    <!-- Texto Centrado -->
+    <div class="snc-fusion-content">
+      <h2 class="snc-fusion-title">{{ section.settings.title | escape }}</h2>
+      <div class="snc-fusion-text">
+        {{ section.settings.text }}
+      </div>
+    </div>
+
+    <!-- Imagen Inferior Izquierda - SRCSET AUMENTADO -->
+    {%- if section.settings.bottom_left_media_type == 'video' and section.settings.bottom_left_video != blank -%}
+      <div class="snc-fusion-media bottom-left">
+        <video 
+          class="snc-fusion-media__video"
+          autoplay 
+          loop 
+          muted 
+          playsinline
+          poster="{{ section.settings.bottom_left_video.preview_image | image_url: width: 1000 }}"
+        >
+          {%- for source in section.settings.bottom_left_video.sources -%}
+            <source src="{{ source.url }}" type="{{ source.mime_type }}">
+          {%- endfor -%}
+        </video>
+      </div>
+    {%- elsif section.settings.bottom_left_image != blank -%}
+      <div class="snc-fusion-media bottom-left">
+        <img 
+          src="{{ section.settings.bottom_left_image | image_url: width: 1000 }}"
+          srcset="{{ section.settings.bottom_left_image | image_url: width: 400 }} 400w,
+                  {{ section.settings.bottom_left_image | image_url: width: 800 }} 800w,
+                  {{ section.settings.bottom_left_image | image_url: width: 1000 }} 1000w"
+          sizes="(max-width: 989px) 320px, 550px"
+          alt="{{ section.settings.bottom_left_alt | escape }}"
+          class="snc-fusion-media__img"
+          width="{{ section.settings.bottom_left_image.width }}"
+          height="{{ section.settings.bottom_left_image.height }}"
+          loading="lazy"
+        >
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "SNC Fusion",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background Color"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fafafa"
+    },
+    {
+      "type": "header",
+      "content": "Central Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "GOLD AS SIGNATURE"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Description text",
+      "default": "<p>The SNC Fusion signature is solid 14k gold. No plating. No shortcuts. No decoration.</p><p>Gold was chosen for two reasons: it endures.</p><p>It does not corrode. It does not fade. It does not forget value.</p><p>Where others apply layers, we omit permutation.</p><p>This decision is deliberate — and reversible.</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Max text width",
+      "min": 300,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Title letter spacing",
+      "min": 0,
+      "max": 0.5,
+      "step": 0.1,
+      "unit": "em",
+      "default": 0.1
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#4a4a4a"
+    },
+    {
+      "type": "header",
+      "content": "Top Right Media"
+    },
+    {
+      "type": "radio",
+      "id": "top_right_media_type",
+      "label": "Media type",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "top_right_image",
+      "label": "Image"
+    },
+    {
+      "type": "video",
+      "id": "top_right_video",
+      "label": "Video"
+    },
+    {
+      "type": "text",
+      "id": "top_right_alt",
+      "label": "Alt text",
+      "default": "Gold ring"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Left Media"
+    },
+    {
+      "type": "radio",
+      "id": "bottom_left_media_type",
+      "label": "Media type",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "bottom_left_image",
+      "label": "Image"
+    },
+    {
+      "type": "video",
+      "id": "bottom_left_video",
+      "label": "Video"
+    },
+    {
+      "type": "text",
+      "id": "bottom_left_alt",
+      "label": "Alt text",
+      "default": "Rose gold ring"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Fusion",
+      "category": "Image and text"
+    }
+  ]
+}
+{% endschema %}

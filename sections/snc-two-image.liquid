@@ -1,0 +1,457 @@
+<style>
+  /* Márgenes en el section real, fondo sin restricciones */
+  #shopify-section-{{ section.id }} {
+    overflow: visible !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #snc-two-image-{{ section.id }} {
+    padding-top: {{ section.settings.margin_top }}px;
+    padding-bottom: {{ section.settings.margin_bottom }}px;
+  }
+
+  /* Full width rompiendo el contenedor padre del tema */
+  #snc-two-image-{{ section.id }} {
+    --snc-gap: {{ section.settings.gap }}px;
+    background-color: {{ section.settings.background_color }};
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #snc-two-image-{{ section.id }} .snc-two-image__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--snc-gap, 0px);
+    width: 100%;
+    height: {{ section.settings.section_height }}vh;
+    min-height: 400px;
+  }
+
+  #snc-two-image-{{ section.id }} .snc-two-image__panel {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    /* Estado inicial: pequeño, borroso */
+    transform: scale(0.3);
+    opacity: 0;
+    filter: blur(10px);
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.8s ease;
+  }
+
+  /* Visible: tamaño normal */
+  #snc-two-image-{{ section.id }} .snc-two-image__panel.is-visible {
+    transform: scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+
+  /* Saliendo: se hace grande y desaparece (zoom out invertido) */
+  #snc-two-image-{{ section.id }} .snc-two-image__panel.is-leaving {
+    transform: scale(1.15);
+    opacity: 0;
+    filter: blur(6px);
+    transition: transform 0.9s cubic-bezier(0.4, 0, 0.6, 1),
+                opacity 0.7s ease,
+                filter 0.6s ease;
+  }
+
+  #snc-two-image-{{ section.id }} .snc-two-image__media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #snc-two-image-{{ section.id }} .snc-two-image__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: {{ section.settings.overlay_color }};
+    opacity: {{ section.settings.overlay_opacity }};
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  #snc-two-image-{{ section.id }} .snc-two-image__content {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    z-index: 3;
+    color: {{ section.settings.text_color }};
+    max-width: 80%;
+  }
+
+  #snc-two-image-{{ section.id }} .snc-two-image__heading {
+    font-family: var(--font-heading-family, serif);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 300;
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+  }
+
+  #snc-two-image-{{ section.id }} .snc-two-image__subtext {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin: 0;
+  }
+
+  #snc-two-image-{{ section.id }} .snc-two-image__scratch-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255,255,255,0.1) 45%,
+      rgba(255,255,255,0.2) 50%,
+      rgba(255,255,255,0.1) 55%,
+      transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  #snc-two-image-{{ section.id }} .snc-two-image__panel.is-visible .snc-two-image__scratch-effect {
+    transform: translateX(100%);
+    transition: transform 1.5s ease 0.3s;
+  }
+
+  @media (max-width: 768px) {
+    #snc-two-image-{{ section.id }} .snc-two-image__container {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+
+    #snc-two-image-{{ section.id }} .snc-two-image__panel {
+      height: 50vh;
+      min-height: 300px;
+    }
+
+    #snc-two-image-{{ section.id }} .snc-two-image__content {
+      bottom: 20px;
+      left: 20px;
+    }
+  }
+</style>
+
+<div id="snc-two-image-{{ section.id }}" class="snc-two-image">
+  <div class="snc-two-image__container">
+
+    <div class="snc-two-image__panel" data-panel="left">
+      {% if section.settings.left_media_type == 'video' and section.settings.left_video != blank %}
+        <video class="snc-two-image__media"
+               autoplay muted loop playsinline
+               poster="{{ section.settings.left_video.preview_image | image_url }}">
+          {% for source in section.settings.left_video.sources %}
+            <source src="{{ source.url }}" type="{{ source.mime_type }}">
+          {% endfor %}
+        </video>
+      {% elsif section.settings.left_image != blank %}
+        {{ section.settings.left_image | image_url: width: 2000 | image_tag:
+          class: 'snc-two-image__media',
+          loading: 'lazy',
+          alt: section.settings.left_heading | escape
+        }}
+      {% else %}
+        <div class="snc-two-image__media" style="background: linear-gradient(135deg, #1a1a1a, #2a2a2a);"></div>
+      {% endif %}
+
+      {% if section.settings.show_overlay %}
+        <div class="snc-two-image__overlay"></div>
+      {% endif %}
+
+      <div class="snc-two-image__scratch-effect"></div>
+
+      {% if section.settings.left_heading != blank %}
+        <div class="snc-two-image__content">
+          <h3 class="snc-two-image__heading">{{ section.settings.left_heading }}</h3>
+          {% if section.settings.left_subtext != blank %}
+            <p class="snc-two-image__subtext">{{ section.settings.left_subtext }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="snc-two-image__panel" data-panel="right">
+      {% if section.settings.right_media_type == 'video' and section.settings.right_video != blank %}
+        <video class="snc-two-image__media"
+               autoplay muted loop playsinline
+               poster="{{ section.settings.right_video.preview_image | image_url }}">
+          {% for source in section.settings.right_video.sources %}
+            <source src="{{ source.url }}" type="{{ source.mime_type }}">
+          {% endfor %}
+        </video>
+      {% elsif section.settings.right_image != blank %}
+        {{ section.settings.right_image | image_url: width: 2000 | image_tag:
+          class: 'snc-two-image__media',
+          loading: 'lazy',
+          alt: section.settings.right_heading | escape
+        }}
+      {% else %}
+        <div class="snc-two-image__media" style="background: linear-gradient(135deg, #2a2a2a, #1a1a1a);"></div>
+      {% endif %}
+
+      {% if section.settings.show_overlay %}
+        <div class="snc-two-image__overlay"></div>
+      {% endif %}
+
+      <div class="snc-two-image__scratch-effect"></div>
+
+      {% if section.settings.right_heading != blank %}
+        <div class="snc-two-image__content">
+          <h3 class="snc-two-image__heading">{{ section.settings.right_heading }}</h3>
+          {% if section.settings.right_subtext != blank %}
+            <p class="snc-two-image__subtext">{{ section.settings.right_subtext }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  var sectionEl = document.getElementById('snc-two-image-{{ section.id }}');
+  if (!sectionEl) return;
+
+  var panels = sectionEl.querySelectorAll('.snc-two-image__panel');
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      var panel = entry.target;
+
+      if (entry.isIntersecting) {
+        /* Entrando — quitar leaving primero, luego aplicar visible */
+        panel.classList.remove('is-leaving');
+        /* Pequeño delay para que la transición de remove se procese */
+        requestAnimationFrame(function() {
+          panel.classList.add('is-visible');
+        });
+      } else {
+        /* Saliendo — solo si ya estaba visible */
+        if (panel.classList.contains('is-visible')) {
+          panel.classList.remove('is-visible');
+          panel.classList.add('is-leaving');
+          /* Limpiar is-leaving al terminar la transición para no bloquear re-entrada */
+          var onEnd = function() {
+            panel.classList.remove('is-leaving');
+            panel.removeEventListener('transitionend', onEnd);
+          };
+          panel.addEventListener('transitionend', onEnd);
+        }
+      }
+    });
+  }, {
+    threshold: 0,
+    rootMargin: '0px'
+  });
+
+  panels.forEach(function(panel) {
+    observer.observe(panel);
+  });
+
+  /* Fallback: si los paneles están en viewport al cargar y el observer no los detecta */
+  setTimeout(function() {
+    panels.forEach(function(panel) {
+      var rect = panel.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        panel.classList.remove('is-leaving');
+        panel.classList.add('is-visible');
+      }
+    });
+  }, 300);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SNC - Two Image",
+  "tag": "section",
+  "class": "section-snc-two-image",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top margin",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom margin",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between panels",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "label": "Section height",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 80,
+      "unit": "vh"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Overlay & Text"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show dark overlay",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "default": 3,
+      "info": "Value is divided by 10 (e.g. 3 = 0.3)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Left Panel"
+    },
+    {
+      "type": "select",
+      "id": "left_media_type",
+      "label": "Media type",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left image"
+    },
+    {
+      "type": "video",
+      "id": "left_video",
+      "label": "Left video",
+      "info": "Only used when media type is Video"
+    },
+    {
+      "type": "text",
+      "id": "left_heading",
+      "label": "Left heading",
+      "default": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "left_subtext",
+      "label": "Left subtext",
+      "default": "Discover more"
+    },
+    {
+      "type": "header",
+      "content": "Right Panel"
+    },
+    {
+      "type": "select",
+      "id": "right_media_type",
+      "label": "Media type",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image",
+      "label": "Right image"
+    },
+    {
+      "type": "video",
+      "id": "right_video",
+      "label": "Right video",
+      "info": "Only used when media type is Video"
+    },
+    {
+      "type": "text",
+      "id": "right_heading",
+      "label": "Right heading",
+      "default": "Jewelry"
+    },
+    {
+      "type": "text",
+      "id": "right_subtext",
+      "label": "Right subtext",
+      "default": "Limited edition"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC - Two Image",
+      "settings": {
+        "section_height": 80,
+        "left_media_type": "image",
+        "right_media_type": "image"
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,424 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "snc_custom_content_text_RGrida": {
+      "type": "snc-custom-content-text",
+      "blocks": {
+        "text_bqkVG6": {
+          "type": "text",
+          "settings": {
+            "text": "<p>DIGITAL SOUL</p>",
+            "color": "#ffffff",
+            "font_size": 20,
+            "font_size_mobile": 16,
+            "font_weight": 400,
+            "margin_bottom": 15,
+            "text_max_width": 800,
+            "border_left_enabled": false,
+            "border_left_width": 1,
+            "border_left_color": "#000000",
+            "border_left_padding": 16
+          }
+        },
+        "text_B3UhEJ": {
+          "type": "text",
+          "settings": {
+            "text": "<p>The Digital Soul is the continuous identity of the object.It carries origin, memory, and continuity — not to add meaning, but to preserve it.<br/><br/></p>",
+            "color": "#ffffff",
+            "font_size": 30,
+            "font_size_mobile": 16,
+            "font_weight": 400,
+            "margin_bottom": 15,
+            "text_max_width": 620,
+            "border_left_enabled": false,
+            "border_left_width": 1,
+            "border_left_color": "#000000",
+            "border_left_padding": 16
+          }
+        },
+        "text_nYEwwP": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Nothing is optional.<br/>Nothing is added later.<br/>The soul exists from the beginning.</p>",
+            "color": "#ffffff",
+            "font_size": 20,
+            "font_size_mobile": 16,
+            "font_weight": 400,
+            "margin_bottom": 15,
+            "text_max_width": 800,
+            "border_left_enabled": true,
+            "border_left_width": 1,
+            "border_left_color": "#fdfdfd",
+            "border_left_padding": 16
+          }
+        }
+      },
+      "block_order": [
+        "text_bqkVG6",
+        "text_B3UhEJ",
+        "text_nYEwwP"
+      ],
+      "name": "SNC Custom Content Text",
+      "settings": {
+        "background_color": "#131313",
+        "padding_top": 40,
+        "padding_bottom": 0,
+        "margin_top": 165,
+        "margin_bottom": 0,
+        "max_width": 1400,
+        "alignment": "left"
+      }
+    },
+    "snc_vertical_image_46xKVc": {
+      "type": "snc-vertical-image",
+      "blocks": {
+        "image_hbNrVw": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Img_1.png",
+            "caption": "Joya",
+            "placeholder_color": "#1a1a1a"
+          }
+        },
+        "word_nVRntD": {
+          "type": "word",
+          "settings": {
+            "word": "Alive",
+            "color": "#ffffff"
+          }
+        },
+        "image_TpTPhe": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Img_2.png",
+            "caption": "Joya",
+            "placeholder_color": "#1a1a1a"
+          }
+        },
+        "word_p7eTcr": {
+          "type": "word",
+          "settings": {
+            "word": "Eternal",
+            "color": "#ffffff"
+          }
+        },
+        "image_7zaBBr": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Img_3.png",
+            "caption": "Joya",
+            "placeholder_color": "#1a1a1a"
+          }
+        },
+        "word_nCgHLX": {
+          "type": "word",
+          "settings": {
+            "word": "Precious",
+            "color": "#ffffff"
+          }
+        },
+        "image_kTqCQN": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Img_4.png",
+            "caption": "Joya",
+            "placeholder_color": "#1a1a1a"
+          }
+        },
+        "word_byDWxL": {
+          "type": "word",
+          "settings": {
+            "word": "Yours",
+            "color": "#ffffff"
+          }
+        },
+        "image_LQjPN7": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Img_5.png",
+            "caption": "Joya",
+            "placeholder_color": "#1a1a1a"
+          }
+        },
+        "word_eN6hdR": {
+          "type": "word",
+          "settings": {
+            "word": "Alive",
+            "color": "#ffffff"
+          }
+        }
+      },
+      "block_order": [
+        "image_hbNrVw",
+        "word_nVRntD",
+        "image_TpTPhe",
+        "word_p7eTcr",
+        "image_7zaBBr",
+        "word_nCgHLX",
+        "image_kTqCQN",
+        "word_byDWxL",
+        "image_LQjPN7",
+        "word_eN6hdR"
+      ],
+      "name": "Alive Gallery Flow",
+      "settings": {
+        "background_color": "#131313",
+        "text_color": "#ffffff",
+        "static_text": "Every Piece Is",
+        "text_max_width": 600,
+        "image_spacing": 60,
+        "image_width": 35
+      }
+    },
+    "snc_custom_content_text_khiCd3": {
+      "type": "snc-custom-content-text",
+      "blocks": {
+        "text_d4ndbf": {
+          "type": "text",
+          "settings": {
+            "text": "<h5>The Circle</h5>",
+            "color": "#fdfdfd",
+            "font_size": 50,
+            "font_size_mobile": 16,
+            "font_weight": 300,
+            "margin_bottom": 15,
+            "text_max_width": 800,
+            "border_left_enabled": false,
+            "border_left_width": 1,
+            "border_left_color": "#000000",
+            "border_left_padding": 16
+          }
+        },
+        "text_e3LNFM": {
+          "type": "text",
+          "settings": {
+            "text": "<p>The De Leville Circle does not grant souls. It recognizes them. It brings those who carry living objects closer to the House.</p>",
+            "color": "#fdfdfd",
+            "font_size": 30,
+            "font_size_mobile": 16,
+            "font_weight": 300,
+            "margin_bottom": 15,
+            "text_max_width": 480,
+            "border_left_enabled": false,
+            "border_left_width": 1,
+            "border_left_color": "#000000",
+            "border_left_padding": 16
+          }
+        }
+      },
+      "block_order": [
+        "text_d4ndbf",
+        "text_e3LNFM"
+      ],
+      "name": "SNC Custom Content Text",
+      "settings": {
+        "background_color": "#131313",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "margin_top": 60,
+        "margin_bottom": 60,
+        "max_width": 800,
+        "alignment": "center"
+      }
+    },
+    "snc_image_9EtLF4": {
+      "type": "snc-image",
+      "name": "SNC Image",
+      "settings": {
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "background_color": "#131313",
+        "image": "shopify://shop_images/74f80d6dca362870ae3155702d72378f827648b7.jpg",
+        "image_height": 900,
+        "overlay_opacity": 20,
+        "text": "Ownership Is Not Possession. It Is Stewardship",
+        "text_color": "#ffffff",
+        "font_size": 22,
+        "font_size_mobile": 16,
+        "font_weight": "400",
+        "max_width": 500,
+        "text_align": "center",
+        "text_position_h": "center",
+        "text_position_v": "center"
+      }
+    },
+    "snc_two_image_H9ikrj": {
+      "type": "snc-two-image",
+      "name": "SNC - Two Image",
+      "settings": {
+        "margin_top": 40,
+        "margin_bottom": 40,
+        "gap": 20,
+        "section_height": 100,
+        "background_color": "#131313",
+        "show_overlay": false,
+        "overlay_color": "#000000",
+        "overlay_opacity": 0,
+        "text_color": "#ffffff",
+        "left_media_type": "image",
+        "left_image": "shopify://shop_images/Img_6.png",
+        "left_heading": "",
+        "left_subtext": "",
+        "right_media_type": "image",
+        "right_image": "shopify://shop_images/Img_1_b52a7540-795d-4cd2-8408-0f7c3fe866a4.png",
+        "right_heading": "",
+        "right_subtext": ""
+      }
+    },
+    "snc_faq_UgEWGD": {
+      "type": "snc-faq",
+      "blocks": {
+        "faq_item_KXGVHT": {
+          "type": "faq_item",
+          "settings": {
+            "title": "What exactly is a Digital Soul?",
+            "content": "<p>A Digital Soul is a blockchain-secured digital certificate that accompanies every De Leville piece. It records the origin, materials, craftsmanship details, and ownership history of your jewelry — creating a permanent, verifiable identity for your piece that lives beyond the physical object.</p>"
+          }
+        },
+        "faq_item_UaGr4X": {
+          "type": "faq_item",
+          "settings": {
+            "title": "How do I activate my Digital Soul?",
+            "content": "<p>30 days after your purchase, you’ll receive an email with instructions to activate your Digital Soul through our dedicated platform. The process takes just a few minutes and links your piece’s digital identity to your personal account.</p>"
+          }
+        },
+        "faq_item_hKDH4m": {
+          "type": "faq_item",
+          "settings": {
+            "title": "Do I need cryptocurrency or a digital wallet?",
+            "content": "<p>No. We’ve designed the Digital Soul experience to be simple and accessible. You don’t need any prior blockchain knowledge, cryptocurrency, or a digital wallet. Everything is handled through our platform with a standard email and password login.</p>"
+          }
+        },
+        "faq_item_Ni8gfP": {
+          "type": "faq_item",
+          "settings": {
+            "title": "What information does the Digital Soul contain?",
+            "content": "<p>Your Digital Soul records: the specific materials used in your piece (gold karat, weight, diamond specifications), the date and location of creation, your ownership details, and the full provenance history. If your piece is ever passed on or resold, the Digital Soul transfers with it — preserving the complete story.</p>"
+          }
+        },
+        "faq_item_7NQRak": {
+          "type": "faq_item",
+          "settings": {
+            "title": "Can I transfer my Digital Soul if I gift or sell my piece?",
+            "content": "<p>Yes. The Digital Soul is designed to travel with the physical piece. If you gift, sell, or pass on your De Leville jewelry, the Digital Soul can be transferred to the new owner — carrying the full history and provenance with it. This is one of the features that makes De Leville pieces true heirlooms.</p>"
+          }
+        },
+        "faq_item_yUeWPe": {
+          "type": "faq_item",
+          "settings": {
+            "title": "Is the Digital Soul an NFT?",
+            "content": "<p>The Digital Soul uses blockchain technology similar to NFTs, but it’s more than a token — it’s a living record of your piece’s identity. Unlike speculative digital assets, the Digital Soul is permanently tied to a physical object and serves a practical purpose: authentication, provenance, and legacy preservation.</p>"
+          }
+        },
+        "faq_item_HiVg3M": {
+          "type": "faq_item",
+          "settings": {
+            "title": "What if I lose access to my Digital Soul account?",
+            "content": "<p>Your Digital Soul is permanently recorded on the blockchain and cannot be lost. If you lose access to your account, contact us at concierge@deleville.co and we’ll help you recover it. The record of your piece’s identity is immutable and always recoverable.</p>"
+          }
+        },
+        "faq_item_wBbxfy": {
+          "type": "faq_item",
+          "settings": {
+            "title": "Does the Digital Soul cost extra?",
+            "content": "<p>No. Every De Leville piece includes a Digital Soul at no additional cost. We believe that authenticity and provenance should be standard — not a premium add-on. It’s part of what makes a De Leville piece a De Leville piece.</p>"
+          }
+        },
+        "faq_item_b6qLTC": {
+          "type": "faq_item",
+          "settings": {
+            "title": "Why does De Leville use blockchain technology?",
+            "content": "<p>Because a piece of jewelry that’s meant to last for generations deserves a record that lasts just as long. Traditional paper certificates can be lost or forged. Blockchain creates a permanent, tamper-proof record of authenticity and ownership that will exist as long as the piece itself does. It’s the same principle we apply to our materials — permanence over convenience.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_item_KXGVHT",
+        "faq_item_UaGr4X",
+        "faq_item_hKDH4m",
+        "faq_item_Ni8gfP",
+        "faq_item_7NQRak",
+        "faq_item_yUeWPe",
+        "faq_item_HiVg3M",
+        "faq_item_wBbxfy",
+        "faq_item_b6qLTC"
+      ],
+      "name": "SNC FAQ",
+      "settings": {
+        "title": "Digital Soul FAQs",
+        "section_title_color": "#ffffff",
+        "section_title_size": 40,
+        "section_title_weight": 700,
+        "section_title_margin_bottom": 20,
+        "description": "",
+        "section_desc_color": "#ffffff",
+        "section_desc_size": 16,
+        "section_desc_weight": 400,
+        "section_desc_margin_bottom": 40,
+        "header_alignment": "center",
+        "section_background_color": "#131313",
+        "max_width": 800,
+        "margin_top": 65,
+        "margin_bottom": 65,
+        "item_padding_vertical": 20,
+        "item_padding_horizontal": 20,
+        "gap": 10,
+        "border_width": 1,
+        "border_color": "#ffffff",
+        "title_color": "#ffffff",
+        "title_font_size": 18,
+        "title_font_weight": 600,
+        "content_color": "#ffffff",
+        "content_font_size": 16
+      }
+    },
+    "snc_split_reveal_3Cabqk": {
+      "type": "snc-split-reveal",
+      "name": "SNC Split Reveal",
+      "settings": {
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "image_front": "shopify://shop_images/Img_7.png",
+        "front_title": "Built to last",
+        "front_desc": "",
+        "front_text_color": "#ffffff",
+        "front_title_size": 32,
+        "front_desc_size": 15,
+        "front_text_align": "left",
+        "front_pos_h": "center",
+        "front_pos_v": "center",
+        "front_overlay": 65,
+        "front_text_padding_top": 0,
+        "image_back": "shopify://shop_images/Img_8.png",
+        "back_title": "PERMANENCE",
+        "back_text_color": "#ffffff",
+        "back_title_size": 28,
+        "back_font_weight": "400",
+        "back_text_align": "center",
+        "back_pos_h": "center",
+        "back_pos_v": "center",
+        "back_overlay": 20,
+        "section_height": 840,
+        "text_max_width": 420,
+        "animation_speed": 900
+      }
+    }
+  },
+  "order": [
+    "snc_custom_content_text_RGrida",
+    "snc_vertical_image_46xKVc",
+    "snc_custom_content_text_khiCd3",
+    "snc_image_9EtLF4",
+    "snc_two_image_H9ikrj",
+    "snc_faq_UgEWGD",
+    "snc_split_reveal_3Cabqk"
+  ]
+}

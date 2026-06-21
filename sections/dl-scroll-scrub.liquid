@@ -1,0 +1,205 @@
+{%- comment -%}
+  dl-scroll-scrub.liquid — DL Whisper (scroll-driven)
+  Pinned framed plate. As the user scrolls/swipes, the video scrubs from
+  closed to fully open, and the sentence inscribes itself letter by letter.
+  Works on desktop scroll and mobile touch without custom gesture handling.
+{%- endcomment -%}
+
+{%- liquid
+  assign bg = section.settings.bg_color
+  assign ink = section.settings.text_color
+-%}
+
+<style>
+  .dlw-{{ section.id }} { background: {{ bg }}; color: {{ ink }}; }
+  .dlw-{{ section.id }} .dlw-hr { height: 1px; background: {{ ink }}; opacity: 0.16; width: 100%; max-width: 760px; margin: 0 auto; }
+  .dlw-{{ section.id }} .dlw-stage { position: relative; height: {{ section.settings.scroll_length }}vh; }
+  .dlw-{{ section.id }} .dlw-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; background: {{ bg }}; }
+
+  .dlw-{{ section.id }} .dlw-plate { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .dlw-{{ section.id }} .dlw-plate video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: {{ bg }}; }
+
+  .dlw-{{ section.id }} .dlw-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 24px; text-align: center; gap: 22px; pointer-events: none; }
+
+  .dlw-{{ section.id }} .dlw-eyebrow { font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: #fff; mix-blend-mode: difference; opacity: 0; transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+  .dlw-{{ section.id }} .dlw-eyebrow.on { opacity: 0.85; }
+
+  .dlw-{{ section.id }} .dlw-line { font-family: 'Futura PT', sans-serif; font-weight: 400; font-style: italic; line-height: 1.25; letter-spacing: 0.005em; color: #fff; mix-blend-mode: difference; max-width: 900px; font-size: clamp(22px, 3vw, 42px); }
+  .dlw-{{ section.id }} .dlw-line .ltr { display: inline-block; opacity: 0; transform: translateY(6px); transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .dlw-{{ section.id }} .dlw-line .ltr.on { opacity: 1; transform: none; }
+  .dlw-{{ section.id }} .dlw-line .brk { display: block; height: 0.35em; }
+
+  .dlw-{{ section.id }} .dlw-rule { width: 0; height: 1px; background: #fff; mix-blend-mode: difference; opacity: 0; transition: width 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease; }
+  .dlw-{{ section.id }} .dlw-rule.on { width: 56px; opacity: 1; }
+  .dlw-{{ section.id }} .dlw-attr { font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: #fff; mix-blend-mode: difference; opacity: 0; transition: opacity 0.9s ease; }
+  .dlw-{{ section.id }} .dlw-attr.on { opacity: 0.85; }
+
+  .dlw-{{ section.id }} .dlw-hint { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: #fff; mix-blend-mode: difference; opacity: 0.55; animation: dlwHint{{ section.id }} 2.4s ease-in-out infinite; pointer-events: none; }
+  .dlw-{{ section.id }} .dlw-hint.gone { opacity: 0 !important; animation: none; transition: opacity 0.6s ease; }
+  @keyframes dlwHint{{ section.id }} { 0%,100%{opacity:.3} 50%{opacity:.75} }
+
+  .dlw-{{ section.id }} .dlw-edge-top { padding-top: {{ section.settings.padding_top }}px; }
+  .dlw-{{ section.id }} .dlw-edge-bottom { padding-bottom: {{ section.settings.padding_bottom }}px; }
+
+  @media (max-width: 900px) {
+    .dlw-{{ section.id }} .dlw-stage { height: {{ section.settings.scroll_length_mobile }}vh; }
+    .dlw-{{ section.id }} .dlw-line { font-size: clamp(18px, 4.6vw, 26px); line-height: 1.3; }
+    .dlw-{{ section.id }} .dlw-rule.on { width: 40px; }
+  }
+</style>
+
+<section class="dlw-{{ section.id }}">
+  {% if section.settings.show_hairlines %}
+    <div class="dlw-edge-top"><div class="dlw-hr"></div></div>
+  {% else %}
+    <div class="dlw-edge-top"></div>
+  {% endif %}
+
+  <div class="dlw-stage" data-dlw-stage>
+    <div class="dlw-pin">
+      <div class="dlw-plate">
+        <video data-dlw-video playsinline muted preload="auto"
+               {% if section.settings.poster != blank %}poster="{{ section.settings.poster | image_url: width: 1600 }}"{% endif %}>
+          <source src="{{ section.settings.video_url }}" type="video/mp4">
+        </video>
+        <div class="dlw-overlay">
+          {% if section.settings.eyebrow != blank %}<div class="dlw-eyebrow" data-dlw-eyebrow>{{ section.settings.eyebrow }}</div>{% endif %}
+          <div class="dlw-line" data-dlw-line></div>
+          {% if section.settings.show_rule %}<div class="dlw-rule" data-dlw-rule></div>{% endif %}
+          {% if section.settings.attribution != blank %}<div class="dlw-attr" data-dlw-attr>{{ section.settings.attribution }}</div>{% endif %}
+        </div>
+        {% if section.settings.show_hint %}<div class="dlw-hint" data-dlw-hint>{{ section.settings.hint_label }}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if section.settings.show_hairlines %}
+    <div class="dlw-edge-bottom"><div class="dlw-hr"></div></div>
+  {% else %}
+    <div class="dlw-edge-bottom"></div>
+  {% endif %}
+</section>
+
+<script>
+(function(){
+  var root = document.querySelector('.dlw-{{ section.id }}');
+  if(!root) return;
+  var stage = root.querySelector('[data-dlw-stage]');
+  var video = root.querySelector('[data-dlw-video]');
+  var line  = root.querySelector('[data-dlw-line]');
+  var eb    = root.querySelector('[data-dlw-eyebrow]');
+  var rule  = root.querySelector('[data-dlw-rule]');
+  var attr  = root.querySelector('[data-dlw-attr]');
+  var hint  = root.querySelector('[data-dlw-hint]');
+
+  var SENTENCE = {{ section.settings.sentence | json }};
+  var letterStart = {{ section.settings.letter_start }} / 100;
+  var letterEnd   = {{ section.settings.letter_end }} / 100;
+  var ruleAt      = {{ section.settings.rule_at }} / 100;
+  var attrAt      = {{ section.settings.attr_at }} / 100;
+
+  // Render letters
+  (function(){
+    var html = '';
+    for(var i=0; i<SENTENCE.length; i++){
+      var c = SENTENCE[i];
+      if(c === '\n'){ html += '<span class="brk"></span>'; continue; }
+      html += '<span class="ltr">' + (c === ' ' ? '&nbsp;' : c) + '</span>';
+    }
+    line.innerHTML = html;
+  })();
+  var letters = line.querySelectorAll('.ltr');
+  var n = letters.length;
+
+  var duration = 0;
+  video.addEventListener('loadedmetadata', function(){
+    video.pause();
+    try { video.currentTime = 0.001; } catch(_){}
+    duration = video.duration || 0;
+  }, { once: true });
+  video.addEventListener('durationchange', function(){ duration = video.duration || 0; });
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      var rect = stage.getBoundingClientRect();
+      var vh = window.innerHeight;
+      var total = stage.offsetHeight - vh;
+      var scrolled = Math.min(Math.max(-rect.top, 0), total);
+      var p = total > 0 ? scrolled / total : 0;
+
+      // Scrub video
+      if(duration > 0){
+        var t = p * duration;
+        if(Math.abs(video.currentTime - t) > 0.03){
+          try { video.currentTime = t; } catch(_){}
+        }
+      }
+
+      // Eyebrow pops on early
+      if(eb) eb.classList.toggle('on', p > 0.05);
+
+      // Letters reveal across [letterStart, letterEnd]
+      var span = Math.max(0.01, letterEnd - letterStart);
+      for(var i=0; i<n; i++){
+        var threshold = letterStart + (i / Math.max(1, n-1)) * span;
+        letters[i].classList.toggle('on', p >= threshold);
+      }
+
+      if(rule) rule.classList.toggle('on', p >= ruleAt);
+      if(attr) attr.classList.toggle('on', p >= attrAt);
+      if(hint) hint.classList.toggle('gone', p > 0.04);
+
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "DL Whisper",
+  "tag": "section",
+  "class": "section-dl-whisper",
+  "settings": [
+    { "type": "header", "content": "Video" },
+    { "type": "text", "id": "video_url", "label": "Video MP4 URL",
+      "default": "https://cdn.shopify.com/videos/c/o/v/efb1f4fcd3b34939b410a5d0100d82f9.mp4" },
+    { "type": "image_picker", "id": "poster", "label": "Poster image (optional)" },
+
+    { "type": "header", "content": "The line" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow (small caps, above)", "default": "Incontro" },
+    { "type": "textarea", "id": "sentence", "label": "The sentence (line breaks for multi-line)",
+      "default": "You are not wearing a ring.\nYou are wearing something he wrote in 1975." },
+    { "type": "text", "id": "attribution", "label": "Attribution (small caps, below)", "default": "Eliau Labi · Roma · 1975" },
+    { "type": "checkbox", "id": "show_rule", "label": "Show hairline rule between sentence and attribution", "default": true },
+
+    { "type": "header", "content": "Scroll timing (% of scroll through the section)" },
+    { "type": "range", "id": "letter_start", "label": "Letters start revealing at %", "min": 5,  "max": 60, "step": 5, "default": 20 },
+    { "type": "range", "id": "letter_end",   "label": "Last letter locked in at %",   "min": 40, "max": 95, "step": 5, "default": 80 },
+    { "type": "range", "id": "rule_at",      "label": "Rule appears at %",             "min": 50, "max": 95, "step": 5, "default": 85 },
+    { "type": "range", "id": "attr_at",      "label": "Attribution appears at %",      "min": 55, "max": 95, "step": 5, "default": 90 },
+
+    { "type": "header", "content": "Scroll length" },
+    { "type": "range", "id": "scroll_length",        "label": "Scroll length desktop (vh)", "min": 200, "max": 500, "step": 25, "default": 325 },
+    { "type": "range", "id": "scroll_length_mobile", "label": "Scroll length mobile (vh)",  "min": 150, "max": 400, "step": 25, "default": 250 },
+
+    { "type": "header", "content": "Hints & spacing" },
+    { "type": "checkbox", "id": "show_hint", "label": "Show scroll hint", "default": true },
+    { "type": "text", "id": "hint_label", "label": "Hint label", "default": "Scroll" },
+    { "type": "checkbox", "id": "show_hairlines", "label": "Show hairline dividers above & below", "default": true },
+    { "type": "range", "id": "padding_top", "label": "Padding top (px)", "min": 0, "max": 200, "step": 10, "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom (px)", "min": 0, "max": 200, "step": 10, "default": 60 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#ffffff" },
+    { "type": "color", "id": "text_color", "label": "Default text / hairline color", "default": "#1a1a1a" }
+  ],
+  "presets": [ { "name": "DL Whisper" } ]
+}
+{% endschema %}

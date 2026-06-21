@@ -1,0 +1,811 @@
+{% schema %}
+{
+  "name": "SNC Info Hero",
+  "class": "section--snc-info-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background video (Optional)"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "height_vh",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Section height",
+      "default": 80
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "overlay_type",
+      "label": "Overlay type",
+      "options": [
+        { "value": "solid", "label": "Solid color" },
+        { "value": "gradient", "label": "Gradient" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "select",
+      "id": "gradient_direction",
+      "label": "Gradient direction",
+      "options": [
+        { "value": "to top", "label": "Bottom to Top (Dark bottom)" },
+        { "value": "to bottom", "label": "Top to Bottom (Dark top)" },
+        { "value": "to right", "label": "Left to Right" },
+        { "value": "to left", "label": "Right to Left" }
+      ],
+      "default": "to top"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 30
+    },
+    {
+      "type": "select",
+      "id": "content_vertical_position",
+      "label": "Vertical position",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "flex-end"
+    },
+    {
+      "type": "select",
+      "id": "content_horizontal_position",
+      "label": "Horizontal position",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_background_position",
+      "label": "Mobile image focus",
+      "info": "Controls which part of the background image is shown on phones",
+      "options": [
+        { "value": "left top", "label": "Left Top" },
+        { "value": "left center", "label": "Left Center" },
+        { "value": "left bottom", "label": "Left Bottom" },
+        { "value": "center top", "label": "Center Top" },
+        { "value": "center center", "label": "Center" },
+        { "value": "center bottom", "label": "Center Bottom" },
+        { "value": "right top", "label": "Right Top" },
+        { "value": "right center", "label": "Right Center" },
+        { "value": "right bottom", "label": "Right Bottom" }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_background_position_override",
+      "label": "Override with precise mobile position",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "mobile_background_position_x",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Mobile image focus X",
+      "default": 50,
+      "info": "0 = Left, 50 = Center, 100 = Right"
+    },
+    {
+      "type": "range",
+      "id": "mobile_background_position_y",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Mobile image focus Y",
+      "default": 50,
+      "info": "0 = Top, 50 = Center, 100 = Bottom"
+    },
+    {
+      "type": "header",
+      "content": "Texts"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow (above tagline)",
+      "info": "Small label that appears above the main tagline. E.g. 'Fine Jewellery · Rome'"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Hero Title"
+    },
+    {
+      "type": "range",
+      "id": "title_max_width",
+      "min": 0,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Max title width",
+      "default": 0,
+      "info": "0 = no limit"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Descriptive subtitle for the section"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_max_width",
+      "min": 0,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Max subtitle width",
+      "default": 0,
+      "info": "0 = no limit"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text / Paragraph"
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "min": 0,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Max paragraph width",
+      "default": 0,
+      "info": "0 = no limit"
+    },
+    {
+      "type": "select",
+      "id": "title_style",
+      "label": "Title style",
+      "options": [
+        { "value": "h1", "label": "Main heading" },
+        { "value": "h2", "label": "Secondary heading" },
+        { "value": "h3", "label": "Small heading" },
+        { "value": "body", "label": "Paragraph" },
+        { "value": "small", "label": "Small paragraph" },
+        { "value": "button", "label": "Button" },
+        { "value": "emphasis", "label": "Emphasis" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Title font weight",
+      "options": [
+        { "value": "200", "label": "Extra Light (200)" },
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra Bold (800)" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_style",
+      "label": "Subtitle style",
+      "options": [
+        { "value": "h1", "label": "Main heading" },
+        { "value": "h2", "label": "Secondary heading" },
+        { "value": "h3", "label": "Small heading" },
+        { "value": "body", "label": "Paragraph" },
+        { "value": "small", "label": "Small paragraph" },
+        { "value": "button", "label": "Button" },
+        { "value": "emphasis", "label": "Emphasis" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_font_weight",
+      "label": "Subtitle font weight",
+      "options": [
+        { "value": "200", "label": "Extra Light (200)" },
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra Bold (800)" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "text_style",
+      "label": "Text / Paragraph style",
+      "options": [
+        { "value": "h1", "label": "Main heading" },
+        { "value": "h2", "label": "Secondary heading" },
+        { "value": "h3", "label": "Small heading" },
+        { "value": "body", "label": "Paragraph" },
+        { "value": "small", "label": "Small paragraph" },
+        { "value": "button", "label": "Button" },
+        { "value": "emphasis", "label": "Emphasis" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "select",
+      "id": "text_font_weight",
+      "label": "Text font weight",
+      "options": [
+        { "value": "200", "label": "Extra Light (200)" },
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra Bold (800)" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button typography style",
+      "options": [
+        { "value": "h1", "label": "Main heading" },
+        { "value": "h2", "label": "Secondary heading" },
+        { "value": "h3", "label": "Small heading" },
+        { "value": "body", "label": "Paragraph" },
+        { "value": "small", "label": "Small paragraph" },
+        { "value": "button", "label": "Button" },
+        { "value": "emphasis", "label": "Emphasis" }
+      ],
+      "default": "button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_preset",
+      "label": "Button style (Preset)",
+      "options": [
+        { "value": "1", "label": "Preset 1" },
+        { "value": "2", "label": "Preset 2" },
+        { "value": "3", "label": "Preset 3" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Secondary button text"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Spec line"
+    },
+    {
+      "type": "text",
+      "id": "spec_line",
+      "label": "Spec line (appears below tagline)",
+      "info": "Short credential list. E.g. '18k gold · Handcrafted in Rome'"
+    },
+    {
+      "type": "header",
+      "content": "Trust strip"
+    },
+    {
+      "type": "text",
+      "id": "trust_strip",
+      "label": "Trust strip text (appears below buttons)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Info Hero"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  /* Load Futura PT directly from theme assets — independent of Shopify settings */
+  @font-face {
+    font-family: 'DL-FuturaPT';
+    src: url('{{ 'FuturaPT-Book.woff' | asset_url }}') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'DL-FuturaPT';
+    src: url('{{ 'FuturaPT-Medium.woff' | asset_url }}') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'DL-FuturaPT';
+    src: url('{{ 'FuturaPT-Bold.woff' | asset_url }}') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  {% if template.name == 'collection' and template.suffix == 'chains' %}
+  #shopify-section-{{ section.id }},
+  #shopify-section-{{ section.id }} .snc-info-hero--root {
+    margin-bottom: 0 !important;
+  }
+  {% endif %}
+  .snc-info-hero--root {
+    background-color: #000;
+    margin-top: {{ section.settings.margin_top }}px;
+    {%- if section.settings.full_width -%}
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+    {%- else -%}
+      margin-left: 20px;
+      margin-right: 20px;
+      width: calc(100% - 40px);
+    {%- endif -%}
+    height: {{ section.settings.height_vh }}vh;
+    min-height: 50vh;
+    border-radius: {{ section.settings.border_radius }}px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-size: cover;
+    background-position: center;
+    {% if section.settings.image != blank %}
+      background-image: url({{ section.settings.image | image_url: width: 2000 }});
+    {% endif %}
+  }
+
+  .snc-info-hero--overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    {%- if section.settings.overlay_type == 'gradient' -%}
+      background: linear-gradient({{ section.settings.gradient_direction }}, {{ section.settings.overlay_color }}, transparent);
+    {%- else -%}
+      background-color: {{ section.settings.overlay_color }};
+    {%- endif -%}
+    opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    z-index: 1;
+  }
+
+  .snc-info-hero--content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: {{ section.settings.content_horizontal_position }};
+    justify-content: {{ section.settings.content_vertical_position }};
+    height: 100%;
+    text-align: {{ section.settings.text_alignment }};
+  }
+
+  @media (max-width: 1024px) {
+    .snc-info-hero--content { padding: 48px 60px; }
+  }
+
+  .snc-info-hero--title {
+    font-weight: var(--main-title-weight, 500) !important;
+    margin: 0;
+  }
+
+  .snc-info-hero--subtitle {
+    font-weight: {{ section.settings.subtitle_font_weight }} !important;
+    margin: 0 0 10px 0;
+    {%- if section.settings.subtitle_max_width > 0 -%}
+      max-width: {{ section.settings.subtitle_max_width }}px;
+    {%- endif -%}
+  }
+
+  .snc-info-hero--text {
+    font-weight: {{ section.settings.text_font_weight }} !important;
+    margin: 0 0 20px 0;
+    {%- if section.settings.text_max_width > 0 -%}
+      max-width: {{ section.settings.text_max_width }}px;
+    {%- endif -%}
+  }
+  .snc-info-hero--text p {
+    font-size: inherit;
+    font-weight: {{ section.settings.text_font_weight }} !important;
+    line-height: inherit;
+    margin: 0;
+  }
+
+  {%- assign btn_justify = 'flex-start' -%}
+  {%- if section.settings.text_alignment == 'center' -%}{%- assign btn_justify = 'center' -%}{%- endif -%}
+  {%- if section.settings.text_alignment == 'right' -%}{%- assign btn_justify = 'flex-end' -%}{%- endif -%}
+
+  /* Eyebrow: establishes context before the tagline */
+  .snc-info-hero--eyebrow {
+    color: rgba(255,255,255,0.45);
+    font-family: 'DL-FuturaPT', 'Futura PT', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin: 0 0 20px;
+  }
+  /* Thin editorial rule between eyebrow and tagline */
+  .snc-info-hero--eyebrow::after {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+    margin-top: 18px;
+  }
+
+  /* Tagline: DL-FuturaPT Book — loaded directly from assets, refined, not bold */
+  #shopify-section-{{ section.id }} .snc-info-hero--subtitle {
+    font-family: 'DL-FuturaPT', 'Futura PT', sans-serif !important;
+    font-size: clamp(20px, 2.2vw, 30px) !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    letter-spacing: 0.06em !important;
+    max-width: 480px;
+    margin-bottom: 0 !important;
+  }
+
+  .snc-info-hero--spec-line {
+    color: rgba(255,255,255,0.5);
+    font-family: 'Futura PT', 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 18px 0 0;
+  }
+
+  .snc-info-hero--button-wrapper {
+    margin-top: 44px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: {{ btn_justify }};
+  }
+
+  /* Primary CTA: white pill — always readable on dark hero */
+  #shopify-section-{{ section.id }} .snc-info-hero--btn.btn-preset-1 {
+    background: #fff !important;
+    color: #111 !important;
+    border: none !important;
+    border-radius: 999px !important;
+    padding: 14px 34px !important;
+    font-family: 'DL-FuturaPT', 'Futura PT', sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.16em !important;
+    text-transform: uppercase !important;
+    transition: background 0.25s, color 0.25s !important;
+  }
+  #shopify-section-{{ section.id }} .snc-info-hero--btn.btn-preset-1:hover {
+    background: rgba(255,255,255,0.88) !important;
+    opacity: 1 !important;
+  }
+
+  /* Secondary CTA: editorial text link, LV-style */
+  .snc-info-hero--btn-ghost {
+    background: transparent !important;
+    color: rgba(255,255,255,0.7) !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 0 2px 0 !important;
+    font-family: 'DL-FuturaPT', 'Futura PT', sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.16em !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.3) !important;
+    transition: color 0.25s, border-color 0.25s !important;
+  }
+  .snc-info-hero--btn-ghost:hover {
+    color: #fff !important;
+    border-color: rgba(255,255,255,0.75) !important;
+    opacity: 1 !important;
+  }
+
+  .snc-info-hero--trust-strip {
+    margin-top: 28px;
+    color: rgba(255,255,255,0.35);
+    font-family: 'Futura PT', 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  
+  @media (max-width: 768px) {
+    .snc-info-hero--root {
+       {%- unless section.settings.full_width -%}
+         margin: 10px;
+         width: calc(100% - 20px);
+         border-radius: 8px;
+       {%- endunless -%}
+       {%- if section.settings.mobile_background_position_override -%}
+         background-position: {{ section.settings.mobile_background_position_x }}% {{ section.settings.mobile_background_position_y }}%;
+       {%- else -%}
+         background-position: {{ section.settings.mobile_background_position }};
+       {%- endif -%}
+       padding: 0;
+    }
+
+    .snc-info-hero--content {
+      padding: 32px 28px;
+    }
+
+    .snc-info-hero--title,
+    .snc-info-hero--subtitle,
+    .snc-info-hero--text {
+      max-width: 100% !important;
+    }
+
+    .snc-info-hero--title {
+      font-weight: 400 !important;
+    }
+  }
+
+  .snc-info-hero--video-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .snc-info-hero--video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  {% if request.page_type == 'index' or template.suffix == 'incontro' or template.suffix == 'mezza-luna' or template.suffix == 'classico' or template.suffix == 'bags' or template.suffix == 'chains' %}
+  @media (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 0 !important;
+      overflow: hidden !important;
+    }
+
+    /* Force all sibling sections that follow the sticky hero to paint over it.
+       This prevents the hero video from bleeding through the left/right edges
+       of sections that scroll over it. */
+    #shopify-section-{{ section.id }} ~ .shopify-section {
+      transform: translateZ(0);
+      z-index: 1;
+    }
+  }
+  {% endif %}
+</style>
+
+<div class="snc-info-hero--root color-{{ section.settings.color_scheme }}" data-header-theme="light">
+  {%- if section.settings.video != blank -%}
+    <div class="snc-info-hero--video-wrapper">
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, class: 'snc-info-hero--video', data-webkit-playsinline: '' }}
+    </div>
+  {%- endif -%}
+  <div class="snc-info-hero--overlay"></div>
+  <div class="snc-info-hero--content">
+    {%- if section.settings.eyebrow_text != blank -%}
+      <div class="snc-info-hero--eyebrow">{{ section.settings.eyebrow_text | escape }}</div>
+    {%- endif -%}
+    {%- if section.settings.subtitle != blank -%}
+      <div class="snc-info-hero--subtitle {{ section.settings.subtitle_style }}">{{ section.settings.subtitle | escape }}</div>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="snc-info-hero--title {{ section.settings.title_style }}">{{ section.settings.title | escape }}</h2>
+    {%- endif -%}
+    {%- if section.settings.spec_line != blank -%}
+      <div class="snc-info-hero--spec-line">{{ section.settings.spec_line | escape }}</div>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <div class="snc-info-hero--text {{ section.settings.text_style }}">{{ section.settings.text }}</div>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank or section.settings.button_2_label != blank -%}
+      <div class="snc-info-hero--button-wrapper">
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link | default: '#' }}" class="snc-info-hero--btn btn-preset-{{ section.settings.button_preset }} {{ section.settings.button_style }}">{{ section.settings.button_label | escape }}</a>
+        {%- endif -%}
+        {%- if section.settings.button_2_label != blank -%}
+          <a href="{{ section.settings.button_2_link | default: '#' }}" class="snc-info-hero--btn snc-info-hero--btn-ghost {{ section.settings.button_style }}">{{ section.settings.button_2_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    {%- if section.settings.trust_strip != blank -%}
+      <div class="snc-info-hero--trust-strip">{{ section.settings.trust_strip | escape }}</div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% if request.page_type == 'index' or template.suffix == 'incontro' or template.suffix == 'mezza-luna' or template.suffix == 'classico' or template.suffix == 'bags' or template.suffix == 'chains' %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var heroSection = document.getElementById('shopify-section-{{ section.id }}');
+    if (!heroSection) return;
+
+    // On home page: scroll to next section on button click
+    {% if request.page_type == 'index' %}
+    var heroBtn = heroSection.querySelector('.snc-info-hero--btn');
+    if (heroBtn) {
+      heroBtn.addEventListener('click', function(e) {
+        var nextSection = heroSection.nextElementSibling;
+        if (!nextSection) return;
+        e.preventDefault();
+        nextSection.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+    {% endif %}
+
+    if (window.innerWidth < 769) return;
+
+    var heroVideo = heroSection.querySelector('.snc-info-hero--video');
+
+    function updateHeroVisibility() {
+      if (window.scrollY > heroSection.offsetHeight) {
+        heroSection.style.visibility = 'hidden';
+        if (heroVideo && !heroVideo.paused) heroVideo.pause();
+      } else {
+        heroSection.style.visibility = 'visible';
+        if (heroVideo && heroVideo.paused) heroVideo.play();
+      }
+    }
+
+    // Run immediately on load to handle browser scroll restoration —
+    // if the page is already scrolled past the hero (e.g. on reload),
+    // hide it right away without waiting for the first scroll event.
+    updateHeroVisibility();
+
+    window.addEventListener('scroll', updateHeroVisibility, { passive: true });
+  });
+
+  /* Mobile autoplay fallback — some Android/iOS browsers ignore the autoplay
+     attribute and require an explicit .play() call on user interaction or load. */
+  (function () {
+    var heroSection = document.getElementById('shopify-section-{{ section.id }}');
+    if (!heroSection) return;
+    var video = heroSection.querySelector('.snc-info-hero--video');
+    if (!video) return;
+
+    function attemptPlay() {
+      video.muted = true;
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      var p = video.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+
+    if (document.readyState === 'complete') {
+      attemptPlay();
+    } else {
+      window.addEventListener('load', attemptPlay, { once: true });
+    }
+
+    /* Second attempt on first user interaction (covers strict autoplay policies) */
+    document.addEventListener('touchstart', function onTouch() {
+      if (video.paused) attemptPlay();
+      document.removeEventListener('touchstart', onTouch);
+    }, { once: true, passive: true });
+  })();
+</script>
+{% endif %}

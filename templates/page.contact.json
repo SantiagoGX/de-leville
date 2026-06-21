@@ -1,0 +1,121 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "snc_info_hero_RDa77P": {
+      "type": "snc-info-hero",
+      "name": "SNC Info Hero",
+      "settings": {
+        "image": "shopify://shop_images/Img_7.png",
+        "color_scheme": "",
+        "margin_top": 0,
+        "height_vh": 50,
+        "full_width": true,
+        "border_radius": 0,
+        "overlay_type": "gradient",
+        "gradient_direction": "to top",
+        "overlay_color": "#000000",
+        "overlay_opacity": 85,
+        "content_vertical_position": "flex-end",
+        "content_horizontal_position": "flex-start",
+        "text_alignment": "left",
+        "title": "Contact De Leville",
+        "title_max_width": 0,
+        "subtitle": "",
+        "subtitle_max_width": 0,
+        "text": "",
+        "text_max_width": 0,
+        "title_style": "h1",
+        "title_font_weight": "700",
+        "subtitle_style": "body",
+        "subtitle_font_weight": "400",
+        "text_style": "body",
+        "text_font_weight": "400",
+        "button_style": "button",
+        "button_label": "",
+        "button_link": "",
+        "button_preset": "1"
+      }
+    },
+    "snc_contact_form_K7fxiQ": {
+      "type": "snc-contact-form",
+      "blocks": {
+        "info_column_Py98fA": {
+          "type": "info_column",
+          "settings": {
+            "subtitle": "Email us",
+            "title": "concierge@deleville.co"
+          }
+        },
+        "info_column_yrFmQq": {
+          "type": "info_column",
+          "settings": {
+            "subtitle": "Press inquiries",
+            "title": "press@deleville.co"
+          }
+        },
+        "info_column_EFiVtU": {
+          "type": "info_column",
+          "settings": {
+            "subtitle": "Partnerships",
+            "title": "info@deleville.co"
+          }
+        }
+      },
+      "block_order": [
+        "info_column_Py98fA",
+        "info_column_yrFmQq",
+        "info_column_EFiVtU"
+      ],
+      "custom_css": [
+        "button,input,textarea {font-size: 16px;}"
+      ],
+      "name": "SNC Contact Form",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "subtitle": "",
+        "title": "CONTACT DE LEVILLE",
+        "text": "<p>Our concierge team is here to assist you with sizing guidance, order inquiries, product information, and anything else you may need.</p><p>We respond to all inquiries within 24 hours, and typically much sooner.</p><p>For press inquiries, please email press@deleville.co.<br/>For wholesale or partnership inquiries, please email info@deleville.co.</p>",
+        "subtitle_style": "emphasis",
+        "title_style": "h2",
+        "text_style": "body",
+        "max_width": 760,
+        "margin_top": 100,
+        "margin_bottom": 100,
+        "padding_horizontal": 20,
+        "text_gap": 40,
+        "form_gap": 15,
+        "subtitle_color": "#9d9d9d",
+        "title_color": "#000000",
+        "paragraph_color": "#333333",
+        "field_padding_vertical": 13,
+        "field_padding_horizontal": 25,
+        "field_background": "#ffffff",
+        "field_border_radius": 0,
+        "field_border_color": "#e6e6e6",
+        "field_focus_border_color": "#000000",
+        "button_bg_color": "#000000",
+        "button_text_color": "#ffffff",
+        "button_border_radius": 8,
+        "separator_color": "#00000033",
+        "info_background": "#f4f4f4",
+        "info_gap": 20,
+        "info_subtitle_color": "#646464",
+        "info_title_color": "#000000",
+        "info_subtitle_style": "body",
+        "info_title_style": "body"
+      }
+    }
+  },
+  "order": [
+    "snc_info_hero_RDa77P",
+    "snc_contact_form_K7fxiQ"
+  ]
+}

@@ -1,0 +1,656 @@
+{% comment %}
+  Section: SNC Scroll Gallery
+  Scroll-driven gallery: Images move right-to-left based on scroll progress
+{% endcomment %}
+
+<section class="snc-scroll-gallery" id="snc-scroll-gallery-{{ section.id }}">
+
+  <div class="snc-scroll-wrapper">
+
+    {% comment %} Container Padre: Contenido estático sticky {% endcomment %}
+    <div class="snc-container-padre">
+
+      <div class="snc-container snc-container-1">
+        <span class="snc-titulo">{{ section.settings.titulo | default: "DIGITAL SOUL" }}</span>
+      </div>
+
+      <div class="snc-container snc-container-2">
+        <h1 class="snc-texto-central">{{ section.settings.texto_central | default: "EVERY PIECE IS ALIVE" }}</h1>
+      </div>
+
+      <div class="snc-container snc-container-3">
+        <div class="snc-descripcion">
+          {{ section.settings.descripcion | default: "Every living person has a soul.
+So does every De Leville piece.
+Not as a metaphor.
+As a principle." | newline_to_br }}
+        </div>
+        {%- if section.settings.show_cta and section.settings.cta_text != blank -%}
+          <a href="{{ section.settings.cta_url | default: '#' }}" class="snc-scroll-gallery__cta btn-preset-1">
+            {{- section.settings.cta_text -}}
+          </a>
+        {%- endif -%}
+      </div>
+
+    </div>
+
+    {% comment %} Galería: Track horizontal {% endcomment %}
+    <div class="snc-gallery-track" id="snc-gallery-track-{{ section.id }}">
+      {% for block in section.blocks %}
+        {% if block.settings.image != blank %}
+          <div class="snc-gallery-item" {{ block.shopify_attributes }}>
+            {%- if block.settings.image_url != blank -%}
+              <a href="{{ block.settings.image_url }}" style="display:block;">
+            {%- endif -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 800 }}"
+              alt="{{ block.settings.image.alt | default: 'Gallery image' | escape }}"
+              loading="eager"
+              width="400"
+              height="400"
+            >
+            {%- if block.settings.image_url != blank -%}
+              </a>
+            {%- endif -%}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
+
+</section>
+
+<style>
+  .snc-scroll-gallery {
+    position: relative;
+    width: 100%;
+    height: {{ section.settings.scroll_height | default: 300 }}vh;
+    background-color: {{ section.settings.background_color | default: '#ffffff' }};
+  }
+
+  .snc-scroll-wrapper {
+    position: sticky;
+    top: var(--custom-header-total-height, 0px);
+    height: calc(100vh - var(--custom-header-total-height, 0px));
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .snc-container-padre {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    max-width: 1512px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6vh 5vw 8vh 5vw;
+    box-sizing: border-box;
+    z-index: 1;
+  }
+
+  .snc-container {
+    width: 100%;
+    text-align: center;
+  }
+
+  .snc-container-2 {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .snc-titulo {
+    font-family: 'Futura PT', sans-serif;
+    font-size: {{ section.settings.titulo_size | default: 14 }}px;
+    font-weight: {{ section.settings.titulo_weight | default: 500 }};
+    color: {{ section.settings.titulo_color | default: '#000000' }};
+    letter-spacing: {{ section.settings.titulo_spacing | default: 0.4 }}em;
+    text-transform: {% if section.settings.titulo_uppercase != false %}uppercase{% endif %};
+  }
+
+  .snc-texto-central {
+    font-family: 'Futura PT', sans-serif;
+    font-size: clamp(32px, {{ section.settings.texto_central_size | default: 100 }}px, 10vw);
+    font-weight: {{ section.settings.texto_central_weight | default: 600 }};
+    color: {{ section.settings.texto_central_color | default: '#000000' }};
+    letter-spacing: {{ section.settings.texto_central_spacing | default: -0.1 }}em;
+    line-height: {{ section.settings.texto_central_line_height | default: 1.1 }};
+    text-transform: {% if section.settings.texto_central_uppercase != false %}uppercase{% endif %};
+    margin: 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+
+  .snc-descripcion {
+    font-family: 'Futura PT', sans-serif;
+    font-size: {{ section.settings.descripcion_size | default: 15 }}px;
+    font-weight: {{ section.settings.descripcion_weight | default: 400 }};
+    color: {{ section.settings.descripcion_color | default: '#333333' }};
+    line-height: {{ section.settings.descripcion_line_height | default: 1.8 }};
+    max-width: {{ section.settings.descripcion_width | default: 500 }}px;
+    margin: 0 auto;
+    text-align: {{ section.settings.descripcion_align | default: 'center' }};
+  }
+
+  /* Galería: Carrusel focal */
+  .snc-gallery-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .snc-gallery-item {
+    position: absolute;
+    top: 44%;
+    left: 50%;
+    width: {{ section.settings.image_size | default: 320 }}px;
+    height: min(52vh, {{ section.settings.image_size | default: 320 | times: 1.15 | round }}px);
+    pointer-events: auto;
+    overflow: hidden;
+    border-radius: 2px;
+    will-change: transform, opacity;
+  }
+
+  .snc-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+    display: block;
+  }
+
+  .snc-scroll-gallery__cta {
+    display: inline-block;
+    margin-top: 28px;
+    font-family: 'Futura PT', sans-serif;
+    font-size: {{ settings.button_size | default: 13 }}px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: {{ settings.button_transform | default: 'uppercase' }};
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* Revelación de texto al salir las imágenes */
+  .snc-container-padre {
+    will-change: opacity;
+  }
+
+  .snc-gallery-track {
+    will-change: opacity, filter, transform;
+    transform-origin: center center;
+  }
+
+  @media (max-width: 768px) {
+    .snc-texto-central {
+      font-size: clamp(28px, 10vw, 52px) !important;
+      font-weight: {{ section.settings.texto_central_weight | default: 600 }};
+    }
+
+    .snc-descripcion {
+      padding: 0 20px;
+    }
+
+    .snc-gallery-item {
+      top: 42%;
+      width: {{ section.settings.image_size | default: 320 | times: 0.65 | round }}px;
+      height: min(40vh, {{ section.settings.image_size | default: 320 | times: 0.9 | round }}px);
+    }
+  }
+</style>
+
+<script>
+(function() {
+  'use strict';
+
+  var section = document.getElementById('snc-scroll-gallery-{{ section.id }}');
+  var track = document.getElementById('snc-gallery-track-{{ section.id }}');
+
+  if (!section || !track) return;
+
+  var gap = {{ section.settings.image_gap | default: 20 }};
+  var itemSize = {{ section.settings.image_size | default: 320 }};
+  var rotateYMax = {{ section.settings.arc_rotation | default: 35 }};
+  var arcDrop = {{ section.settings.arc_height | default: 80 }};
+  var items = track.querySelectorAll('.snc-gallery-item');
+  var itemCount = items.length;
+
+  if (itemCount === 0) return;
+
+  // Fase 1: pausa inicial + carrusel (moveStart → exitPoint)
+  // Fase 2: imágenes se disuelven con blur + escala (exitPoint → exitEnd) — efecto maison
+  // Fase 3: layout limpio de texto (exitEnd → 1)
+  var moveStart = 0.05;
+  var exitPoint = {{ section.settings.image_exit_point | default: 45 }} / 100;
+  var exitDuration = 0.18;
+  var exitEnd = Math.min(exitPoint + exitDuration, 0.97);
+
+  // Curva de lujo: arranque lento, aceleración suave al final
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  // Curva para el blur: pico a mitad del exit, luego baja (imágenes se evaporan)
+  function easeBlur(t) {
+    return Math.sin(t * Math.PI);
+  }
+
+  function updateCarousel() {
+    var sectionRect = section.getBoundingClientRect();
+    var sectionHeight = section.offsetHeight;
+    var windowHeight = window.innerHeight;
+
+    if (sectionRect.bottom < 0 || sectionRect.top > windowHeight) return;
+
+    var scrollProgress = -sectionRect.top / (sectionHeight - windowHeight);
+    scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+
+    // Fase 1: progreso del carrusel
+    var moveProgress;
+    if (scrollProgress < moveStart) {
+      moveProgress = 0;
+    } else if (scrollProgress >= exitPoint) {
+      moveProgress = 1;
+    } else {
+      moveProgress = (scrollProgress - moveStart) / (exitPoint - moveStart);
+    }
+
+    // Fase 2: progreso de salida (0 = imágenes presentes, 1 = desaparecidas)
+    var exitProgress;
+    if (scrollProgress < exitPoint) {
+      exitProgress = 0;
+    } else if (scrollProgress > exitEnd) {
+      exitProgress = 1;
+    } else {
+      exitProgress = (scrollProgress - exitPoint) / exitDuration;
+    }
+
+    var easedExit = easeInOutCubic(exitProgress);
+    var blurAmount = easeBlur(exitProgress) * 14; // pico de 14px a mitad del exit
+
+    // Exit cinematográfico: opacity + blur + escala sutil
+    track.style.opacity = 1 - easedExit;
+    track.style.filter = exitProgress > 0 ? 'blur(' + blurAmount.toFixed(2) + 'px)' : '';
+    track.style.transform = exitProgress > 0 ? 'scale(' + (1 + easedExit * 0.03).toFixed(4) + ')' : '';
+    track.style.visibility = exitProgress >= 1 ? 'hidden' : 'visible';
+
+    // Posicionamiento del carrusel focal
+    var activePos = moveProgress * (itemCount - 1);
+    var spacing = itemSize + gap;
+
+    for (var i = 0; i < itemCount; i++) {
+      var offset = i - activePos;
+      var absOffset = Math.abs(offset);
+
+      var tx = offset * spacing;
+      var ty = absOffset * arcDrop;
+      var ry = -offset * rotateYMax;
+      var scale = Math.max(0.45, 1 - absOffset * 0.18);
+      var opacity = Math.max(0.25, 1 - absOffset * 0.3);
+      var zIndex = Math.round(100 - absOffset * 10);
+
+      items[i].style.transform =
+        'translate(calc(-50% + ' + tx + 'px), calc(-50% + ' + ty + 'px))' +
+        ' perspective(1200px) rotateY(' + ry + 'deg)' +
+        ' scale(' + scale + ')';
+      items[i].style.opacity = opacity;
+      items[i].style.zIndex = zIndex;
+    }
+  }
+
+  var ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        updateCarousel();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', updateCarousel);
+  updateCarousel();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SNC Scroll Gallery",
+  "settings": [
+    {
+      "type": "header",
+      "content": "📝 Title"
+    },
+    {
+      "type": "text",
+      "id": "titulo",
+      "label": "Title text",
+      "default": "DIGITAL SOUL"
+    },
+    {
+      "type": "range",
+      "id": "titulo_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 48,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "titulo_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "titulo_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra bold (800)" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "checkbox",
+      "id": "titulo_uppercase",
+      "label": "Uppercase",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "titulo_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.4,
+      "unit": "em"
+    },
+    {
+      "type": "header",
+      "content": "🎯 Center Text"
+    },
+    {
+      "type": "text",
+      "id": "texto_central",
+      "label": "Center text",
+      "default": "EVERY PIECE IS ALIVE"
+    },
+    {
+      "type": "range",
+      "id": "texto_central_size",
+      "label": "Font size",
+      "min": 24,
+      "max": 200,
+      "step": 4,
+      "default": 100,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "texto_central_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "texto_central_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra bold (800)" }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "checkbox",
+      "id": "texto_central_uppercase",
+      "label": "Uppercase",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "texto_central_spacing",
+      "label": "Letter spacing",
+      "min": -0.1,
+      "max": 0.5,
+      "step": 0.1,
+      "default": -0.1,
+      "unit": "em"
+    },
+    {
+      "type": "range",
+      "id": "texto_central_line_height",
+      "label": "Line height",
+      "min": 0.8,
+      "max": 1.5,
+      "step": 0.1,
+      "default": 1.1
+    },
+    {
+      "type": "header",
+      "content": "📝 Description"
+    },
+    {
+      "type": "textarea",
+      "id": "descripcion",
+      "label": "Description text",
+      "default": "Every living person has a soul.\nSo does every De Leville piece.\nNot as a metaphor.\nAs a principle.",
+      "info": "Use Enter for line breaks"
+    },
+    {
+      "type": "range",
+      "id": "descripcion_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "descripcion_color",
+      "label": "Text color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "descripcion_width",
+      "label": "Max width",
+      "min": 200,
+      "max": 800,
+      "step": 20,
+      "default": 500,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "descripcion_align",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "descripcion_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "descripcion_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "default": 1.8
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show CTA button",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA button text",
+      "default": "Explore the Collection"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA button link"
+    },
+    {
+      "type": "header",
+      "content": "🖼️ Gallery Images"
+    },
+    {
+      "type": "range",
+      "id": "image_size",
+      "label": "Image size",
+      "min": 200,
+      "max": 450,
+      "step": 10,
+      "default": 320,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_gap",
+      "label": "Gap between images",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "🎡 Focal Carousel"
+    },
+    {
+      "type": "range",
+      "id": "arc_rotation",
+      "label": "3D rotation of sides",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "default": 35,
+      "unit": "°",
+      "info": "RotateY angle of side images. Higher value = more pronounced wheel effect"
+    },
+    {
+      "type": "range",
+      "id": "arc_height",
+      "label": "Vertical drop of sides",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 80,
+      "unit": "px",
+      "info": "How much side images drop relative to the center"
+    },
+    {
+      "type": "range",
+      "id": "image_exit_point",
+      "label": "Images exit at (% of scroll)",
+      "min": 25,
+      "max": 70,
+      "step": 5,
+      "default": 45,
+      "unit": "%",
+      "info": "Point where images start to fade out. Lower value = images pass faster, more space for text."
+    },
+    {
+      "type": "range",
+      "id": "scroll_height",
+      "label": "Section height (vh)",
+      "min": 200,
+      "max": 500,
+      "step": 50,
+      "default": 300,
+      "unit": "vh",
+      "info": "Higher value = slower and smoother animation"
+    },
+    {
+      "type": "header",
+      "content": "🎨 General Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Gallery Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "image_url",
+          "label": "Link (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Scroll Gallery",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

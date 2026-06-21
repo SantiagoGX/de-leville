@@ -1,0 +1,79 @@
+<h2>Unificación de secciones — Incontro</h2>
+<p class="subtitle">Tres enfoques para convertir las dos secciones en una experiencia cinematográfica</p>
+
+<div style="background:#f8f6f3;border-radius:12px;padding:20px;margin-bottom:28px;">
+  <p class="label">Estado actual: 2 secciones separadas</p>
+  <div style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:13px;">
+    <div style="background:#1a1a1a;color:white;padding:10px 16px;border-radius:6px;flex:2;">
+      SNC Horizontal Slides<br><span style="opacity:.5;font-size:11px;">400vh · 4 variantes · REGALE → SEGRETO → ESSENZA → PURO</span>
+    </div>
+    <div style="font-size:20px;color:#aaa;">→</div>
+    <div style="background:#fff;border:1.5px solid #ddd;padding:10px 16px;border-radius:6px;flex:1.5;">
+      SNC Scroll Video<br><span style="opacity:.5;font-size:11px;">160vh · ESSENZA abriéndose · texto</span>
+    </div>
+    <div style="font-size:20px;color:#e00;">≠</div>
+    <div style="font-size:12px;color:#e00;max-width:80px;">Corte abrupto entre secciones</div>
+  </div>
+</div>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Sección única — scroll continuo</h3>
+      <p>Una nueva sección <strong>snc-incontro-story</strong> que maneja todo de principio a fin. El scroll total sería ~560vh.</p>
+      <div style="margin-top:14px;display:flex;gap:4px;font-size:11px;align-items:stretch;">
+        <div style="background:#1a1a1a;color:white;padding:8px;border-radius:4px;text-align:center;flex:1;">0–100vh<br><br>Intro pin<br><small>ring entra</small></div>
+        <div style="background:#333;color:white;padding:8px;border-radius:4px;text-align:center;flex:3;">100–500vh<br><br>4 variantes (100vh c/u)<br><small>REGALE → SEGRETO → ESSENZA → PURO</small></div>
+        <div style="background:#555;color:white;padding:8px;border-radius:4px;text-align:center;flex:1.5;">500–560vh<br><br>ESSENZA abre<br><small>texto emerge</small></div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:#4a4a4a;">
+        ✅ Transición perfectamente controlada · un solo sticky container<br>
+        ✅ Crossfade real entre ESSENZA girando → ESSENZA abriéndose<br>
+        ⚠️ Requiere re-implementación completa (2–3h)
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Z-stack bridge — ilusión perfecta</h3>
+      <p>La nueva sección <strong>snc-incontro-story</strong> "esconde" las dos secciones actuales usando z-index. Se añade encima en el JSON y las tapa completamente. Las originales quedan como fallback.</p>
+      <div style="margin-top:14px;display:flex;gap:4px;font-size:11px;align-items:center;">
+        <div style="background:#1a1a1a;color:white;padding:8px;border-radius:4px;text-align:center;flex:3;">Nueva sección unificada (z-index: 10)<br><small>tapa las dos secciones de abajo</small></div>
+        <div style="font-size:16px;color:#aaa;">+</div>
+        <div style="background:#bbb;color:white;padding:8px;border-radius:4px;text-align:center;flex:2;font-size:10px;">Secciones originales ocultas<br>pero intactas como fallback</div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:#4a4a4a;">
+        ✅ Originales intactas — fácil rollback<br>
+        ✅ Menos riesgo de romper algo<br>
+        ⚠️ La nueva sección igual hay que escribirla completa
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Sección única + desktop mejorado</h3>
+      <p>Igual que A, pero el desktop también se rediseña. En lugar del layout 3 columnas actual, la experiencia desktop se convierte en <strong>fullscreen horizontal scroll cinematográfico</strong>: cada variante ocupa el 100% de la pantalla, texto superpuesto LV-style, y al llegar a ESSENZA la pantalla se "rompe" hacia arriba y abajo.</p>
+      <div style="margin-top:14px;font-size:12px;color:#4a4a4a;">
+        ✅ Experiencia de nivel LV/Bvlgari en desktop Y mobile<br>
+        ✅ Un solo código limpio para todo<br>
+        ⚠️ Cambio más profundo — desktop actual quedaría reemplazado<br>
+        ⚠️ Requiere 4–5h de implementación
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:24px;background:#fffbf0;border:1px solid #e8d88a;border-radius:8px;padding:16px;">
+  <p class="label">Mi recomendación</p>
+  <p style="font-size:13px;margin-top:8px;">
+    <strong>Opción A</strong> si quieres proteger el desktop actual y solo mejorar la unificación.<br>
+    <strong>Opción C</strong> si quieres que toda la experiencia suba de nivel — desktop + mobile.
+  </p>
+</div>

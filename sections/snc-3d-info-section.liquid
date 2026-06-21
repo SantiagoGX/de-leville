@@ -1,0 +1,681 @@
+{% schema %}
+{
+  "name": "3D Info Section",
+  "class": "section--snc-3d-info-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "scroll_height",
+      "min": 100,
+      "max": 500,
+      "step": 50,
+      "unit": "vh",
+      "label": "Scroll height (Duration)",
+      "default": 300
+    },
+    {
+      "type": "header",
+      "content": "Center Content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_layer",
+      "label": "Image layer (overlay)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2 (Emerging)"
+    },
+    {
+      "type": "range",
+      "id": "image_2_width",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Image 2 width (Screen)",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 100,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "label": "Image width",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "center_y_offset",
+      "min": -200,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Center vertical offset (Desktop)",
+      "default": 0,
+      "info": "Moves the centered content (image + overlay + text) up/down for better viewport centering on smaller screens."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Section 3 — Center title"
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "min": 200,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Max text width",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "text_initial_x",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Initial horizontal position (Text)",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "text_move_range",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Text displacement (Speed)",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "image_move_range",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Image displacement (Speed)",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "label": "Font weight",
+      "default": 400
+    },
+    {
+      "type": "header",
+      "content": "Side Content (Left)"
+    },
+    {
+      "type": "text",
+      "id": "side_title",
+      "label": "Side title",
+      "default": "Discover more"
+    },
+    {
+      "type": "select",
+      "id": "side_title_style",
+      "label": "Side title style",
+      "options": [
+        { "value": "h1", "label": "Main title" },
+        { "value": "h2", "label": "Secondary title" },
+        { "value": "h3", "label": "Small title" },
+        { "value": "body", "label": "Paragraph" }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "side_text",
+      "label": "Side text"
+    },
+    {
+      "type": "select",
+      "id": "side_text_style",
+      "label": "Side text style",
+      "options": [
+        { "value": "body", "label": "Paragraph" },
+        { "value": "small", "label": "Small paragraph" },
+        { "value": "h3", "label": "Small title" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "text",
+      "id": "side_button_label",
+      "label": "Button text",
+      "default": "View details"
+    },
+    {
+      "type": "url",
+      "id": "side_button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "side_button_preset",
+      "label": "Side button style",
+      "options": [
+        { "value": "1", "label": "Preset 1" },
+        { "value": "2", "label": "Preset 2" },
+        { "value": "3", "label": "Preset 3" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "side_button_padding_horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Button horizontal padding",
+      "default": 30
+    }
+  ],
+  "presets": [
+    {
+      "name": "3D Info Section"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  .snc-3d-info-section {
+    width: 100vw;
+    height: {{ section.settings.scroll_height }}vh;
+    background-color: {{ section.settings.background_color }};
+    position: relative;
+    margin-left: calc(50% - 50vw);
+    --snc-3d-center-y-offset: {{ section.settings.center_y_offset }}px;
+    --snc-3d-center-y-auto: 0px;
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+  }
+  @media (max-height: 820px) {
+    .snc-3d-info-section { --snc-3d-center-y-auto: 40px; }
+  }
+  .snc-3d-sticky-container {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* z-index stack desktop:
+     image (1) → text (2) → image_layer (3) → side_content (4) → image_2 se maneja via JS */
+  .snc-3d-info-image {
+    height: 100vh;
+    width: auto;
+    max-width: 90vw;
+    max-height: 100vh;
+    display: block;
+    position: absolute;
+    top: calc(50% + var(--snc-3d-center-y-offset) + var(--snc-3d-center-y-auto));
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    will-change: left, opacity;
+  }
+  .snc-3d-info-text {
+    position: absolute;
+    top: calc(50% + var(--snc-3d-center-y-offset) + var(--snc-3d-center-y-auto));
+    left: {{ section.settings.text_initial_x }}%;
+    transform: translate(-50%, -50%);
+    max-width: {{ section.settings.text_max_width }}px;
+    width: max-content;
+    padding: 0 20px;
+    z-index: 2;
+    text-align: center;
+    color: #000000 !important;
+    will-change: left, opacity;
+  }
+  .snc-3d-info-text {
+    font-size: {{ section.settings.text_size }}px;
+    font-weight: {{ section.settings.text_weight }} !important;
+  }
+  .snc-3d-info-text * {
+    font-size: inherit;
+    font-weight: inherit !important;
+    color: inherit !important;
+  }
+  .snc-3d-info-image-layer {
+    height: 100vh;
+    width: auto;
+    max-width: 90vw;
+    max-height: 100vh;
+    display: block;
+    position: absolute;
+    top: calc(50% + var(--snc-3d-center-y-offset) + var(--snc-3d-center-y-auto));
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    pointer-events: none;
+    will-change: left, opacity;
+  }
+  .snc-3d-side-content {
+    position: absolute;
+    top: 50%;
+    left: 15%;
+    transform: translateY(-50%);
+    width: 35%;
+    max-width: 500px;
+    opacity: 0;
+    z-index: 4;
+    text-align: left;
+    will-change: opacity, transform;
+  }
+  .snc-3d-side-title { margin: 0 0 15px; }
+  .snc-3d-side-text  { margin-bottom: 25px; }
+  .snc-3d-side-content .snc-3d-btn {
+    padding-left: {{ section.settings.side_button_padding_horizontal }}px !important;
+    padding-right: {{ section.settings.side_button_padding_horizontal }}px !important;
+    font-size: {{ settings.button_size }}px;
+    text-transform: {{ settings.button_transform }};
+  }
+  .snc-3d-info-image-2 {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    width: {{ section.settings.image_2_width }}%;
+    object-fit: cover;
+    z-index: 1;
+    transform: translateY(100%);
+  }
+
+  /* ─── MOBILE: isolated stacked layout with scroll-triggered transitions ── */
+  @media (max-width: 768px) {
+    /* Collapse the sticky scroll section — use natural height */
+    .snc-3d-info-section {
+      height: auto !important;
+      background-color: {{ section.settings.background_color }} !important;
+    }
+    .snc-3d-sticky-container {
+      position: static !important;
+      height: auto !important;
+      overflow: visible !important;
+      display: block !important;
+      padding: 60px 24px;
+    }
+
+    /* Hide all absolutely-positioned desktop elements */
+    .snc-3d-info-image,
+    .snc-3d-info-image-layer,
+    .snc-3d-info-text,
+    .snc-3d-info-image-2,
+    .snc-3d-side-content {
+      display: none !important;
+    }
+
+    /* Mobile stacked blocks */
+    .snc-3d-mobile-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .snc-3d-mobile-block {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),
+                  transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .snc-3d-mobile-block.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Image block */
+    .snc-3d-mobile-img {
+      width: 100%;
+      display: block;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),
+                  transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .snc-3d-mobile-img.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Text block */
+    .snc-3d-mobile-text-block {
+      padding: 40px 24px;
+      text-align: center;
+      font-family: 'Futura PT', sans-serif;
+      color: #000000 !important;
+    }
+    .snc-3d-mobile-text-block > * {
+      font-family: 'Futura PT', sans-serif;
+      font-size: {{ section.settings.text_size }}px;
+      font-weight: {{ section.settings.text_weight }};
+      line-height: 1.5;
+      margin: 0;
+      color: inherit !important;
+    }
+    /* Side content block */
+    .snc-3d-mobile-side {
+      padding: 40px 24px 60px;
+      text-align: center;
+      font-family: 'Futura PT', sans-serif;
+    }
+    .snc-3d-mobile-side .snc-3d-side-title {
+      font-family: 'Futura PT', sans-serif;
+      margin-bottom: 16px;
+    }
+    .snc-3d-mobile-side .snc-3d-side-text {
+      font-family: 'Futura PT', sans-serif;
+      margin-bottom: 28px;
+    }
+    .snc-3d-mobile-side .snc-3d-btn {
+      display: inline-block;
+      padding-left: {{ section.settings.side_button_padding_horizontal }}px !important;
+      padding-right: {{ section.settings.side_button_padding_horizontal }}px !important;
+      font-family: 'Futura PT', sans-serif;
+    }
+  }
+</style>
+
+<div class="snc-3d-info-section color-{{ section.settings.color_scheme }}">
+  <div class="snc-3d-sticky-container">
+    {% if section.settings.image != blank %}
+      {{ section.settings.image | image_url: width: 1000 | image_tag: class: 'snc-3d-info-image', loading: 'lazy' }}
+    {% endif %}
+
+    {% if section.settings.text != blank %}
+      <div class="snc-3d-info-text">{{ section.settings.text }}</div>
+    {% endif %}
+
+    {% if section.settings.image_layer != blank %}
+      {{ section.settings.image_layer | image_url: width: 1000 | image_tag: class: 'snc-3d-info-image-layer', loading: 'lazy' }}
+    {% endif %}
+
+    {% if section.settings.image_2 != blank %}
+      {{ section.settings.image_2 | image_url: width: 1200 | image_tag: class: 'snc-3d-info-image-2', loading: 'lazy' }}
+    {% endif %}
+
+    <div class="snc-3d-side-content">
+      {% if section.settings.side_title != blank %}
+        <h2 class="snc-3d-side-title {{ section.settings.side_title_style }}">{{ section.settings.side_title }}</h2>
+      {% endif %}
+      {% if section.settings.side_text != blank %}
+        <div class="snc-3d-side-text {{ section.settings.side_text_style }}">{{ section.settings.side_text }}</div>
+      {% endif %}
+      {% if section.settings.side_button_label != blank %}
+        <a href="{{ section.settings.side_button_link }}" class="snc-3d-btn btn-preset-{{ section.settings.side_button_preset }}">{{ section.settings.side_button_label }}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var section     = document.querySelector('.section--snc-3d-info-section .snc-3d-info-section');
+  if (!section) return;
+
+  var image       = section.querySelector('.snc-3d-info-image');
+  var imageLayer  = section.querySelector('.snc-3d-info-image-layer');
+  var centerText  = section.querySelector('.snc-3d-info-text');
+  var sideContent = section.querySelector('.snc-3d-side-content');
+  var image2      = section.querySelector('.snc-3d-info-image-2');
+
+  function clamp(val, min, max) {
+    return Math.max(min, Math.min(max, val));
+  }
+  function progress01(val, start, end) {
+    return clamp((val - start) / (end - start), 0, 1);
+  }
+
+  function update() {
+    var rect               = section.getBoundingClientRect();
+    var scrollableDistance = rect.height - window.innerHeight;
+    if (scrollableDistance <= 0) return;
+
+    var progress = clamp(-rect.top / scrollableDistance, 0, 1);
+    var isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    if (isMobile) {
+      updateMobile(progress);
+    } else {
+      updateDesktop(progress);
+    }
+  }
+
+  /* ─── DESKTOP ──────────────────────────────────────────────────────────── */
+  function updateDesktop(p) {
+    var imageMoveRange = {{ section.settings.image_move_range }};
+    var textMoveRange  = {{ section.settings.text_move_range }};
+    var textInitialX   = {{ section.settings.text_initial_x }};
+
+    // Resetear transforms de mobile
+    if (image)      { image.style.transform      = 'translate(-50%, -50%)'; }
+    if (imageLayer) { imageLayer.style.transform  = 'translate(-50%, -50%)'; }
+    if (centerText) { centerText.style.transform  = 'translate(-50%, -50%)'; }
+
+    // 1. Imagen + layer se mueven a la derecha
+    var imgLeft = 50 + (p * imageMoveRange);
+    if (image)      image.style.left      = imgLeft + '%';
+    if (imageLayer) imageLayer.style.left = imgLeft + '%';
+
+    // 2. Texto se mueve a la derecha
+    if (centerText) centerText.style.left = (textInitialX + (p * textMoveRange)) + '%';
+
+    // 3. Texto se desvanece entre 0.40 y 0.60
+    var textOpacity = 1 - progress01(p, 0.40, 0.60);
+    if (centerText) centerText.style.opacity = textOpacity;
+
+    // 4. Side content aparece entre 0.50 y 0.80
+    var sideOpacity = progress01(p, 0.50, 0.80);
+    var sideSlide   = 30 - (sideOpacity * 30);
+    if (sideContent) {
+      sideContent.style.opacity   = sideOpacity;
+      sideContent.style.transform = 'translateY(calc(-50% + ' + sideSlide + 'px))';
+    }
+
+    // 5. Imagen 1 + layer se desvanecen y emerge imagen 2 entre 0.75 y 1.0
+    var fadeOut = progress01(p, 0.75, 1.0);
+    if (image)      image.style.opacity      = 1 - fadeOut;
+    if (imageLayer) imageLayer.style.opacity = 1 - fadeOut;
+
+    if (image2) {
+      var translateY = 100 - (fadeOut * 100);
+      image2.style.transform = 'translateY(' + Math.max(0, translateY) + '%)';
+    }
+  }
+
+  /* ─── MOBILE ───────────────────────────────────────────────────────────── */
+  /*
+   * Flujo:
+   *  0.00 – 0.20  →  Fase 1: todo visible y quieto
+   *  0.20 – 0.45  →  Fase 2: imagen + layer + texto suben y se desvanecen
+   *  0.45 – 0.65  →  Fase 3: image_2 sube desde abajo y aparece
+   *  0.55 – 0.75  →  Fase 4: side content sube y aparece (overlap intencional con fase 3)
+   *  0.85 – 1.00  →  Fase 5: todo se desvanece antes de salir
+   */
+  function updateMobile(p) {
+
+    // — Fase 2: salida de imagen + layer + texto —
+    var exitProgress = progress01(p, 0.20, 0.45);
+    var exitY        = exitProgress * 28; // vh hacia arriba
+
+    if (image) {
+      image.style.left      = '50%';
+      image.style.transform = 'translate(-50%, calc(-50% - ' + exitY + 'vh))';
+      image.style.opacity   = 1 - exitProgress;
+    }
+    if (imageLayer) {
+      imageLayer.style.left      = '50%';
+      imageLayer.style.transform = 'translate(-50%, calc(-50% - ' + exitY + 'vh))';
+      imageLayer.style.opacity   = 1 - exitProgress;
+    }
+    if (centerText) {
+      centerText.style.left      = '50%';
+      centerText.style.transform = 'translate(-50%, calc(-50% - ' + exitY + 'vh))';
+      centerText.style.opacity   = 1 - exitProgress;
+    }
+
+    // — Fase 3: image_2 entra desde abajo —
+    var img2Progress = progress01(p, 0.45, 0.65);
+    var img2Y        = 18 - (img2Progress * 18); // empieza 18vh abajo, llega a 0
+    if (image2) {
+      image2.style.opacity   = img2Progress;
+      image2.style.transform = 'translate(-50%, ' + img2Y + 'vh)';
+    }
+
+    // — Fase 4: side content entra desde abajo —
+    var sideProgress = progress01(p, 0.55, 0.75);
+    var sideY        = 20 - (sideProgress * 20); // empieza 20px abajo, llega a 0
+    if (sideContent) {
+      sideContent.style.opacity   = sideProgress;
+      sideContent.style.transform = 'translate(-50%, ' + sideY + 'px)';
+    }
+
+    // — Fase 5: fade out final —
+    var finalFade = progress01(p, 0.85, 1.0);
+    if (finalFade > 0) {
+      if (image2)      image2.style.opacity      = 1 - finalFade;
+      if (sideContent) sideContent.style.opacity = 1 - finalFade;
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+
+  update();
+})();
+</script>
+
+<script>
+/* ─── MOBILE: stacked scroll-triggered layout ──────────────────────────── */
+(function() {
+  if (!window.matchMedia('(max-width: 768px)').matches) return;
+
+  var sectionEl = document.querySelector('.section--snc-3d-info-section .snc-3d-info-section');
+  if (!sectionEl) return;
+  var stickyContainer = sectionEl.querySelector('.snc-3d-sticky-container');
+  if (!stickyContainer) return;
+
+  var mainImg     = sectionEl.querySelector('.snc-3d-info-image');
+  var layerImg    = sectionEl.querySelector('.snc-3d-info-image-layer');
+  var centerText  = sectionEl.querySelector('.snc-3d-info-text');
+  var secondImg   = sectionEl.querySelector('.snc-3d-info-image-2');
+  var sideContent = sectionEl.querySelector('.snc-3d-side-content');
+
+  var stack = document.createElement('div');
+  stack.className = 'snc-3d-mobile-stack';
+
+  // Block 1: center text (acts as the title on mobile)
+  if (centerText) {
+    var b1 = document.createElement('div');
+    b1.className = 'snc-3d-mobile-text-block snc-3d-mobile-block';
+    b1.innerHTML = centerText.innerHTML;
+    stack.appendChild(b1);
+  }
+
+  // Block 2: main image intentionally skipped on mobile based on requirements
+
+  // Block 3: side content (title + text + button)
+  if (sideContent) {
+    var b3 = document.createElement('div');
+    b3.className = 'snc-3d-mobile-side snc-3d-mobile-block';
+    b3.innerHTML = sideContent.innerHTML;
+    stack.appendChild(b3);
+  }
+
+  // Block 4: secondary image (last)
+  if (secondImg) {
+    var b4 = document.createElement('div');
+    b4.className = 'snc-3d-mobile-img';
+
+    var img4 = document.createElement('img');
+    img4.src = secondImg.src;
+    img4.alt = secondImg.alt || '';
+    img4.style.cssText = 'width:100%; display:block;';
+    b4.appendChild(img4);
+    stack.appendChild(b4);
+  }
+
+  stickyContainer.appendChild(stack);
+
+  // IntersectionObserver for each block
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    stack.querySelectorAll('.snc-3d-mobile-img, .snc-3d-mobile-block').forEach(function(el) {
+      io.observe(el);
+    });
+  } else {
+    stack.querySelectorAll('.snc-3d-mobile-img, .snc-3d-mobile-block').forEach(function(el) {
+      el.classList.add('is-visible');
+    });
+  }
+})();
+</script>

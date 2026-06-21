@@ -1,0 +1,147 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "snc-size-guide-page",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "eyebrow": "1 · Visit a jeweler",
+            "title": "Visit a jeweler",
+            "text": "<p>The most accurate way. Most jewelers will size a finger at no charge. Ask to be measured at the end of the day, when the hand is at its fullest.</p>",
+            "image": ""
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "eyebrow": "2 · Measure a ring you own",
+            "title": "Measure a ring you own",
+            "text": "<p>Choose a ring that already fits the finger you have in mind. Lay it flat. With a ruler, measure the inside diameter in millimeters, the widest point across the empty middle of the band. Match your reading to the chart below.</p>",
+            "image": ""
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "eyebrow": "3 · Measure the finger",
+            "title": "Measure the finger",
+            "text": "<p>Cut a thin strip of paper. Wrap it around the base of the finger, snug but not tight. Mark where the strip overlaps. Measure the length in millimeters. This is the circumference. Match it to the chart.</p>",
+            "image": ""
+          }
+        },
+        "row_1": {
+          "type": "size_row",
+          "settings": { "us_size": "4", "eu_size": "46", "inside_diameter": "14.9", "circumference": "46.8" }
+        },
+        "row_2": {
+          "type": "size_row",
+          "settings": { "us_size": "4½", "eu_size": "48", "inside_diameter": "15.3", "circumference": "48.0" }
+        },
+        "row_3": {
+          "type": "size_row",
+          "settings": { "us_size": "5", "eu_size": "49", "inside_diameter": "15.7", "circumference": "49.3" }
+        },
+        "row_4": {
+          "type": "size_row",
+          "settings": { "us_size": "5½", "eu_size": "50", "inside_diameter": "16.1", "circumference": "50.6" }
+        },
+        "row_5": {
+          "type": "size_row",
+          "settings": { "us_size": "6", "eu_size": "52", "inside_diameter": "16.5", "circumference": "51.9" }
+        },
+        "row_6": {
+          "type": "size_row",
+          "settings": { "us_size": "6½", "eu_size": "53", "inside_diameter": "16.9", "circumference": "53.1" }
+        },
+        "row_7": {
+          "type": "size_row",
+          "settings": { "us_size": "7", "eu_size": "54", "inside_diameter": "17.3", "circumference": "54.4" }
+        },
+        "row_8": {
+          "type": "size_row",
+          "settings": { "us_size": "7½", "eu_size": "56", "inside_diameter": "17.7", "circumference": "55.7" }
+        },
+        "row_9": {
+          "type": "size_row",
+          "settings": { "us_size": "8", "eu_size": "57", "inside_diameter": "18.1", "circumference": "57.0" }
+        },
+        "row_10": {
+          "type": "size_row",
+          "settings": { "us_size": "8½", "eu_size": "58", "inside_diameter": "18.5", "circumference": "58.3" }
+        },
+        "row_11": {
+          "type": "size_row",
+          "settings": { "us_size": "9", "eu_size": "59", "inside_diameter": "18.9", "circumference": "59.5" }
+        },
+        "row_12": {
+          "type": "size_row",
+          "settings": { "us_size": "9½", "eu_size": "61", "inside_diameter": "19.4", "circumference": "60.8" }
+        },
+        "row_13": {
+          "type": "size_row",
+          "settings": { "us_size": "10", "eu_size": "62", "inside_diameter": "19.8", "circumference": "62.1" }
+        },
+        "row_14": {
+          "type": "size_row",
+          "settings": { "us_size": "10½", "eu_size": "63", "inside_diameter": "20.2", "circumference": "63.4" }
+        },
+        "row_15": {
+          "type": "size_row",
+          "settings": { "us_size": "11", "eu_size": "65", "inside_diameter": "20.6", "circumference": "64.6" }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3",
+        "row_1",
+        "row_2",
+        "row_3",
+        "row_4",
+        "row_5",
+        "row_6",
+        "row_7",
+        "row_8",
+        "row_9",
+        "row_10",
+        "row_11",
+        "row_12",
+        "row_13",
+        "row_14",
+        "row_15"
+      ],
+      "settings": {
+        "kicker": "A GUIDE FROM THE MAISON",
+        "title": "Ring Sizing Guide",
+        "intro": "<p>A ring should settle on the hand without argument. Firm at the base of the finger, free enough to turn. These are the three ways to find your size.</p>",
+        "chart_title": "Size chart",
+        "notes_title": "A few things to know",
+        "notes_text": "<p>Measure at the end of the day. Fingers are smaller in the morning, fuller at night. The size you wear most of the day is the one that should fit.</p><p>Skip the cold. Fingers contract in low temperatures. A morning measurement in winter will read a full size small.</p><p>Between two numbers, choose the larger one. A ring that is slightly loose will wear comfortably for decades. A ring that is slightly tight becomes a problem.</p><p>The dominant hand is often a half size larger. Worth measuring both.</p><p>Wide bands sit heavier. If the band is wider than six millimeters, consider going up half a size.</p><p>Still unsure? Write to the concierge. We will help you find your size, quietly.</p>",
+        "concierge_label": "Concierge:",
+        "concierge_email": "concierge@deleville.co",
+        "signature": "DE LEVILLE",
+        "content_max_width": 1120,
+        "padding_top": 120,
+        "padding_bottom": 130,
+        "background_color": "#ffffff",
+        "title_color": "#111111",
+        "text_color": "#222222",
+        "muted_color": "#6f6f6f",
+        "border_color": "#e6e6e6"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

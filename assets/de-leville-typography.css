@@ -1,0 +1,144 @@
+/* ============================================================
+   De Leville — Typographic normalization (LV-style hierarchy)
+   ------------------------------------------------------------
+   Locked rule: Futura PT only, mixed case, max weight Medium.
+   Hierarchy comes from size + whitespace, not from shouting.
+
+   This file loads LAST in theme.liquid so it overrides every
+   per-section CSS rule and inline Shopify setting without
+   requiring 47 individual file edits.
+   ============================================================ */
+
+/* ---------- 1. KILL ALL UPPERCASE ----------
+   No element on the site ever uses text-transform: uppercase.
+   This wipes the 47 audited violations in a single rule. */
+*,
+*::before,
+*::after {
+  text-transform: none !important;
+}
+
+/* ---------- 2. CAP FONT WEIGHT AT MEDIUM (500) ----------
+   LV's hierarchy never goes above Medium. Bold shouts.
+   Body remains 400 (Book), emphasis tops out at 500. */
+
+/* Body text & links — Book weight */
+body,
+p,
+li,
+span,
+a,
+td,
+th,
+input,
+textarea,
+select,
+label,
+.body,
+[class*="--description"],
+[class*="--text"],
+[class*="--paragraph"],
+[class*="--body"] {
+  font-weight: 400;
+}
+
+/* Headings, titles, prices, buttons, labels — Medium, never heavier */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+strong, b,
+button,
+.button,
+[class*="--title"],
+[class*="__title"],
+[class*="--heading"],
+[class*="__heading"],
+[class*="--label"],
+[class*="__label"],
+[class*="--button"],
+[class*="__button"],
+[class*="--price"],
+[class*="--name"],
+[class*="--cta"] {
+  font-weight: 500 !important;
+}
+
+/* Override the legacy 600/700/800 declarations from the audit */
+.text--title,
+.snc-search-box--label,
+.snc-plp--qa-title,
+.snc-side-cart--price,
+.snc-side-cart--name,
+.snc-side-cart--total-price,
+.snc-side-cart--total,
+.snc-side-cart--quantity,
+.snc-main-account--title,
+.snc-main-register--title,
+.snc-main-login--title,
+.snc-help-center--title,
+.snc-search-results--qa-title,
+.snc-product-carousel--title,
+.snc-plp--heading,
+.pdp-hero--price,
+.pdp-hero--price-final,
+.pdp-hero--price-amount,
+.pdp-hero--title,
+.pdp-hero--name {
+  font-weight: 500 !important;
+}
+
+/* ---------- 3. NORMALIZE LETTER-SPACING ----------
+   Wide tracking was paired with ALL CAPS to make labels
+   readable. With mixed case it looks aerated and weird.
+   Pull tracking back to ~0.02em (LV-typical). */
+[class*="--title"],
+[class*="--label"],
+[class*="--button"],
+[class*="--heading"],
+[class*="__title"],
+[class*="__label"],
+[class*="__button"],
+[class*="__heading"],
+button,
+.button,
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: 0.02em !important;
+}
+
+/* Body keeps a hair tighter for paragraph rhythm */
+body, p, li, [class*="--description"], [class*="--text"], [class*="--paragraph"] {
+  letter-spacing: 0.005em;
+}
+
+/* ---------- 4. BUTTONS ----------
+   LV's CTAs are mixed case, regular weight, generous padding.
+   Already normalized above (text-transform: none, weight 500,
+   tracking 0.02em). Reinforced here for any inline overrides. */
+button,
+.button,
+[class*="--button"],
+.pdp-hero--button,
+.pdp-hero--button-add-cart,
+.pdp-hero--button-buy-now {
+  text-transform: none !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* ---------- 5. LINE-HEIGHT BREATHING ----------
+   LV's headlines breathe. Tighten ours up just a touch
+   so size hierarchy reads cleanly without being airy. */
+h1, h2, .h1, .h2,
+[class*="--title-h1"],
+[class*="--title-h2"] {
+  line-height: 1.1;
+}
+h3, h4, h5, h6, .h3, .h4, .h5, .h6 {
+  line-height: 1.25;
+}
+
+/* ---------- 6. FAMILY LOCK ----------
+   Belt-and-braces: theme.liquid already forces Futura PT
+   universally; this re-asserts on the most-overridden classes. */
+button, .button, [class*="--button"], [class*="--title"], [class*="--label"] {
+  font-family: 'Futura PT', var(--font-main, sans-serif) !important;
+}

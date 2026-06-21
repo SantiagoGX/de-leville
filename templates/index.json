@@ -1,0 +1,517 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "snc-info-hero",
+      "name": "SNC Info Hero",
+      "settings": {
+        "video": "shopify://files/videos/ANIMACION 2 ANILLOS ELIAU_V2.mp4",
+        "color_scheme": "scheme-1",
+        "margin_top": 0,
+        "height_vh": 100,
+        "full_width": true,
+        "border_radius": 0,
+        "overlay_type": "gradient",
+        "gradient_direction": "to top",
+        "overlay_color": "#000000",
+        "overlay_opacity": 100,
+        "content_vertical_position": "flex-end",
+        "content_horizontal_position": "center",
+        "text_alignment": "center",
+        "mobile_background_position": "center center",
+        "mobile_background_position_override": false,
+        "mobile_background_position_x": 50,
+        "mobile_background_position_y": 50,
+        "eyebrow_text": "",
+        "title": "",
+        "title_max_width": 0,
+        "subtitle": "Born in Rome, crafted for eternity.",
+        "subtitle_max_width": 0,
+        "text": "",
+        "text_max_width": 0,
+        "title_style": "h1",
+        "title_font_weight": "500",
+        "subtitle_style": "h1",
+        "subtitle_font_weight": "400",
+        "text_style": "body",
+        "text_font_weight": "400",
+        "button_style": "button",
+        "button_label": "Discover the Collection",
+        "button_link": "/collections",
+        "button_preset": "1",
+        "button_2_label": "",
+        "button_2_link": "",
+        "spec_line": "",
+        "trust_strip": ""
+      }
+    },
+    "snc_animated_collections_home": {
+      "type": "snc-animated-collections",
+      "blocks": {
+        "collection_tfDeeR": {
+          "type": "collection",
+          "name": "COLLECTION",
+          "settings": {
+            "collection": "hydrogen",
+            "custom_title": "CLASSICO",
+            "custom_link": "shopify://collections/classico",
+            "image_1": "shopify://shop_images/VISTA_3_ISO_WHITE_SIN_FONDO.png",
+            "image_2": "shopify://shop_images/VISTA_3_ISO_YELLOW_SIN_FONDO_a7221403-9fc1-4a57-ba0b-98f0c52f3a8d.png",
+            "mobile_image": "image_1",
+            "image_width": 400,
+            "image_height": 400
+          }
+        },
+        "collection_qHpX6e": {
+          "type": "collection",
+          "settings": {
+            "collection": "incontro",
+            "custom_title": "INCONTRO",
+            "custom_link": "shopify://collections/incontro",
+            "image_1": "shopify://shop_images/De_Leville_Incontro_Puro_V1VISTAISOrose_6d6c1c3f-2334-41f3-bd67-ac801cbfae10.png",
+            "image_2": "shopify://shop_images/De_Leville_Incontro_Puro_V1VISTAISOGOLD_124b8c3a-cad6-42d3-b54f-12b220e68a50.png",
+            "mobile_image": "image_1",
+            "image_width": 400,
+            "image_height": 400
+          }
+        },
+        "collection_gCX9ha": {
+          "type": "collection",
+          "name": "COLLECTION",
+          "settings": {
+            "collection": "automated-collection",
+            "custom_title": "MEZZA LUNA",
+            "custom_link": "shopify://collections/mezza-luna",
+            "image_1": "shopify://shop_images/VISTA_ISO_WHITE.png",
+            "image_2": "shopify://shop_images/VISTA_ISO_YELLOW.png",
+            "mobile_image": "image_1",
+            "image_width": 400,
+            "image_height": 400
+          }
+        },
+        "collection_pJjQ99": {
+          "type": "collection",
+          "name": "COLLECTION",
+          "disabled": true,
+          "settings": {
+            "collection": "frontpage",
+            "custom_title": "CHAINS",
+            "custom_link": "shopify://collections/chains",
+            "image_1": "shopify://shop_images/VISTA1TOPCHUNKYYELLOW.png",
+            "image_2": "shopify://shop_images/VISTA1TOPCHUNKYWHITE.png",
+            "mobile_image": "image_1",
+            "image_width": 400,
+            "image_height": 400
+          }
+        },
+        "collection_rHb3Uw": {
+          "type": "collection",
+          "name": "COLLECTION",
+          "disabled": true,
+          "settings": {
+            "collection": "bags",
+            "custom_title": "Bags",
+            "custom_link": "shopify://collections/bags",
+            "image_1": "shopify://shop_images/Frame797.png",
+            "image_2": "shopify://shop_images/Bags_image_1.png",
+            "mobile_image": "image_1",
+            "image_width": 400,
+            "image_height": 400
+          }
+        }
+      },
+      "block_order": [
+        "collection_tfDeeR",
+        "collection_qHpX6e",
+        "collection_gCX9ha",
+        "collection_pJjQ99",
+        "collection_rHb3Uw"
+      ],
+      "name": "SNC Animated Collections",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "title": "THE COLLECTIONS",
+        "title_style": "h3",
+        "text": "",
+        "text_style": "body",
+        "text_width": 300,
+        "collection_font_size": 60,
+        "collection_font_size_mobile": 30,
+        "collection_gap": 20,
+        "collection_color": "#000000",
+        "collection_text_transform": "uppercase",
+        "image_width": 370,
+        "inactive_opacity": 20,
+        "mobile_ring_animation": "float",
+        "mobile_ring_size": 80,
+        "button_label": "VIEW ALL",
+        "button_link": "shopify://collections",
+        "button_preset": "1",
+        "min_height": 100,
+        "header_margin_bottom": 40,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "snc_mixed_grid_home": {
+      "type": "snc-mixed-grid",
+      "disabled": true,
+      "name": "SNC Mixed Grid",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "title": "OUR RINGS",
+        "title_style": "h2",
+        "text": "",
+        "text_style": "body",
+        "text_width": 300,
+        "header_alignment": "center",
+        "header_gap": 40,
+        "collection": "incontro",
+        "visual_pattern": "4-4-4-4",
+        "rows": 1,
+        "gap_horizontal": 10,
+        "gap_vertical": 10,
+        "image_height_mode": "fixed",
+        "image_ratio": "3/4",
+        "image_height_desktop": 450,
+        "image_height_mobile": 400,
+        "image_border_radius": 0,
+        "show_price": true,
+        "show_style_dividers": false,
+        "style_keywords": "Puro,Segreto,Regale,Essenza",
+        "disable_links_mobile": false,
+        "email_capture_enabled": false,
+        "lead_gen_heading": "Register your interest",
+        "lead_gen_placeholder": "Your email address",
+        "lead_gen_button": "Notify me",
+        "lead_gen_success": "Thank you. We will notify you when these products are available.",
+        "customer_tag": "product-interest",
+        "gradient_color_1": "#ffffff",
+        "gradient_color_2": "#ffffff",
+        "gradient_direction": "to-top",
+        "gradient_opacity": 100,
+        "padding_top": 20,
+        "padding_bottom": 45
+      }
+    },
+    "snc_3d_info_section_RnxKyF": {
+      "type": "snc-3d-info-section",
+      "name": "3D Info Section",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "background_color": "#f1f1f1",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "scroll_height": 300,
+        "image": "shopify://shop_images/De_Leville_Classico_puro_VISTA1TOPYELLOW_f34256e9-78c6-488e-8dff-f3de201dc942.png",
+        "image_2": "shopify://shop_images/Frame_861_a02e2b45-aa78-4324-b3e4-532fe7f0b2f5.png",
+        "image_2_width": 50,
+        "image_width": 590,
+        "center_y_offset": 0,
+        "text": "",
+        "text_max_width": 600,
+        "text_initial_x": 60,
+        "text_move_range": 41,
+        "image_move_range": 25,
+        "text_size": 25,
+        "text_weight": 600,
+        "side_title": "THE MAISON",
+        "side_title_style": "h3",
+        "side_text": "<p>Three generations, united by a single standard of excellence.</p><p>Founded in 1975, De Leville has spent over fifty years mastering Italian craftsmanship — first in leather, now in gold. Each piece carries the weight of that history, and the promise that it will endure for generations to come.</p>",
+        "side_text_style": "body",
+        "side_button_label": "DISCOVER MORE",
+        "side_button_link": "/pages/the-maison",
+        "side_button_preset": "1",
+        "side_button_padding_horizontal": 0
+      }
+    },
+    "snc_home_showcase_LDA7wb": {
+      "type": "snc-home-showcase",
+      "blocks": {
+        "product_aEqUFh": {
+          "type": "product",
+          "settings": {
+            "product": "mezza-luna-ring-yellow-gold"
+          }
+        },
+        "product_MNLLnQ": {
+          "type": "product",
+          "settings": {
+            "product": "classico-puro-ring-white-gold"
+          }
+        },
+        "product_iK6K9y": {
+          "type": "product",
+          "settings": {
+            "product": "classico-segreto-ring-rose-gold"
+          }
+        },
+        "product_hhJtAL": {
+          "type": "product",
+          "settings": {
+            "product": "classico-regale-ring-yellow-gold"
+          }
+        },
+        "product_qEYPfz": {
+          "type": "product",
+          "settings": {
+            "product": "incontro-p"
+          }
+        },
+        "product_7BrwjA": {
+          "type": "product",
+          "settings": {
+            "product": "incontro-segreto-ring-white-gold"
+          }
+        },
+        "product_KUCcJ4": {
+          "type": "product",
+          "settings": {
+            "product": "incontro-essenza-ring-rose-gold"
+          }
+        },
+        "product_mErtiU": {
+          "type": "product",
+          "settings": {
+            "product": "incontro-regale-ring-yellow-gold"
+          }
+        }
+      },
+      "block_order": [
+        "product_aEqUFh",
+        "product_MNLLnQ",
+        "product_iK6K9y",
+        "product_hhJtAL",
+        "product_qEYPfz",
+        "product_7BrwjA",
+        "product_KUCcJ4",
+        "product_mErtiU"
+      ],
+      "name": "Home Showcase",
+      "settings": {
+        "color_scheme": "",
+        "title": "OUR RINGS",
+        "title_style": "h2",
+        "text": "",
+        "text_style": "body",
+        "text_width": 800,
+        "header_alignment": "center",
+        "header_gap": 30,
+        "collection": "incontro",
+        "visual_pattern": "4-4-4-4",
+        "rows": 1,
+        "gap_horizontal": 16,
+        "gap_vertical": 16,
+        "image_height_mode": "aspect_ratio",
+        "image_ratio": "1/1",
+        "image_height_desktop": 400,
+        "image_height_mobile": 300,
+        "image_border_radius": 0,
+        "show_price": true,
+        "card_caption_position": "below",
+        "image_bg_color": "#f2f2f0",
+        "image_object_fit": "contain",
+        "image_inner_padding": 12,
+        "show_cta": false,
+        "cta_text": "View Collection",
+        "cta_url": "",
+        "disable_links_mobile": false,
+        "email_capture_enabled": false,
+        "lead_gen_heading": "Register your interest",
+        "lead_gen_placeholder": "Your email address",
+        "lead_gen_button": "Notify me",
+        "lead_gen_success": "Thank you. We will notify you when these products are available.",
+        "customer_tag": "product-interest",
+        "gradient_color_1": "#ffffff",
+        "gradient_color_2": "#ffffff",
+        "gradient_direction": "to-top",
+        "gradient_opacity": 100,
+        "padding_top": 60,
+        "padding_bottom": 0
+      }
+    },
+    "snc_animated_product_home": {
+      "type": "snc-animated-product",
+      "blocks": {
+        "image_group_GCwNp3": {
+          "type": "image_group",
+          "settings": {
+            "title": "LEATHERGOODS",
+            "button_label": "Join the waitlist",
+            "button_link": "shopify://pages/leathergoods",
+            "image_1": "shopify://shop_images/De_Leville_Leathergood_header.png",
+            "overlay_color": "#000000",
+            "overlay_opacity": 40
+          }
+        }
+      },
+      "block_order": [
+        "image_group_GCwNp3"
+      ],
+      "name": "SNC Animated Product",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "title": "",
+        "title_style": "h2",
+        "text": "",
+        "text_style": "body",
+        "text_width": 300,
+        "header_gap": 100,
+        "product_title_size": 30,
+        "product_title_size_mobile": 30,
+        "product_title_color": "#000000",
+        "product_title_transform": "uppercase",
+        "image_height": 1000,
+        "image_height_mobile": 700,
+        "image_border_radius": 0,
+        "image_gap": 20,
+        "button_label": "View Product",
+        "button_preset": "1",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "snc_testimonials_home": {
+      "type": "snc-testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I wore it to my daughter's wedding. Three people asked where it was from. I said Rome, and left it at that.",
+            "author": "Catherine L.",
+            "detail": "Incontro Regale, London"
+          }
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I've had it eight months. It goes with everything. Not what I expected from something this distinctive.",
+            "author": "Marcus R.",
+            "detail": "Classico Segreto, New York"
+          }
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I almost didn't order it. The wait felt long. Now I can't imagine having rushed it.",
+            "author": "Sophie A.",
+            "detail": "Incontro Essenza, Paris"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "",
+        "columns": 3,
+        "bg_color": "#111111",
+        "text_color": "#f0ede6",
+        "muted_color": "#7a7570",
+        "padding_top": 160,
+        "padding_bottom": 160
+      }
+    },
+    "snc_scroll_gallery_BzTAGg": {
+      "type": "snc-scroll-gallery",
+      "blocks": {
+        "image_Jx4ghx": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/milena3700_luxury_jewelry_object_photographed_with_extreme_pr_28b23288-5659-4566-bde9-071a3a3344ee_3.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        },
+        "image_kTCDYL": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_2.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        },
+        "image_ygxn6i": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_3.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        },
+        "image_t6npNV": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_4.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        },
+        "image_VRG4VH": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_5.png",
+            "image_url": "shopify://pages/digital-soul"
+          }
+        }
+      },
+      "block_order": [
+        "image_Jx4ghx",
+        "image_kTCDYL",
+        "image_ygxn6i",
+        "image_t6npNV",
+        "image_VRG4VH"
+      ],
+      "name": "SNC Scroll Gallery",
+      "settings": {
+        "titulo": "DIGITAL SOUL",
+        "titulo_size": 36,
+        "titulo_color": "#000000",
+        "titulo_weight": "500",
+        "titulo_uppercase": true,
+        "titulo_spacing": 0.2,
+        "texto_central": "EVERY PIECE IS ALIVE",
+        "texto_central_size": 100,
+        "texto_central_color": "#000000",
+        "texto_central_weight": "700",
+        "texto_central_uppercase": true,
+        "texto_central_spacing": 0.1,
+        "texto_central_line_height": 1.1,
+        "descripcion": "Every De Leville piece carries a Digital Soul. A blockchain-authenticated certificate of origin, ownership, and provenance. Permanent. Transferable.",
+        "descripcion_size": 15,
+        "descripcion_color": "#333333",
+        "descripcion_width": 500,
+        "descripcion_align": "center",
+        "descripcion_weight": "400",
+        "descripcion_line_height": 1.8,
+        "show_cta": true,
+        "cta_text": "Learn More",
+        "cta_url": "/pages/digital-soul",
+        "image_size": 320,
+        "image_gap": 100,
+        "arc_rotation": 0,
+        "arc_height": 80,
+        "image_exit_point": 45,
+        "scroll_height": 300,
+        "background_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "snc_animated_collections_home",
+    "snc_mixed_grid_home",
+    "snc_3d_info_section_RnxKyF",
+    "snc_home_showcase_LDA7wb",
+    "snc_animated_product_home",
+    "snc_testimonials_home",
+    "snc_scroll_gallery_BzTAGg"
+  ]
+}

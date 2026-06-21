@@ -1,0 +1,358 @@
+{%- comment -%}
+  De Leville — SNC Split Story
+  Two-column editorial layout: text on one side, image/video on the other.
+  No scroll-jacking. Plain editorial split that covers any sticky hero beneath it.
+{%- endcomment -%}
+
+<style>
+  /* Covers sticky hero video below.
+     padding-top: 0 neutralises the global mobile rule in theme.liquid
+     that adds clamp(40px, 9vw, 88px) between sections on max-width: 900px. */
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.background_color | default: '#ffffff' }};
+    position: relative;
+    z-index: 3 !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* ── Free composition: text anchored left, image floats freely ──
+     No grid. The image is an absolute element that can overlap the text. */
+  .snc-split {
+    position: relative;
+    min-height: {{ section.settings.min_height | default: 75 }}vh;
+    padding-bottom: {{ section.settings.padding_bottom | default: 72 }}px;
+    overflow: hidden;
+    background: {{ section.settings.background_color | default: '#ffffff' }};
+    box-sizing: border-box;
+  }
+
+  /* Text: positioned in the left zone, vertically centered, always on top */
+  .snc-split__text {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: {{ section.settings.text_padding_h | default: 80 }}px;
+    width: 36%;
+    z-index: 4;
+  }
+
+  .snc-split__eyebrow {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #8a8a8a;
+    margin: 0 0 20px;
+  }
+
+  .snc-split__title {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: clamp(28px, 3vw, 52px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    color: #1a1a1a;
+    margin: 0 0 28px;
+  }
+
+  .snc-split__body {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: #4a4a4a;
+    margin: 0;
+  }
+
+  .snc-split__body p { margin: 0 0 12px; }
+  .snc-split__body p:last-child { margin-bottom: 0; }
+
+  /* Image: large free element. right: 1% keeps the golden chain visible inside
+     the section instead of clipping it on the right edge. */
+  .snc-split__media {
+    position: absolute;
+    top: -6%;
+    right: 1%;
+    width: 74%;
+    height: 116%;
+    z-index: 3;
+    pointer-events: none;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .snc-split__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: top right;
+    display: block;
+  }
+
+  .snc-split__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Mobile: stacked layout ── */
+  @media (max-width: 768px) {
+    /* Flush against the hero — zero gap at top */
+    #shopify-section-{{ section.id }} {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+
+    .snc-split {
+      min-height: auto;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    /* Chains image first — flush below hero video */
+    .snc-split__media {
+      order: 1;
+      position: relative;
+      top: auto;
+      right: auto;
+      width: 100%;
+      height: 60vw;
+      z-index: 1;
+      overflow: hidden;
+      margin-top: 0;
+    }
+
+    .snc-split__img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: top center;
+    }
+
+    /* Text below the chains image, compact */
+    .snc-split__text {
+      order: 2;
+      position: relative;
+      top: auto;
+      transform: none;
+      left: auto;
+      width: 100%;
+      z-index: 2;
+      padding: 20px 24px 40px;
+      box-sizing: border-box;
+    }
+
+    .snc-split__eyebrow {
+      font-size: 10px;
+      margin-bottom: 12px;
+    }
+
+    .snc-split__title {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .snc-split__body {
+      font-size: 15px;
+      line-height: 1.65;
+    }
+  }
+</style>
+
+<div class="snc-split">
+
+  <div class="snc-split__text">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="snc-split__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="snc-split__title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <div class="snc-split__body">{{ section.settings.text }}</div>
+    {%- endif -%}
+  </div>
+
+  <div class="snc-split__media">
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag:
+          autoplay: true,
+          loop: true,
+          muted: true,
+          controls: false,
+          playsinline: true,
+          class: 'snc-split__video' }}
+    {%- elsif section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 1400 | image_tag:
+          class: 'snc-split__img',
+          loading: 'lazy',
+          alt: section.settings.title | escape }}
+    {%- endif -%}
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    /* When snc-split-story follows an snc-info-hero:
+       1. Remove sticky so the hero scrolls out naturally (desktop fix)
+       2. Remove the global mobile padding-bottom that creates a gap
+          between the hero bottom and the chains image on small screens */
+    var splitSection = document.getElementById('shopify-section-{{ section.id }}');
+    if (!splitSection) return;
+
+    var prev = splitSection.previousElementSibling;
+    while (prev) {
+      if (prev.querySelector('.snc-info-hero--root')) {
+        /* Desktop: kill sticky */
+        prev.style.setProperty('position', 'relative', 'important');
+        prev.style.setProperty('top', 'auto', 'important');
+        prev.style.setProperty('z-index', '0', 'important');
+        /* Mobile: kill the clamp(40px,9vw,88px) padding-bottom from theme.liquid */
+        if (window.innerWidth <= 900) {
+          prev.style.setProperty('padding-bottom', '0', 'important');
+        }
+        break;
+      }
+      prev = prev.previousElementSibling;
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "SNC Split Story",
+  "tag": "section",
+  "class": "section--snc-split-story",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Body text"
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video (takes priority over image)"
+    },
+    {
+      "type": "select",
+      "id": "media_object_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "contain", "label": "Contain — full image visible" },
+        { "value": "cover",   "label": "Cover — fills the frame" }
+      ],
+      "default": "contain"
+    },
+    {
+      "type": "range",
+      "id": "media_padding",
+      "label": "Image inner padding",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "media_bg",
+      "label": "Media background",
+      "default": "#f2f2f0"
+    },
+    {
+      "type": "select",
+      "id": "media_side",
+      "label": "Media position",
+      "options": [
+        { "value": "right", "label": "Right (text left)" },
+        { "value": "left",  "label": "Left (text right)" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "label": "Section height",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "text_padding_h",
+      "label": "Text horizontal padding",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Split Story",
+      "category": "De Leville"
+    }
+  ]
+}
+{% endschema %}

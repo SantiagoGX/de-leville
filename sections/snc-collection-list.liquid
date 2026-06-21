@@ -1,0 +1,252 @@
+<style>
+  /* ─── Section wrapper ─────────────────────────────────────────── */
+  .snc-cl {
+    margin: 0;
+    padding: 0;
+    padding-top: var(--custom-header-total-height, 80px);
+    background: #ffffff;
+    width: 100%;
+    display: block;
+  }
+
+  /* ─── Grid ────────────────────────────────────────────────────── */
+  /*
+    Equal-width columns via auto-fill + minmax.
+    3 collections → 3 equal columns.
+    5 collections → row of 3, row of 2 (browser fills naturally).
+    Border approach: top + left on wrapper, right + bottom on each card
+    creates a seamless single-pixel separator grid with no doubled borders.
+  */
+  .snc-cl__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    width: 100%;
+    border-top: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
+  }
+
+  /* ─── Card ────────────────────────────────────────────────────── */
+  .snc-cl__item {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    background: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+  }
+
+  /* ─── Image area ──────────────────────────────────────────────── */
+  .snc-cl__img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #f2f1ef;
+  }
+
+  .snc-cl__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.5s ease;
+    will-change: transform;
+  }
+
+  /* Placeholder SVG (no image assigned) */
+  .snc-cl__img-placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.5s ease;
+    will-change: transform;
+  }
+
+  .snc-cl__img-placeholder svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ─── Hover: image scale only ─────────────────────────────────── */
+  .snc-cl__item:hover .snc-cl__img,
+  .snc-cl__item:hover .snc-cl__img-placeholder {
+    transform: scale(1.04);
+  }
+
+  /* ─── Text block ──────────────────────────────────────────────── */
+  .snc-cl__text {
+    padding: 20px 24px;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .snc-cl__name {
+    display: block;
+    font-family: var(--font-primary--family, sans-serif);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #000000;
+    margin: 0 0 6px 0;
+    line-height: 1.4;
+  }
+
+  .snc-cl__cta {
+    display: inline-block;
+    font-family: var(--font-primary--family, sans-serif);
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #555555;
+    text-decoration: none;
+  }
+
+  /* Hover: only the CTA underlines — no background, no overlay */
+  .snc-cl__item:hover .snc-cl__cta {
+    text-decoration: underline;
+  }
+
+  /* ─── Tablet: 2 columns ───────────────────────────────────────── */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .snc-cl__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* ─── Mobile: single column ───────────────────────────────────── */
+  @media (max-width: 768px) {
+    .snc-cl__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .snc-cl__img-placeholder {
+      padding: 8px;
+    }
+  }
+</style>
+
+<div
+  class="snc-cl"
+  data-section-id="{{ section.id }}"
+  data-section-type="snc-collection-list"
+  data-header-theme="{{ section.settings.header_theme | default: 'dark' }}"
+>
+  <div class="snc-cl__grid">
+
+    {%- for block in section.blocks -%}
+      {%- assign collection = collections[block.settings.collection] -%}
+      {%- if collection == blank -%}{%- continue -%}{%- endif -%}
+
+      {%- assign image = collection.image | default: collection.products.first.featured_image -%}
+
+      <a
+        href="{{ collection.url }}"
+        class="snc-cl__item"
+        aria-label="{{ collection.title | escape }}"
+        {{ block.shopify_attributes }}
+      >
+        <div class="snc-cl__img-wrap">
+          {%- if image != blank -%}
+            <img
+              class="snc-cl__img"
+              src="{{ image | image_url: width: 1200 }}"
+              srcset="
+                {{ image | image_url: width: 600  }} 600w,
+                {{ image | image_url: width: 900  }} 900w,
+                {{ image | image_url: width: 1200 }} 1200w
+              "
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              alt="{{ collection.title | escape }}"
+              loading="{% if forloop.index <= 2 %}eager{% else %}lazy{% endif %}"
+            >
+          {%- else -%}
+            <div class="snc-cl__img-placeholder">
+              {{ 'collection-' | append: forloop.index | placeholder_svg_tag }}
+            </div>
+          {%- endif -%}
+        </div>
+
+        <div class="snc-cl__text">
+          <span class="snc-cl__name">{{ collection.title | escape }}</span>
+          <span class="snc-cl__cta" aria-hidden="true">Explore &rarr;</span>
+        </div>
+      </a>
+    {%- endfor -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "SNC Collection Grid",
+  "class": "section--snc-collection-list",
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_theme",
+      "label": "Header icon theme",
+      "info": "Sets whether the header shows light or dark icons when this section is at the top of the viewport.",
+      "options": [
+        { "value": "dark", "label": "Dark background (light icons)" },
+        { "value": "light", "label": "Light background (dark icons)" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_margin_top",
+      "label": "Top margin",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Collection Grid",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}

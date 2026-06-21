@@ -1,0 +1,30 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "snc-main-account",
+      "settings": {
+        "main_color": "#000000",
+        "title": "My Account",
+        "log_out_text": "Log out",
+        "orders_title": "Order History",
+        "no_orders_text": "You haven't placed any orders yet.",
+        "account_details_title": "Account Details",
+        "view_addresses_text": "View Addresses",
+        "margin_top": 170,
+        "margin_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

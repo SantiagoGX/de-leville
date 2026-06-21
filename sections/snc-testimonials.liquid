@@ -1,0 +1,244 @@
+{%- assign bg = section.settings.bg_color | default: '#fafaf8' -%}
+{%- assign text_col = section.settings.text_color | default: '#1a1a1a' -%}
+{%- assign muted_col = section.settings.muted_color | default: '#888888' -%}
+{%- assign cols = section.settings.columns | default: 3 -%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background: {{ bg }};
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .snc-t--root {
+    padding: {{ section.settings.padding_top | default: 120 }}px 0 {{ section.settings.padding_bottom | default: 120 }}px;
+  }
+  .snc-t--inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* Section heading */
+  .snc-t--heading {
+    font-family: 'DL-FuturaPT', 'Futura PT', var(--font-main), sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: {{ muted_col }};
+    text-align: center;
+    margin: 0 0 64px;
+  }
+
+  /* Grid */
+  .snc-t--grid {
+    display: grid;
+    grid-template-columns: repeat({{ cols }}, 1fr);
+    gap: 0 56px;
+    align-items: start;
+  }
+
+  /* Stagger: second column sits lower */
+  .snc-t--grid > .snc-t--item:nth-child(2) {
+    margin-top: 28px;
+  }
+
+  /* Card */
+  .snc-t--item {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border-left: 1px solid {{ muted_col | color_modify: 'alpha', 0.25 }};
+    padding-left: 28px;
+  }
+
+  /* Quote */
+  .snc-t--quote {
+    font-family: 'DL-FuturaPT', 'Futura PT', var(--font-main), sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.95;
+    color: {{ text_col }};
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* Attribution */
+  .snc-t--author {
+    font-family: 'DL-FuturaPT', 'Futura PT', var(--font-main), sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: {{ text_col }};
+    margin: 0;
+  }
+  .snc-t--detail {
+    font-family: 'DL-FuturaPT', 'Futura PT', var(--font-main), sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: {{ muted_col }};
+    opacity: 0.28;
+    margin-top: 3px;
+  }
+
+  @media (max-width: 900px) {
+    .snc-t--grid {
+      grid-template-columns: 1fr;
+      gap: 40px 0;
+    }
+    .snc-t--grid > .snc-t--item:nth-child(2) {
+      margin-top: 0;
+    }
+    .snc-t--inner { padding: 0 24px; }
+    .snc-t--root { padding: 72px 0; }
+  }
+</style>
+
+<div class="snc-t--root full-width">
+  <div class="snc-t--inner">
+
+    {%- if section.settings.heading != blank -%}
+      <p class="snc-t--heading">{{ section.settings.heading }}</p>
+    {%- endif -%}
+
+    <div class="snc-t--grid">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.quote != blank -%}
+          <div class="snc-t--item" {{ block.shopify_attributes }}>
+            <p class="snc-t--quote">{{ block.settings.quote }}</p>
+            <div>
+              {%- if block.settings.author != blank -%}
+                <p class="snc-t--author">{{ block.settings.author }}</p>
+              {%- endif -%}
+              {%- if block.settings.detail != blank -%}
+                <p class="snc-t--detail">{{ block.settings.detail }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "tag": "section",
+  "class": "snc-testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "info": "Leave blank to show no heading"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns (desktop)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#fafaf8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Quote text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Author / label color",
+      "default": "#888888"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "default": 120
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "placeholder": "Not an object. A decision."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author name",
+          "placeholder": "Isabella M."
+        },
+        {
+          "type": "text",
+          "id": "detail",
+          "label": "Detail (optional)",
+          "info": "E.g. product name, city, or occasion",
+          "placeholder": "Incontro Regale, Rome"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I wore it to my daughter's wedding. Three people asked where it was from. I said Rome, and left it at that.",
+            "author": "Catherine L.",
+            "detail": "Incontro Regale, London"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I've had it eight months. It goes with everything — which I didn't expect from something this distinctive.",
+            "author": "Marcus R.",
+            "detail": "Classico Segreto, New York"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I almost didn't order it. The wait felt long. Now I can't imagine having rushed it.",
+            "author": "Sophie A.",
+            "detail": "Incontro Essenza, Paris"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

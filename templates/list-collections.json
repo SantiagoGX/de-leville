@@ -1,0 +1,50 @@
+{
+  "sections": {
+    "collections_editorial": {
+      "type": "snc-collections-editorial",
+      "blocks": {
+        "col_incontro": {
+          "type": "collection",
+          "settings": {
+            "collection": "incontro",
+            "custom_title": "Incontro",
+            "products_limit": 12,
+            "editorial_position": 4
+          }
+        },
+        "col_classico": {
+          "type": "collection",
+          "settings": {
+            "collection": "classico",
+            "custom_title": "Classico",
+            "products_limit": 12,
+            "editorial_position": 4
+          }
+        },
+        "col_mezzaluna": {
+          "type": "collection",
+          "settings": {
+            "collection": "mezza-luna",
+            "custom_title": "Mezza Luna",
+            "products_limit": 12,
+            "editorial_position": 4
+          }
+        }
+      },
+      "block_order": [
+        "col_incontro",
+        "col_classico",
+        "col_mezzaluna"
+      ],
+      "settings": {
+        "show_hero": false,
+        "hero_eyebrow": "De Leville",
+        "hero_title": "The Collections",
+        "hero_desc": "Three lines. One house. Each piece numbered, made to order."
+      }
+    }
+  },
+  "order": [
+    "collections_editorial"
+  ]
+}

@@ -1,0 +1,495 @@
+{%- liquid
+  assign section_title    = section.settings.title
+  assign section_eyebrow  = section.settings.eyebrow
+  assign limit            = section.settings.products_to_show | default: 4
+  assign show_price       = section.settings.show_price
+
+  assign related_collection = product.collections.first
+
+  if section.settings.manual_collection != blank
+    assign related_collection = collections[section.settings.manual_collection]
+  endif
+
+  if section.settings.fallback_collection != blank and related_collection == blank
+    assign related_collection = collections[section.settings.fallback_collection]
+  endif
+
+  assign wishlist_icon_version = settings.global_wishlist_icon_version | default: 'dark'
+  if wishlist_icon_version == 'light'
+    assign global_icon_wishlist = settings.global_icon_wishlist_light
+  else
+    assign global_icon_wishlist = settings.global_icon_wishlist_dark
+  endif
+  assign wishlist_bg_enabled = settings.global_wishlist_bg_enabled
+  assign wishlist_bg_color   = settings.global_wishlist_bg_color | default: '#FFFFFF'
+  assign wishlist_inset      = settings.global_wishlist_inset | default: 12
+  assign wishlist_padding    = settings.global_wishlist_padding | default: 8
+  assign wishlist_radius     = settings.global_wishlist_radius | default: 0
+  assign wishlist_size       = settings.global_wishlist_size | default: 36
+-%}
+
+<style>
+  /* ══════════════════════════════════════════════
+     SNC PDP Recommended — LV-style 4-column grid
+     Identical visual to snc-home-showcase overlay mode
+     ══════════════════════════════════════════════ */
+  #shopify-section-{{ section.id }} {
+    display: block;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    margin-left: -50vw;
+    padding-top:    {{ section.settings.padding_top | default: 80 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | default: 80 }}px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .pdp-rec {
+    display: block;
+    width: 100%;
+  }
+
+  /* ── Header: centered, with horizontal padding ── */
+  #shopify-section-{{ section.id }} .pdp-rec__header {
+    text-align: {{ section.settings.header_alignment | default: 'center' }};
+    margin-bottom: {{ section.settings.header_gap | default: 48 }}px;
+    padding: 0 24px;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__eyebrow {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 10px;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__title {
+    font-size: 22px;
+    font-weight: 300 !important;
+    letter-spacing: 0.04em;
+    color: #1a1a1a;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  /* ── 4-column grid — edge-to-edge ── */
+  #shopify-section-{{ section.id }} .pdp-rec__grid {
+    display: grid;
+    width: 100%;
+    box-sizing: border-box;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 1px;
+    row-gap: 1px;
+  }
+
+  /* ── Card: single LV-style container ── */
+  #shopify-section-{{ section.id }} .pdp-rec__item {
+    position: relative;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__card {
+    position: relative;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    background: linear-gradient(180deg, #e2e0df 0%, #e8e6e3 14%, #f3f1ef 60%, #f8f7f5 100%);
+    border-radius: {{ section.settings.image_border_radius | default: 0 }}px;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__card-link {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ── Images fill card on desktop ── */
+  #shopify-section-{{ section.id }} .pdp-rec__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    padding: 0;
+    transition: opacity 0.4s ease;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__image--primary { opacity: 1; z-index: 1; }
+  #shopify-section-{{ section.id }} .pdp-rec__image--hover   { opacity: 0; z-index: 2; }
+  #shopify-section-{{ section.id }} .pdp-rec__card:hover .pdp-rec__image--primary { opacity: 0; }
+  #shopify-section-{{ section.id }} .pdp-rec__card:hover .pdp-rec__image--hover   { opacity: 1; }
+
+  /* ── Caption overlay at bottom — fades on hover ── */
+  #shopify-section-{{ section.id }} .pdp-rec__caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 14px 14px 18px;
+    background: transparent;
+    z-index: 5;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__card:hover .pdp-rec__caption {
+    opacity: 0;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__card-title {
+    font-size: clamp(10px, 2.7vw, 13px);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: #1a1a1a;
+    margin: 0 0 4px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__card-price {
+    font-size: clamp(9px, 2.3vw, 12px);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    color: #3a3a3a;
+    opacity: 0.65;
+  }
+
+  /* ── Wishlist button ── */
+  #shopify-section-{{ section.id }} .pdp-rec__wishlist {
+    position: absolute;
+    top: {{ wishlist_inset }}px;
+    right: {{ wishlist_inset }}px;
+    z-index: 10;
+    background: {% if wishlist_bg_enabled %}{{ wishlist_bg_color }}{% else %}none{% endif %};
+    border: none;
+    padding: {% if wishlist_bg_enabled %}{{ wishlist_padding }}px{% else %}0{% endif %};
+    cursor: pointer;
+    width: {% if wishlist_bg_enabled %}{{ wishlist_size }}px{% else %}22px{% endif %};
+    height: {% if wishlist_bg_enabled %}{{ wishlist_size }}px{% else %}20px{% endif %};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    border-radius: {{ wishlist_radius }}px;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__wishlist:hover { transform: scale(1.1); opacity: 0.8; }
+  #shopify-section-{{ section.id }} .pdp-rec__wishlist-icon  { width: 22px; height: 20px; display: block; object-fit: contain; }
+  #shopify-section-{{ section.id }} .pdp-rec__wishlist::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 22px 20px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__wishlist.is-active::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='{{ settings.global_wishlist_active_color | default: '#000000' | url_encode }}'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+    opacity: 1;
+  }
+  @keyframes pdp-rec-bounce {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.4); }
+  }
+  #shopify-section-{{ section.id }} .pdp-rec__wishlist.is-bouncing { animation: pdp-rec-bounce 0.4s ease-in-out; }
+
+  /* ── Divider above section ── */
+  {% if section.settings.show_divider %}
+  #shopify-section-{{ section.id }} .pdp-rec {
+    border-top: 1px solid #ebebeb;
+    padding-top: {{ section.settings.padding_top | default: 80 }}px;
+  }
+  {% endif %}
+
+  /* ── Mobile: overlay layout ── */
+  @media (max-width: 900px) {
+    #shopify-section-{{ section.id }} .pdp-rec { padding: 0; }
+    #shopify-section-{{ section.id }} .pdp-rec__grid {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 1px;
+      row-gap: 1px;
+    }
+    #shopify-section-{{ section.id }} .pdp-rec__item:nth-child(n+5) { display: none; }
+    #shopify-section-{{ section.id }} .pdp-rec__wishlist { display: none; }
+    #shopify-section-{{ section.id }} .pdp-rec__card { aspect-ratio: 4/5 !important; }
+    #shopify-section-{{ section.id }} .pdp-rec__image {
+      object-fit: cover !important;
+      padding: 0 !important;
+    }
+    #shopify-section-{{ section.id }} .pdp-rec__card:hover .pdp-rec__image--primary { opacity: 1 !important; }
+    #shopify-section-{{ section.id }} .pdp-rec__card:hover .pdp-rec__image--hover { opacity: 0 !important; }
+    #shopify-section-{{ section.id }} .pdp-rec__caption {
+      background: linear-gradient(to top, rgba(248,247,245,0.92) 0%, rgba(248,247,245,0.5) 60%, transparent 100%) !important;
+    }
+    #shopify-section-{{ section.id }} .pdp-rec__card:hover .pdp-rec__caption { opacity: 1 !important; }
+  }
+  @media (max-width: 390px) {
+    #shopify-section-{{ section.id }} .pdp-rec__caption {
+      padding: 8px 10px 10px !important;
+    }
+  }
+</style>
+
+{% assign has_related = false %}
+{% if related_collection != blank %}
+  {% for prod in related_collection.products limit: 1 %}
+    {% unless prod.id == product.id %}
+      {% assign has_related = true %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+
+{% if has_related or related_collection != blank %}
+<section class="pdp-rec" aria-label="{{ section_title | escape }}">
+
+  {% if section_title != blank or section_eyebrow != blank %}
+  <header class="pdp-rec__header">
+    {% if section_eyebrow != blank %}
+      <span class="pdp-rec__eyebrow">{{ section_eyebrow }}</span>
+    {% endif %}
+    {% if section_title != blank %}
+      <h2 class="pdp-rec__title">{{ section_title }}</h2>
+    {% endif %}
+  </header>
+  {% endif %}
+
+  <div class="pdp-rec__grid">
+    {%- assign shown = 0 -%}
+    {%- assign loop_limit = limit | plus: 2 -%}
+    {%- for prod in related_collection.products limit: loop_limit -%}
+      {%- unless prod.id == product.id -%}
+        {%- if shown < limit -%}
+        <div class="pdp-rec__item">
+          <div class="pdp-rec__card">
+
+            <a href="{{ prod.url }}" class="pdp-rec__card-link" aria-label="{{ prod.title | escape }}">
+
+              {%- if prod.featured_image != blank -%}
+                {{- prod.featured_image | image_url: width: 2400 | image_tag:
+                  class: 'pdp-rec__image pdp-rec__image--primary',
+                  loading: 'lazy',
+                  alt: prod.title | escape
+                -}}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'pdp-rec__image pdp-rec__image--primary' }}
+              {%- endif -%}
+
+              {%- if prod.images[1] != blank -%}
+                {{- prod.images[1] | image_url: width: 2400 | image_tag:
+                  class: 'pdp-rec__image pdp-rec__image--hover',
+                  loading: 'lazy',
+                  alt: prod.title | escape
+                -}}
+              {%- endif -%}
+
+              <div class="pdp-rec__caption">
+                <p class="pdp-rec__card-title">{{ prod.title }}</p>
+                {%- if show_price -%}
+                  <p class="pdp-rec__card-price">{{ prod.price | money }}</p>
+                {%- endif -%}
+              </div>
+
+            </a>
+
+            <button
+              class="pdp-rec__wishlist"
+              type="button"
+              data-pdp-rec-wishlist="{{ prod.handle }}"
+              aria-label="Add {{ prod.title | escape }} to favourites"
+            >
+              <img
+                src="{% if global_icon_wishlist != blank %}{{ global_icon_wishlist | image_url: width: 44 }}{% else %}{{ 'Frameinvertido-1.svg' | asset_url }}{% endif %}"
+                alt=""
+                class="pdp-rec__wishlist-icon"
+              >
+            </button>
+
+          </div>
+        </div>
+        {%- assign shown = shown | plus: 1 -%}
+        {%- endif -%}
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+
+</section>
+{% endif %}
+
+<script>
+(function () {
+  var STORAGE_KEY = 'snc_favorites';
+  var root = document.getElementById('shopify-section-{{ section.id }}');
+  if (!root) return;
+  var buttons = Array.from(root.querySelectorAll('.pdp-rec__wishlist'));
+  if (!buttons.length) return;
+
+  function readFaves() {
+    try { var r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; }
+  }
+  function writeFaves(list) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch (e) {}
+  }
+  function syncState() {
+    var faves = readFaves();
+    buttons.forEach(function (btn) {
+      btn.classList.toggle('is-active', faves.includes(btn.dataset.pdpRecWishlist));
+    });
+  }
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var handle = this.dataset.pdpRecWishlist;
+      if (!handle) return;
+      var faves = readFaves();
+      var idx = faves.indexOf(handle);
+      if (idx >= 0) { faves.splice(idx, 1); } else { faves.push(handle); }
+      writeFaves(faves);
+      syncState();
+      this.classList.add('is-bouncing');
+      this.addEventListener('animationend', function () { this.classList.remove('is-bouncing'); }, { once: true });
+      window.dispatchEvent(new CustomEvent('snc:wishlist-updated', { bubbles: true }));
+    });
+  });
+  window.addEventListener('snc:wishlist-updated', syncState);
+  window.addEventListener('storage', function (e) { if (e.key === STORAGE_KEY) syncState(); });
+  syncState();
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "PDP Recommended",
+  "class": "section--snc-pdp-recommended",
+  "templates": ["product"],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "From the same collection"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "You may also wear"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left",   "label": "Left"   },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right"  }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "header_gap",
+      "min": 16,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap header → grid",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shows products from the same collection as the current product, excluding the current one."
+    },
+    {
+      "type": "collection",
+      "id": "manual_collection",
+      "label": "Manual collection (override)",
+      "info": "Overrides auto-detection. Use with caution — this forces the same collection everywhere."
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "Fallback collection",
+      "info": "Used when the product has no collection."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Image corner radius",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show top divider line",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Recommended"
+    }
+  ]
+}
+{% endschema %}

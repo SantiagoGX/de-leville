@@ -1,0 +1,28 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "404",
+      "settings": {
+        "background_color": "#000000",
+        "text_color": "#ffffff",
+        "accent_color": "#c9a961",
+        "heading": "Page not found",
+        "subtext": "Sorry, we couldn't find what you're looking for. It might have been moved or no longer exists.",
+        "custom_icon": "",
+        "button_home": "Back to Home"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,908 @@
+
+{% if request.page_type == 'product' %}
+<!-- De Leville SEO: Product Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.title }}",
+  "image": [
+    {% for image in product.images limit: 3 %}
+    "https:{{ image | image_url: width: 1200 }}"{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ],
+  "description": "{{ product.description | strip_html | truncate: 200 | escape }}",
+  "sku": "{{ product.selected_or_first_available_variant.sku }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "De Leville"
+  },
+  "material": "18-karat gold",
+  "manufacturer": "De Leville",
+  "countryOfOrigin": "Italy",
+  "offers": {
+    "@type": "Offer",
+    "price": "{{ product.price | money_without_currency | remove: ',' }}",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+    "url": "{{ shop.url }}{{ product.url }}",
+    "seller": {
+      "@type": "Organization",
+      "name": "De Leville"
+    }
+  }
+}
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "SNC Animated Product",
+  "class": "section--snc-animated-product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Featured Product"
+    },
+    {
+      "type": "select",
+      "id": "title_style",
+      "label": "Title style",
+      "options": [
+        { "value": "h1", "label": "Main title" },
+        { "value": "h2", "label": "Secondary title" },
+        { "value": "h3", "label": "Small title" },
+        { "value": "body", "label": "Paragraph" }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text / Paragraph"
+    },
+    {
+      "type": "select",
+      "id": "text_style",
+      "label": "Text style",
+      "options": [
+        { "value": "body", "label": "Paragraph" },
+        { "value": "small", "label": "Small paragraph" },
+        { "value": "h3", "label": "Small title" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "range",
+      "id": "text_width",
+      "min": 200,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "label": "Text max width",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "header_gap",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between header and product",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Collection / Product Style"
+    },
+    {
+      "type": "range",
+      "id": "product_title_size",
+      "min": 20,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Product title size (Desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "product_title_size_mobile",
+      "min": 20,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Product title size (Mobile)",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Product title color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "product_title_transform",
+      "label": "Product title transform",
+      "options": [
+        { "value": "none", "label": "Normal" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "Image Style"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "min": 200,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "label": "Image height max (Desktop) — actual height is min(85vh, this value)",
+      "default": 1000
+    },
+    {
+      "type": "range",
+      "id": "image_height_mobile",
+      "min": 150,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "label": "Image height max (Mobile) — actual height is min(70vh, this value)",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "image_gap",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap between images",
+      "default": 20
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "View product"
+    },
+    {
+      "type": "select",
+      "id": "button_preset",
+      "label": "Button Style",
+      "options": [
+        { "value": "1", "label": "Preset 1" },
+        { "value": "2", "label": "Preset 2" },
+        { "value": "3", "label": "Preset 3" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_item",
+      "name": "Product",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "Custom title"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        }
+      ]
+    },
+    {
+      "type": "image_group",
+      "name": "Images / Links",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "New Collection"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "View collection"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        { "type": "header", "content": "Image 1" },
+        { "type": "image_picker", "id": "image_1", "label": "Image" },
+        { "type": "header", "content": "Image 2" },
+        { "type": "image_picker", "id": "image_2", "label": "Image" },
+        { "type": "header", "content": "Banner Overlay (single image only)" },
+        { "type": "color", "id": "overlay_color", "label": "Overlay color", "default": "#000000" },
+        { "type": "range", "id": "overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 100, "step": 5, "default": 40, "unit": "%" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Animated Product",
+      "category": "Animated"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  /* Ensure the section wrapper has a solid background so it always
+     fully covers the sticky hero beneath it at all viewport widths. */
+  #shopify-section-{{ section.id }} {
+    background-color: var(--color-background, #ffffff);
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .snc-animated-product {
+    position: relative;
+    width: 100%;
+    /* La altura se define inline según la cantidad de bloques */
+  }
+  
+  .snc-animated-product__sticky-container {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    text-align: center;
+  }
+
+  .snc-animated-product__header { margin-bottom: {{ section.settings.header_gap }}px; padding: 0 20px; }
+  .snc-animated-product__title { margin: 0 0 15px; }
+  .snc-animated-product__text { max-width: {{ section.settings.text_width }}px; margin: 0 auto; }
+  
+  .snc-animated-product__slides {
+    position: relative;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .snc-animated-product__mobile-meta,
+  .snc-animated-product__mobile-rail {
+    display: none;
+  }
+
+  .snc-animated-product__track {
+    display: flex;
+    height: 100%;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+  .snc-animated-product__panel {
+    flex: 0 0 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .snc-animated-product__panel-inner {
+    width: 100%;
+    height: auto;
+    border-radius: {{ section.settings.image_border_radius }}px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .snc-animated-product__panel-image {
+    width: 100%;
+    height: auto;
+    max-height: min(70vh, {{ section.settings.image_height_mobile }}px);
+    object-fit: contain;
+    display: block;
+  }
+
+  .snc-animated-product__content { 
+    grid-area: 1 / 1;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 20px; 
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+  }
+
+  .snc-animated-product__content.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+  
+  .snc-animated-product__content:not(.is-active) {
+    transform: scale(0.95);
+  }
+  
+  .snc-animated-product__name {
+    font-size: {{ section.settings.product_title_size }}px;
+    color: {{ section.settings.product_title_color }};
+    text-transform: {{ section.settings.product_title_transform }};
+    line-height: 1.1; margin: 0;
+  }
+  .snc-animated-product__content a {
+    font-size: {{ settings.button_size }}px;
+    text-transform: {{ settings.button_transform }};
+  }
+  
+  .snc-animated-product__gallery { display: flex; gap: {{ section.settings.image_gap }}px; width: 100%; overflow-x: auto; padding: 0 20px; margin-top: 20px; scrollbar-width: none; }
+  .snc-animated-product__gallery::-webkit-scrollbar { display: none; }
+  .snc-animated-product__item {
+    flex: 1;
+    min-width: 0;
+    height: min(72vh, 680px);
+    border-radius: {{ section.settings.image_border_radius }}px;
+    overflow: hidden;
+    display: block;
+  }
+  .snc-animated-product__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .snc-animated-product__item[href]:hover .snc-animated-product__image {
+    transform: scale(1.05);
+  }
+  
+  @media (max-width: 768px) {
+    .snc-animated-product__sticky-container {
+      justify-content: flex-start;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      top: var(--custom-header-total-height, 0px);
+    }
+    .snc-animated-product__header {
+      margin-bottom: 0 !important;
+    }
+
+    .snc-animated-product__name {
+      font-family: 'Futura PT', sans-serif;
+      font-size: {{ section.settings.product_title_size_mobile }}px;
+      font-weight: 400;
+    }
+    .snc-animated-product__content {
+      gap: 16px;
+    }
+    .snc-animated-product__content:not(.is-active) {
+      transform: translateY(20px) scale(0.98);
+    }
+    /* 1-column image stack on mobile */
+    .snc-animated-product__gallery {
+      display: grid !important;
+      grid-template-columns: 1fr;
+      gap: {{ section.settings.image_gap }}px;
+      padding: 0 16px;
+      overflow-x: visible;
+      margin-top: 12px;
+    }
+    .snc-animated-product__item {
+      height: min(55vh, 500px);
+      width: 100%;
+      flex: none;
+    }
+
+    /* Mobile horizontal scroll rail (replaces stacked gallery/slide switching) */
+    .snc-animated-product__slides { display: none !important; }
+    .snc-animated-product__mobile-meta { display: block; padding: 0 16px; }
+    .snc-animated-product__mobile-rail {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    .snc-animated-product__panel { padding: 0 16px; }
+  }
+
+  /* ── Banner mode: single image with overlay ───────────────── */
+  .snc-animated-product__content--banner {
+    justify-self: stretch;
+    align-items: stretch;
+    padding: 0;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+  }
+  /* Remove centering gap — banner sits flush at top of sticky container */
+  .snc-animated-product:has(.snc-animated-product__content--banner) .snc-animated-product__sticky-container {
+    justify-content: flex-start;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Single-banner mode: normal flow, no scroll animation, no sticky */
+  .snc-animated-product--simple-banner {
+    height: auto !important;
+  }
+  .snc-animated-product--simple-banner .snc-animated-product__sticky-container {
+    position: relative;
+    top: 0;
+    height: auto;
+  }
+  .snc-animated-product--simple-banner .snc-animated-product__mobile-meta,
+  .snc-animated-product--simple-banner .snc-animated-product__mobile-rail {
+    display: none !important;
+  }
+  /* On mobile, restore the slides so the banner image renders */
+  @media (max-width: 768px) {
+    .snc-animated-product--simple-banner .snc-animated-product__slides {
+      display: grid !important;
+    }
+    .snc-animated-product--simple-banner .snc-animated-product__sticky-container {
+      top: 0;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+  }
+  .snc-animated-product__banner-link {
+    display: block;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+  }
+  .snc-animated-product__banner-wrap {
+    position: relative;
+    width: 100%;
+    height: min(90vh, {{ section.settings.image_height }}px);
+    border-radius: 0;
+    overflow: hidden;
+    display: block;
+  }
+  .snc-animated-product__banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .snc-animated-product__banner-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .snc-ap-banner-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .snc-ap-banner-name {
+    font-family: 'Futura PT', sans-serif;
+    font-size: {{ section.settings.product_title_size }}px;
+    color: #ffffff;
+    text-transform: {{ section.settings.product_title_transform }};
+    line-height: 1.1;
+    margin: 0;
+    font-weight: var(--secondary-title-weight, 500);
+  }
+  .snc-ap-banner-text .btn-preset-1,
+  .snc-ap-banner-text .btn-preset-2,
+  .snc-ap-banner-text .btn-preset-3 {
+    color: #ffffff !important;
+    border-color: rgba(255,255,255,0.65) !important;
+  }
+
+  /* ── Mobile banner panel override ─────────────────────────── */
+  .snc-ap-panel--banner.snc-animated-product__panel {
+    padding: 0;
+    align-items: stretch;
+  }
+  .snc-ap-panel--banner .snc-animated-product__panel-inner {
+    position: relative;
+    height: 100%;
+    border-radius: 0;
+    overflow: hidden;
+  }
+  .snc-ap-panel--banner .snc-animated-product__panel-image {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: cover;
+  }
+  .snc-ap-panel-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .snc-animated-product__banner-wrap {
+      height: min(80vh, {{ section.settings.image_height_mobile }}px);
+      border-radius: 0;
+    }
+    .snc-ap-banner-text {
+      padding: 32px 20px;
+      gap: 12px;
+    }
+    .snc-ap-banner-name {
+      font-size: {{ section.settings.product_title_size_mobile }}px;
+    }
+  }
+</style>
+
+{%- liquid
+  assign scroll_height = section.blocks.size | times: 100
+  if section.blocks.size == 0
+    assign scroll_height = 100
+  endif
+  assign is_single_banner = false
+  if section.blocks.size == 1
+    assign b = section.blocks.first
+    if b.type == 'image_group' and b.settings.image_1 != blank and b.settings.image_2 == blank
+      assign is_single_banner = true
+    endif
+  endif
+-%}
+
+<div class="snc-animated-product full-width color-{{ section.settings.color_scheme }}{% if is_single_banner %} snc-animated-product--simple-banner{% endif %}" data-header-theme="light" {% unless is_single_banner %}style="height: {{ scroll_height }}vh;"{% endunless %}>
+  <div class="snc-animated-product__sticky-container">
+    {% if section.settings.title != blank or section.settings.text != blank %}
+    <div class="snc-animated-product__header">
+      {% if section.settings.title != blank %}<h2 class="snc-animated-product__title {{ section.settings.title_style }}">{{ section.settings.title }}</h2>{% endif %}
+      {% if section.settings.text != blank %}<div class="snc-animated-product__text {{ section.settings.text_style }}">{{ section.settings.text }}</div>{% endif %}
+    </div>
+    {% endif %}
+
+    {%- liquid
+      assign first_mobile_title = blank
+      assign first_mobile_btn_label = blank
+      assign first_mobile_btn_link = blank
+      for block in section.blocks
+        if block.settings.image_1 != blank or block.settings.image_2 != blank
+          assign first_mobile_title = block.settings.title | default: 'New Collection'
+          assign first_mobile_btn_label = block.settings.button_label | default: section.settings.button_label
+          assign first_mobile_btn_link = block.settings.button_link | default: '#'
+          break
+        endif
+      endfor
+    -%}
+
+    <div class="snc-animated-product__mobile-meta">
+      <h3 class="snc-animated-product__name" data-snc-ap-mobile-title>{{ first_mobile_title }}</h3>
+      {% if first_mobile_btn_label != blank %}
+        <a href="{{ first_mobile_btn_link }}" class="btn-preset-{{ section.settings.button_preset }}" data-snc-ap-mobile-cta>{{ first_mobile_btn_label }}</a>
+      {% endif %}
+    </div>
+
+    <div class="snc-animated-product__mobile-rail" aria-label="Animated product images" data-snc-ap-rail>
+      <div class="snc-animated-product__track" data-snc-ap-track>
+        {% for block in section.blocks %}
+          {% assign block_title = block.settings.title | default: 'New Collection' %}
+          {% assign btn_text = block.settings.button_label | default: section.settings.button_label %}
+          {% assign btn_link = block.settings.button_link | default: '#' %}
+          {%- assign is_banner = false -%}
+          {%- if block.type == 'image_group' and block.settings.image_1 != blank and block.settings.image_2 == blank -%}
+            {%- assign is_banner = true -%}
+          {%- endif -%}
+          {%- assign mob_overlay_color = block.settings.overlay_color | default: '#000000' -%}
+          {%- assign mob_overlay_opacity = block.settings.overlay_opacity | default: 40 | divided_by: 100.0 -%}
+
+          {% for i in (1..2) %}
+            {% assign img_key = 'image_' | append: i %}
+            {% assign img = block.settings[img_key] %}
+
+            {% if img != blank %}
+              {% if btn_link != blank %}
+                <a href="{{ btn_link }}" class="snc-animated-product__panel{% if is_banner %} snc-ap-panel--banner{% endif %}" data-snc-ap-panel data-title="{{ block_title | escape }}" data-btn-label="{{ btn_text | escape }}" data-btn-link="{{ btn_link }}"{% if is_banner %} data-is-banner="true"{% endif %}>
+              {% else %}
+                <div class="snc-animated-product__panel{% if is_banner %} snc-ap-panel--banner{% endif %}" data-snc-ap-panel data-title="{{ block_title | escape }}" data-btn-label="{{ btn_text | escape }}" data-btn-link="{{ btn_link }}"{% if is_banner %} data-is-banner="true"{% endif %}>
+              {% endif %}
+                <div class="snc-animated-product__panel-inner">
+                  {{ img | image_url: width: 1200 | image_tag: class: 'snc-animated-product__panel-image', loading: 'lazy' }}
+                  {%- if is_banner -%}
+                    <div class="snc-ap-panel-overlay" style="background-color:{{ mob_overlay_color }};opacity:{{ mob_overlay_opacity }};"></div>
+                    <div class="snc-ap-banner-text">
+                      {%- if block_title != blank -%}<h3 class="snc-ap-banner-name">{{ block_title }}</h3>{%- endif -%}
+                      {%- if btn_text != blank -%}<span class="snc-ap-banner-cta btn-preset-{{ section.settings.button_preset }}">{{ btn_text }}</span>{%- endif -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+              {% if btn_link != blank %}</a>{% else %}</div>{% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="snc-animated-product__slides">
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          {% assign btn_text = block.settings.button_label | default: section.settings.button_label %}
+          {% assign block_title = block.settings.title | default: 'New Collection' %}
+          {%- assign is_banner = false -%}
+          {%- if block.type == 'image_group' and block.settings.image_1 != blank and block.settings.image_2 == blank -%}
+            {%- assign is_banner = true -%}
+          {%- endif -%}
+
+          <div class="snc-animated-product__content {% if forloop.first %}is-active{% endif %}{% if is_banner %} snc-animated-product__content--banner{% endif %}" {{ block.shopify_attributes }}>
+
+            {%- if is_banner -%}
+              {%- assign overlay_color = block.settings.overlay_color | default: '#000000' -%}
+              {%- assign overlay_opacity = block.settings.overlay_opacity | default: 40 | divided_by: 100.0 -%}
+              {%- assign banner_link = block.settings.button_link -%}
+              {%- if banner_link != blank -%}<a href="{{ banner_link }}" class="snc-animated-product__banner-link">{%- endif -%}
+              <div class="snc-animated-product__banner-wrap">
+                {{ block.settings.image_1 | image_url: width: 2000 | image_tag: class: 'snc-animated-product__banner-img', loading: 'eager' }}
+                <div class="snc-animated-product__banner-overlay" style="background-color:{{ overlay_color }};opacity:{{ overlay_opacity }};"></div>
+                <div class="snc-ap-banner-text">
+                  {%- if block_title != blank -%}<h3 class="snc-ap-banner-name">{{ block_title }}</h3>{%- endif -%}
+                  {%- if btn_text != blank -%}<span class="btn-preset-{{ section.settings.button_preset }} snc-ap-banner-cta">{{ btn_text }}</span>{%- endif -%}
+                </div>
+              </div>
+              {%- if banner_link != blank -%}</a>{%- endif -%}
+
+            {%- else -%}
+              <h3 class="snc-animated-product__name">{{ block_title }}</h3>
+
+              {% if btn_text != blank %}
+                <a href="{{ block.settings.button_link | default: '#' }}" class="btn-preset-{{ section.settings.button_preset }}">{{ btn_text }}</a>
+              {% endif %}
+
+              <div class="snc-animated-product__gallery">
+                {% assign has_images = false %}
+                {% for i in (1..2) %}
+                  {% assign img_key = 'image_' | append: i %}
+                  {% assign img = block.settings[img_key] %}
+
+                  {% if img != blank %}
+                    {% assign has_images = true %}
+                    {% assign img_link = block.settings.button_link | default: '#' %}
+                    {% if img_link != blank %}<a href="{{ img_link }}" class="snc-animated-product__item">{% else %}<div class="snc-animated-product__item">{% endif %}
+                    {{ img | image_url: width: 800 | image_tag: class: 'snc-animated-product__image', loading: 'lazy' }}
+                    {% if img_link != blank %}</a>{% else %}</div>{% endif %}
+                  {% endif %}
+                {% endfor %}
+
+                {% if has_images == false %}
+                  <div class="snc-animated-product__item">{{ 'collection-1' | placeholder_svg_tag: 'snc-animated-product__image' }}</div>
+                  <div class="snc-animated-product__item">{{ 'collection-2' | placeholder_svg_tag: 'snc-animated-product__image' }}</div>
+                {% endif %}
+              </div>
+            {%- endif -%}
+
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="snc-animated-product__content is-active">
+          <h3 class="snc-animated-product__name">Add product blocks</h3>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const section = document.querySelector('#shopify-section-{{ section.id }} .snc-animated-product');
+    if (!section) return;
+
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const slides = section.querySelectorAll('.snc-animated-product__content');
+    const totalSlides = slides.length;
+    const stickyContainer = section.querySelector('.snc-animated-product__sticky-container');
+    const stickyHeader = stickyContainer ? stickyContainer.querySelector('.snc-animated-product__header') : null;
+    const headerGapValue = {{ section.settings.header_gap | default: 40 }};
+    const paddingTopValue = {{ section.settings.padding_top | default: 60 }};
+    const paddingBottomValue = {{ section.settings.padding_bottom | default: 60 }};
+
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
+    function initMobileHorizontalScroll() {
+      const rail = section.querySelector('[data-snc-ap-rail]');
+      const track = section.querySelector('[data-snc-ap-track]');
+      const panels = Array.from(section.querySelectorAll('[data-snc-ap-panel]'));
+      const metaTitle = section.querySelector('[data-snc-ap-mobile-title]');
+      const metaCta = section.querySelector('[data-snc-ap-mobile-cta]');
+
+      if (!stickyContainer || !rail || !track || panels.length === 0) return;
+
+      let lastMetaKey = null;
+
+      function setMetaFromPanel(panel) {
+        if (!panel) return;
+        const isBanner = panel.dataset.isBanner === 'true';
+        const metaEl = section.querySelector('.snc-animated-product__mobile-meta');
+        if (metaEl) metaEl.style.display = isBanner ? 'none' : '';
+        if (isBanner) { lastMetaKey = null; return; }
+        const title = panel.dataset.title || '';
+        const btnLabel = panel.dataset.btnLabel || '';
+        const btnLink = panel.dataset.btnLink || '#';
+        const key = `${title}__${btnLabel}__${btnLink}`;
+        if (key === lastMetaKey) return;
+        lastMetaKey = key;
+        if (metaTitle) metaTitle.textContent = title;
+        if (metaCta) {
+          metaCta.textContent = btnLabel;
+          metaCta.href = btnLink || '#';
+          metaCta.style.display = btnLabel ? '' : 'none';
+        }
+      }
+
+      function adjustMobileHeight() {
+        const viewportHeight = window.innerHeight || 0;
+        if (!viewportHeight) return;
+        const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--custom-header-total-height')) || 0;
+        const usableH = viewportHeight - headerH;
+        stickyContainer.style.top = headerH + 'px';
+        stickyContainer.style.height = usableH + 'px';
+        section.style.height = `${usableH * panels.length}px`;
+      }
+
+      function onScroll() {
+        const rect = section.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || 0;
+        const totalHeight = rect.height - viewportHeight;
+        if (totalHeight <= 0) return;
+
+        const progress = clamp(-rect.top / totalHeight, 0, 1);
+        const maxX = Math.max(0, track.scrollWidth - rail.clientWidth);
+        const x = maxX * progress;
+        track.style.transform = `translate3d(${-x}px, 0, 0)`;
+
+        const index = Math.round(progress * (panels.length - 1));
+        setMetaFromPanel(panels[index]);
+      }
+
+      adjustMobileHeight();
+      setMetaFromPanel(panels[0]);
+      onScroll();
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function() {
+        adjustMobileHeight();
+        onScroll();
+      }, { passive: true });
+    }
+
+    function adjustAnimatedProductHeight() {
+      if (!section || !stickyContainer || slides.length === 0) return;
+      stickyContainer.style.height = 'auto';
+      const viewportHeight = window.innerHeight || 0;
+      const headerHeight = stickyHeader ? stickyHeader.offsetHeight : 0;
+      let maxSlideHeight = 0;
+      slides.forEach(slide => {
+        maxSlideHeight = Math.max(maxSlideHeight, slide.scrollHeight);
+      });
+      const totalPadding = paddingTopValue + paddingBottomValue;
+      const requiredContentHeight = Math.max(viewportHeight - totalPadding, headerHeight + headerGapValue + maxSlideHeight, 0);
+      const stickyHeight = requiredContentHeight + totalPadding;
+      // Add one extra viewport-height worth of scroll space so the first block
+      // has time to fully settle in view before transitioning to the next block.
+      const sectionHeight = stickyHeight * slides.length + viewportHeight;
+      stickyContainer.style.height = `${stickyHeight}px`;
+      section.style.height = `${sectionHeight}px`;
+    }
+
+    if (isMobile) {
+      initMobileHorizontalScroll();
+      return;
+    }
+
+    adjustAnimatedProductHeight();
+    window.addEventListener('resize', adjustAnimatedProductHeight, { passive: true });
+    window.addEventListener('load', adjustAnimatedProductHeight);
+
+    if (totalSlides > 1) {
+      window.addEventListener('scroll', () => {
+        const rect = section.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const totalHeight = rect.height - viewportHeight;
+
+        if (totalHeight > 0) {
+          // Raw scroll progress 0→1 across the full section
+          let progress = -rect.top / totalHeight;
+          progress = clamp(progress, 0, 1);
+
+          // Reserve the first 50% of scroll for the first block to be fully
+          // visible and settled. After that, distribute the remaining 50% evenly
+          // across all slide transitions.
+          const settleThreshold = 0.5;
+          let activeIndex;
+          if (progress < settleThreshold) {
+            activeIndex = 0;
+          } else {
+            const adjustedProgress = (progress - settleThreshold) / (1 - settleThreshold);
+            activeIndex = Math.min(Math.floor(adjustedProgress * totalSlides), totalSlides - 1);
+          }
+
+          slides.forEach((slide, index) => {
+            if (index === activeIndex) {
+              slide.classList.add('is-active');
+            } else {
+              slide.classList.remove('is-active');
+            }
+          });
+        }
+      }, { passive: true });
+    }
+  });
+</script>

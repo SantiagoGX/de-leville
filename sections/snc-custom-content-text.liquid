@@ -1,0 +1,713 @@
+{% schema %}
+{
+  "name": "SNC Custom Content",
+  "class": "section--snc-custom-content-text",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 400,
+      "step": 5,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 400,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 400,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "label": "Max content width",
+      "default": 800
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Add your text here</p>"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "font_size",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "font_size_mobile",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size (Mobile)",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "font_weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "label": "Font weight",
+          "default": 400
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Bottom margin",
+          "default": 15
+        },
+        {
+          "type": "range",
+          "id": "text_max_width",
+          "min": 200,
+          "max": 1400,
+          "step": 20,
+          "unit": "px",
+          "label": "Max text width",
+          "default": 800,
+          "info": "Controls the max width of this specific text block."
+        },
+        {
+          "type": "header",
+          "content": "Left border"
+        },
+        {
+          "type": "checkbox",
+          "id": "border_left_enabled",
+          "label": "Enable left border",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "border_left_width",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "unit": "px",
+          "label": "Border width",
+          "default": 1
+        },
+        {
+          "type": "color",
+          "id": "border_left_color",
+          "label": "Border color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "border_left_padding",
+          "min": 8,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "label": "Left padding",
+          "default": 16
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Button 1"
+        },
+        {
+          "type": "liquid",
+          "id": "btn1_text",
+          "label": "Button 1 text",
+          "default": "Button 1",
+          "info": "Allows HTML and Liquid."
+        },
+        {
+          "type": "url",
+          "id": "btn1_link",
+          "label": "Button 1 link"
+        },
+        {
+          "type": "color",
+          "id": "btn1_bg_color",
+          "label": "Button 1 background",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "btn1_text_color",
+          "label": "Button 1 text color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "range",
+          "id": "btn1_font_size",
+          "min": 10,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Button 1 font size",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "btn1_font_weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "label": "Button 1 font weight",
+          "default": 700
+        },
+        {
+          "type": "range",
+          "id": "btn1_padding_v",
+          "min": 5,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "label": "Button 1 vertical padding",
+          "default": 12
+        },
+        {
+          "type": "range",
+          "id": "btn1_padding_h",
+          "min": 10,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "label": "Button 1 horizontal padding",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "btn1_border_radius",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Button 1 border radius",
+          "default": 4
+        },
+        {
+          "type": "header",
+          "content": "Button 2"
+        },
+        {
+          "type": "liquid",
+          "id": "btn2_text",
+          "label": "Button 2 text",
+          "info": "Allows HTML and Liquid."
+        },
+        {
+          "type": "url",
+          "id": "btn2_link",
+          "label": "Button 2 link"
+        },
+        {
+          "type": "color",
+          "id": "btn2_bg_color",
+          "label": "Button 2 background",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "btn2_text_color",
+          "label": "Button 2 text color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "btn2_border_color",
+          "label": "Button 2 border color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "btn2_border_width",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "unit": "px",
+          "label": "Button 2 border width",
+          "default": 1
+        },
+        {
+          "type": "range",
+          "id": "btn2_font_size",
+          "min": 10,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Button 2 font size",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "btn2_font_weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "label": "Button 2 font weight",
+          "default": 700
+        },
+        {
+          "type": "range",
+          "id": "btn2_padding_v",
+          "min": 5,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "label": "Button 2 vertical padding",
+          "default": 12
+        },
+        {
+          "type": "range",
+          "id": "btn2_padding_h",
+          "min": 10,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "label": "Button 2 horizontal padding",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "btn2_border_radius",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Button 2 border radius",
+          "default": 4
+        },
+        {
+          "type": "range",
+          "id": "gap",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Gap between buttons",
+          "default": 15
+        }
+      ]
+    },
+    {
+      "type": "images",
+      "name": "Images",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image1",
+          "label": "Image 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image2",
+          "label": "Image 2"
+        },
+        {
+          "type": "select",
+          "id": "mobile_layout",
+          "label": "Mobile layout",
+          "options": [
+            { "value": "row", "label": "Row" },
+            { "value": "column", "label": "Column" }
+          ],
+          "default": "row"
+        },
+        {
+          "type": "range",
+          "id": "gap",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Gap between images",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "border_radius",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "label": "Border radius",
+          "default": 8
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Bottom margin",
+          "default": 20
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Custom Content Text",
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "<h2>Example title</h2>",
+            "font_size": 48,
+            "font_weight": 700
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "<p>This is an example text for the section.</p>",
+            "font_size": 16,
+            "font_weight": 400
+          }
+        },
+        {
+          "type": "buttons"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background-color: {{ section.settings.background_color }};
+  }
+
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] {
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    padding: {{ section.settings.padding_top | default: 60 }}px 20px {{ section.settings.padding_bottom | default: 60 }}px;
+  }
+
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--container {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    text-align: {{ section.settings.alignment }};
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text {
+    line-height: 1.4;
+    font-size: var(--font-size-desktop);
+  }
+
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text p,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text h1,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text h2,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text h3,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text h4,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text h5,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text h6 {
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: {% if section.settings.alignment == 'left' %}flex-start{% elsif section.settings.alignment == 'right' %}flex-end{% else %}center{% endif %};
+    gap: var(--btn-gap);
+    margin-top: 10px;
+  }
+
+  .snc-cct--btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    border-style: solid;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .snc-cct--btn:hover {
+    opacity: 0.85;
+  }
+
+  @media (max-width: 768px) {
+    .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--buttons {
+      flex-direction: column;
+      width: 100%;
+    }
+    .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--btn {
+      width: 100%;
+    }
+    .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text {
+      font-size: var(--font-size-mobile);
+      border-left: none !important;
+      padding-left: 0 !important;
+    }
+    .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--images {
+      flex-direction: var(--mobile-direction);
+    }
+  }
+
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--images {
+    display: flex;
+    width: 100%;
+    gap: var(--img-gap);
+  }
+
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--image-wrapper {
+    flex: 1;
+  }
+
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--img-radius);
+    object-fit: cover;
+  }
+
+  /* ── Block entrance / exit animations ── */
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--buttons,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--images {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: opacity, transform;
+  }
+
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text.snc-anim-visible,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--buttons.snc-anim-visible,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--images.snc-anim-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Exit upward (scrolled past) */
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--text.snc-anim-exit,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--buttons.snc-anim-exit,
+  .snc-custom-content-text[data-section-id="{{ section.id }}"] .snc-cct--images.snc-anim-exit {
+    opacity: 0;
+    transform: translateY(-36px);
+  }
+</style>
+
+<div class="snc-custom-content-text" data-section-id="{{ section.id }}">
+  <div class="snc-cct--container">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+
+        {%- when 'text' -%}
+          {%- liquid
+            assign text_alignment = section.settings.alignment
+            if text_alignment == 'center'
+              assign text_margin_styles = 'margin-left: auto; margin-right: auto;'
+            elsif text_alignment == 'right'
+              assign text_margin_styles = 'margin-left: auto; margin-right: 0;'
+            else
+              assign text_margin_styles = 'margin-left: 0; margin-right: auto;'
+            endif
+          -%}
+          <div class="snc-cct--text" {{ block.shopify_attributes }} style="
+            color: {{ block.settings.color }};
+            --font-size-desktop: {{ block.settings.font_size }}px;
+            --font-size-mobile: {{ block.settings.font_size_mobile | default: block.settings.font_size }}px;
+            font-weight: {{ block.settings.font_weight }};
+            margin-bottom: {{ block.settings.margin_bottom }}px;
+            font-family: var(--font-main);
+            max-width: {{ block.settings.text_max_width }}px;
+            {% if block.settings.border_left_enabled %}
+              border-left: {{ block.settings.border_left_width }}px solid {{ block.settings.border_left_color }};
+              padding-left: {{ block.settings.border_left_padding }}px;
+            {% endif %}
+            {{ text_margin_styles }}
+          ">
+            {{ block.settings.text }}
+          </div>
+
+        {%- when 'buttons' -%}
+          <div class="snc-cct--buttons" {{ block.shopify_attributes }} style="--btn-gap: {{ block.settings.gap }}px;">
+            {%- unless block.settings.btn1_text == blank -%}
+              <a href="{{ block.settings.btn1_link | default: '#' }}" class="snc-cct--btn" style="
+                background-color: {{ block.settings.btn1_bg_color }};
+                color: {{ block.settings.btn1_text_color }};
+                font-size: {{ block.settings.btn1_font_size }}px;
+                font-weight: {{ block.settings.btn1_font_weight }};
+                padding: {{ block.settings.btn1_padding_v }}px {{ block.settings.btn1_padding_h }}px;
+                border: 0;
+                border-radius: {{ block.settings.btn1_border_radius }}px;
+                font-family: var(--font-main);
+              ">
+                {{ block.settings.btn1_text }}
+              </a>
+            {%- endunless -%}
+
+            {%- unless block.settings.btn2_text == blank -%}
+              <a href="{{ block.settings.btn2_link | default: '#' }}" class="snc-cct--btn" style="
+                background-color: {{ block.settings.btn2_bg_color }};
+                color: {{ block.settings.btn2_text_color }};
+                font-size: {{ block.settings.btn2_font_size }}px;
+                font-weight: {{ block.settings.btn2_font_weight }};
+                padding: {{ block.settings.btn2_padding_v }}px {{ block.settings.btn2_padding_h }}px;
+                border: {{ block.settings.btn2_border_width }}px solid {{ block.settings.btn2_border_color }};
+                border-radius: {{ block.settings.btn2_border_radius }}px;
+                font-family: var(--font-main);
+              ">
+                {{ block.settings.btn2_text }}
+              </a>
+            {%- endunless -%}
+          </div>
+
+        {%- when 'images' -%}
+          {%- if block.settings.image1 != blank or block.settings.image2 != blank -%}
+            <div class="snc-cct--images" {{ block.shopify_attributes }} style="
+              --img-gap: {{ block.settings.gap }}px;
+              --img-radius: {{ block.settings.border_radius }}px;
+              --mobile-direction: {{ block.settings.mobile_layout | default: 'row' }};
+              margin-bottom: {{ block.settings.margin_bottom }}px;
+            ">
+              {%- if block.settings.image1 != blank -%}
+                <div class="snc-cct--image-wrapper">
+                  {{ block.settings.image1 | image_url: width: 1200 | image_tag: class: 'snc-cct--image', loading: 'eager' }}
+                </div>
+              {%- endif -%}
+              {%- if block.settings.image2 != blank -%}
+                <div class="snc-cct--image-wrapper">
+                  {{ block.settings.image2 | image_url: width: 1200 | image_tag: class: 'snc-cct--image', loading: 'lazy' }}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+<script>
+(function() {
+  var sectionEl = document.querySelector('.snc-custom-content-text[data-section-id="{{ section.id }}"]');
+  if (!sectionEl) return;
+
+  var blocks = Array.from(sectionEl.querySelectorAll('.snc-cct--text, .snc-cct--buttons, .snc-cct--images'));
+  if (!blocks.length) return;
+
+  var STAGGER = 120; // ms between each block
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      var el = entry.target;
+      var idx = blocks.indexOf(el);
+
+      if (entry.isIntersecting) {
+        // Entering — staggered fade-up
+        el.classList.remove('snc-anim-exit');
+        el.style.transitionDelay = (idx * STAGGER) + 'ms';
+        void el.offsetHeight;
+        el.classList.add('snc-anim-visible');
+      } else {
+        // Exiting — determine direction
+        el.style.transitionDelay = '0ms';
+        var rect = entry.boundingClientRect;
+        if (rect.top < 0) {
+          // Leaving top — still ~45% visible when this fires, so exit is seen
+          el.classList.remove('snc-anim-visible');
+          el.classList.add('snc-anim-exit');
+        } else {
+          // Below viewport (not yet reached)
+          el.classList.remove('snc-anim-visible', 'snc-anim-exit');
+        }
+      }
+    });
+  }, {
+    threshold: 0.55,    // fires exit when ~45% of block is still visible
+    rootMargin: '0px 0px -30px 0px'
+  });
+
+  blocks.forEach(function(el) { observer.observe(el); });
+})();
+</script>

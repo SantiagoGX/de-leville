@@ -1,0 +1,449 @@
+{%- liquid
+  assign columns_desktop = section.settings.columns_desktop | default: 3
+  assign columns_mobile  = section.settings.columns_mobile  | default: 2
+  assign card_radius     = section.settings.card_border_radius | default: 0
+  assign card_gap        = section.settings.card_gap | default: 10
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+  assign image_fit       = section.settings.image_fit | default: 'cover'
+-%}
+
+<style>
+  .snc-collections {
+    padding-top:    {{ section.settings.section_margin_top    | default: 80 }}px;
+    padding-bottom: {{ section.settings.section_margin_bottom | default: 60 }}px;
+    {% if section.settings.full_width %}
+      padding-left:  {{ section.settings.side_padding | default: 20 }}px;
+      padding-right: {{ section.settings.side_padding | default: 20 }}px;
+    {% else %}
+      max-width: 1512px;
+      margin-left:  auto;
+      margin-right: auto;
+      padding-left:  20px;
+      padding-right: 20px;
+    {% endif %}
+  }
+
+  .snc-collections__header {
+    text-align: {{ section.settings.header_alignment | default: 'center' }};
+    margin-bottom: 40px;
+  }
+  .snc-collections__subtitle {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    opacity: 0.6;
+    margin-bottom: 8px;
+  }
+  .snc-collections__title {
+    margin: 0;
+    color: var(--color-foreground);
+  }
+
+  .snc-collections__grid {
+    display: grid;
+    grid-template-columns: repeat({{ columns_desktop }}, 1fr);
+    gap: {{ card_gap }}px;
+  }
+
+  /* ---- Card ---- */
+  .snc-collections__card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: {{ card_radius }}px;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .snc-collections__image-wrapper {
+    position: relative;
+    width: 100%;
+    {% if section.settings.card_height_mode == 'fixed' %}
+      height: {{ section.settings.card_height | default: 420 }}px;
+    {% else %}
+      aspect-ratio: {{ section.settings.card_aspect_ratio | default: '3/4' }};
+    {% endif %}
+    overflow: hidden;
+  }
+
+  .snc-collections__image {
+    width: 100%;
+    height: 100%;
+    object-fit: {{ image_fit }};
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
+  .snc-collections__card:hover .snc-collections__image {
+    transform: scale(1.05);
+  }
+
+  /* Gradient overlay */
+  .snc-collections__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,{{ overlay_opacity }}) 0%, rgba(0,0,0,0) 55%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Info overlaid at bottom — matches PLP card style */
+  .snc-collections__info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: {{ section.settings.card_content_padding | default: 20 }}px;
+    z-index: 2;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .snc-collections__card:hover .snc-collections__info {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  .snc-collections__collection-title {
+    margin: 0;
+    font-size: {{ section.settings.card_title_size | default: 16 }}px;
+    font-weight: normal;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+
+  .snc-collections__count {
+    display: block;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 768px) {
+    .snc-collections__grid {
+      grid-template-columns: repeat({{ columns_mobile }}, 1fr);
+      gap: {{ card_gap | times: 0.7 | round }}px;
+    }
+  }
+</style>
+
+<div
+  class="snc-collections"
+  data-section-type="snc-collections"
+  data-section-id="{{ section.id }}"
+>
+  {%- if section.settings.title != blank or section.settings.subtitle != blank -%}
+    <div class="snc-collections__header">
+      {%- if section.settings.subtitle != blank -%}
+        <span class="snc-collections__subtitle">{{ section.settings.subtitle | escape }}</span>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="snc-collections__title {{ section.settings.title_style | default: 'h2' }}">
+          {{ section.settings.title | escape }}
+        </h2>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="snc-collections__grid">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign col        = collections[block.settings.collection]
+        assign col_title  = block.settings.custom_title | default: col.title | default: 'Collection'
+        assign col_image  = block.settings.custom_image  | default: col.image | default: col.products.first.featured_image
+        assign col_url    = col.url | default: '#'
+        assign col_count  = col.products_count
+      -%}
+
+      <a
+        href="{{ col_url }}"
+        class="snc-collections__card"
+        {{ block.shopify_attributes }}
+        aria-label="{{ col_title | escape }}"
+      >
+        <div class="snc-collections__image-wrapper">
+          {%- if col_image != blank -%}
+            <img
+              src="{{ col_image | image_url: width: 800 }}"
+              srcset="
+                {{ col_image | image_url: width: 400 }} 400w,
+                {{ col_image | image_url: width: 800 }} 800w,
+                {{ col_image | image_url: width: 1200 }} 1200w
+              "
+              sizes="(max-width: 768px) 50vw, {{ 100 | divided_by: columns_desktop }}vw"
+              alt="{{ col_title | escape }}"
+              class="snc-collections__image"
+              loading="lazy"
+              width="800"
+              height="1067"
+            >
+          {%- else -%}
+            {{ 'collection-1' | placeholder_svg_tag: 'snc-collections__image' }}
+          {%- endif -%}
+          <div class="snc-collections__overlay"></div>
+          <div class="snc-collections__info">
+            <h3 class="snc-collections__collection-title">{{ col_title | escape }}</h3>
+            {%- if section.settings.show_product_count and col_count > 0 -%}
+              <span class="snc-collections__count">{{ col_count }} {{ 'collections.general.items' | t | default: 'productos' }}</span>
+            {%- endif -%}
+          </div>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "SNC Collections",
+  "class": "section--snc-collections",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Collections"
+    },
+    {
+      "type": "select",
+      "id": "title_style",
+      "label": "Title style",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left",   "label": "Left"   },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right"  }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns (Desktop)",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns (Mobile)",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap between cards",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "select",
+      "id": "card_height_mode",
+      "label": "Height mode",
+      "options": [
+        { "value": "aspect_ratio", "label": "Aspect ratio" },
+        { "value": "fixed",        "label": "Fixed height"  }
+      ],
+      "default": "aspect_ratio"
+    },
+    {
+      "type": "select",
+      "id": "card_aspect_ratio",
+      "label": "Aspect ratio",
+      "options": [
+        { "value": "3/4",  "label": "3:4 (Portrait)"  },
+        { "value": "4/3",  "label": "4:3 (Landscape)" },
+        { "value": "1/1",  "label": "1:1 (Square)"    },
+        { "value": "2/3",  "label": "2:3 (Tall)"      }
+      ],
+      "default": "3/4",
+      "info": "Used when height mode is 'Aspect ratio'."
+    },
+    {
+      "type": "range",
+      "id": "card_height",
+      "label": "Fixed height (Desktop)",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 420,
+      "info": "Used when height mode is 'Fixed height'."
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover",   "label": "Cover"   },
+        { "value": "contain", "label": "Contain" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Gradient overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "card_content_padding",
+      "label": "Content padding",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Collection title size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Show product count",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "side_padding",
+      "label": "Side padding (Full width)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "section_margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "Custom title",
+          "info": "Leave blank to use the collection's title."
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom image",
+          "info": "Leave blank to use the collection's image."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Collections",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}

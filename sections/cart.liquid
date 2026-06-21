@@ -1,0 +1,661 @@
+{%- comment -%}
+  sections/cart.liquid — De Leville branded full-page cart (/cart)
+  Replaces the Shopify skeleton default (HTML table, zero branding).
+  Visual language mirrors snc-side-cart: same typography, pill buttons, qty selectors.
+{%- endcomment -%}
+
+{%- liquid
+  assign icon_plus_url = 'Plus_De_Leville_Negro.svg' | asset_url
+  assign icon_minus_url = 'Less_De_Leville_Negro.svg' | asset_url
+-%}
+
+<style>
+  /* ==========================================================================
+     DE LEVILLE — CART PAGE
+     ========================================================================== */
+
+  .dlv-cart {
+    min-height: 60vh;
+    padding: 60px 48px 100px;
+    max-width: 1280px;
+    margin: 0 auto;
+    font-family: var(--font-main);
+  }
+
+  /* Header */
+  .dlv-cart__header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 52px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #e8e8e8;
+  }
+
+  .dlv-cart__title {
+    font-family: var(--font-main);
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #131313;
+    margin: 0;
+  }
+
+  .dlv-cart__count {
+    font-family: var(--font-main);
+    font-size: 13px;
+    color: #aaa;
+    letter-spacing: 0.06em;
+  }
+
+  /* Two-column layout */
+  .dlv-cart__layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 64px;
+    align-items: start;
+  }
+
+  /* ── ITEMS ── */
+  .dlv-cart__items {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dlv-cart__item {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 28px;
+    padding: 32px 0;
+    border-bottom: 1px solid #f0f0f0;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .dlv-cart__item:first-child {
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .dlv-cart__item.is-loading {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .dlv-cart__item-image {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #f7f7f7;
+  }
+
+  .dlv-cart__item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .dlv-cart__item-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 130px;
+  }
+
+  .dlv-cart__item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .dlv-cart__item-info { flex: 1; }
+
+  .dlv-cart__item-title {
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 400;
+    color: #131313;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dlv-cart__item-title:hover { opacity: 0.65; }
+
+  .dlv-cart__item-variant {
+    font-family: var(--font-main);
+    font-size: 12px;
+    color: #999;
+    letter-spacing: 0.04em;
+  }
+
+  .dlv-cart__item-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+
+  .dlv-cart__item-remove:hover { color: #131313; }
+
+  .dlv-cart__item-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  /* Qty selector — mirrors snc-side-cart */
+  .dlv-cart__qty {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dedede;
+    height: 36px;
+  }
+
+  .dlv-cart__qty-btn {
+    background: none;
+    border: none;
+    width: 36px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.2s;
+  }
+
+  .dlv-cart__qty-btn:hover { opacity: 0.5; }
+
+  .dlv-cart__qty-btn img {
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+  }
+
+  .dlv-cart__qty-input {
+    width: 36px;
+    height: 100%;
+    border: none;
+    border-left: 1px solid #dedede;
+    border-right: 1px solid #dedede;
+    text-align: center;
+    font-family: var(--font-main);
+    font-size: 13px;
+    color: #131313;
+    padding: 0;
+    background: transparent;
+    -moz-appearance: textfield;
+    appearance: none;
+  }
+
+  .dlv-cart__item-price {
+    font-family: var(--font-main);
+    font-size: 15px;
+    font-weight: 500;
+    color: #131313;
+    letter-spacing: 0.03em;
+    text-align: right;
+  }
+
+  .dlv-cart__item-price-original {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: #bbb;
+    text-decoration: line-through;
+    margin-bottom: 2px;
+  }
+
+  /* ── SUMMARY ── */
+  .dlv-cart__summary {
+    position: sticky;
+    top: 120px;
+    background: #f9f9f9;
+    padding: 36px 32px 32px;
+  }
+
+  .dlv-cart__summary-title {
+    font-family: var(--font-main);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #131313;
+    margin: 0 0 28px;
+  }
+
+  .dlv-cart__summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    font-family: var(--font-main);
+    font-size: 13px;
+    color: #666;
+    letter-spacing: 0.03em;
+  }
+
+  .dlv-cart__summary-row.is-total {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #131313;
+    letter-spacing: 0.06em;
+    margin-bottom: 0;
+  }
+
+  .dlv-cart__summary-row.is-total span:last-child {
+    font-size: 18px;
+  }
+
+  .dlv-cart__checkout-btn {
+    display: block;
+    width: 100%;
+    padding: 17px 24px;
+    margin-top: 28px;
+    background: #131313;
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    font-family: var(--font-main);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    box-sizing: border-box;
+  }
+
+  .dlv-cart__checkout-btn:hover {
+    opacity: 0.8;
+    color: #ffffff;
+  }
+
+  .dlv-cart__continue-link {
+    display: block;
+    text-align: center;
+    margin-top: 14px;
+    font-family: var(--font-main);
+    font-size: 11px;
+    color: #aaa;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .dlv-cart__continue-link:hover { color: #131313; }
+
+  /* Made-to-order notice */
+  .dlv-cart__notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 24px;
+    padding: 14px 16px;
+    border-left: 2px solid #131313;
+    background: #f2f2f2;
+  }
+
+  .dlv-cart__notice svg { flex-shrink: 0; margin-top: 1px; }
+
+  .dlv-cart__notice-text {
+    font-family: var(--font-main);
+    font-size: 11px;
+    color: #666;
+    letter-spacing: 0.03em;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  /* Guarantee */
+  .dlv-cart__guarantee {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e8e8e8;
+  }
+
+  .dlv-cart__guarantee svg { flex-shrink: 0; margin-top: 2px; opacity: 0.45; }
+
+  .dlv-cart__guarantee-text {
+    font-family: var(--font-main);
+    font-size: 11px;
+    color: #999;
+    letter-spacing: 0.03em;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  /* ── EMPTY STATE ── */
+  .dlv-cart__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px 120px;
+    text-align: center;
+  }
+
+  .dlv-cart__empty-eyebrow {
+    font-family: var(--font-main);
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #bbb;
+    margin: 0 0 28px;
+  }
+
+  .dlv-cart__empty-title {
+    font-family: var(--font-main);
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #131313;
+    margin: 0 0 16px;
+  }
+
+  .dlv-cart__empty-text {
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: #888;
+    letter-spacing: 0.04em;
+    line-height: 1.75;
+    margin: 0 0 44px;
+    max-width: 340px;
+  }
+
+  .dlv-cart__empty-btn {
+    display: inline-block;
+    padding: 16px 52px;
+    background: #131313;
+    color: #ffffff;
+    border-radius: 999px;
+    font-family: var(--font-main);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+
+  .dlv-cart__empty-btn:hover { opacity: 0.8; color: #ffffff; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 860px) {
+    .dlv-cart {
+      padding: 40px 24px 72px;
+    }
+
+    .dlv-cart__layout {
+      grid-template-columns: 1fr;
+      gap: 44px;
+    }
+
+    .dlv-cart__summary {
+      position: static;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .dlv-cart__item {
+      grid-template-columns: 96px 1fr;
+      gap: 18px;
+    }
+
+    .dlv-cart__title { font-size: 20px; }
+  }
+</style>
+
+<div class="dlv-cart" id="dlv-cart-page">
+
+  {%- if cart.item_count > 0 -%}
+
+    <div class="dlv-cart__header">
+      <h1 class="dlv-cart__title">Your Bag</h1>
+      <span class="dlv-cart__count">({{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %})</span>
+    </div>
+
+    <div class="dlv-cart__layout">
+
+      {%- comment -%} Left: item list {%- endcomment -%}
+      <div class="dlv-cart__items" id="dlv-cart-items">
+        {%- for item in cart.items -%}
+          <div class="dlv-cart__item" data-cart-item-key="{{ item.key }}" data-item-price="{{ item.final_price }}">
+
+            <div class="dlv-cart__item-image">
+              {%- if item.image -%}
+                <a href="{{ item.url }}">
+                  <img
+                    src="{{ item.image | image_url: width: 260 }}"
+                    alt="{{ item.image.alt | escape }}"
+                    width="260"
+                    loading="lazy"
+                  >
+                </a>
+              {%- endif -%}
+            </div>
+
+            <div class="dlv-cart__item-body">
+              <div class="dlv-cart__item-top">
+                <div class="dlv-cart__item-info">
+                  <a class="dlv-cart__item-title" href="{{ item.url }}">{{ item.product.title }}</a>
+                  {%- if item.variant.title != 'Default Title' -%}
+                    <div class="dlv-cart__item-variant">{{ item.variant.title }}</div>
+                  {%- endif -%}
+                </div>
+                <button
+                  class="dlv-cart__item-remove"
+                  type="button"
+                  data-remove-key="{{ item.key }}"
+                  aria-label="Remove {{ item.product.title | escape }}"
+                >
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="dlv-cart__item-bottom">
+                <div class="dlv-cart__qty">
+                  <button type="button" class="dlv-cart__qty-btn" data-qty-change="-1" data-key="{{ item.key }}" aria-label="Decrease quantity">
+                    <img src="{{ icon_minus_url }}" alt="" width="14" height="14" loading="lazy">
+                  </button>
+                  <input type="text" class="dlv-cart__qty-input" value="{{ item.quantity }}" readonly aria-label="Quantity">
+                  <button type="button" class="dlv-cart__qty-btn" data-qty-change="1" data-key="{{ item.key }}" aria-label="Increase quantity">
+                    <img src="{{ icon_plus_url }}" alt="" width="14" height="14" loading="lazy">
+                  </button>
+                </div>
+
+                <div class="dlv-cart__item-price">
+                  {%- if item.original_price != item.final_price -%}
+                    <span class="dlv-cart__item-price-original">{{ item.original_price | money }}</span>
+                  {%- endif -%}
+                  <span data-item-price>{{ item.final_price | money }}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} Right: order summary {%- endcomment -%}
+      <div class="dlv-cart__summary">
+        <h2 class="dlv-cart__summary-title">Order Summary</h2>
+
+        <div class="dlv-cart__summary-row">
+          <span>Subtotal</span>
+          <span id="dlv-cart-subtotal">{{ cart.total_price | money }}</span>
+        </div>
+        <div class="dlv-cart__summary-row">
+          <span>Shipping</span>
+          <span>Calculated at checkout</span>
+        </div>
+        <div class="dlv-cart__summary-row is-total">
+          <span>Total</span>
+          <span id="dlv-cart-total">{{ cart.total_price | money }}</span>
+        </div>
+
+        <a href="/checkout" class="dlv-cart__checkout-btn">Proceed to Checkout</a>
+        <a href="/collections/all" class="dlv-cart__continue-link">Continue Shopping</a>
+
+        <div class="dlv-cart__notice">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="7" cy="7" r="6.3" stroke="#555" stroke-width="1"/>
+            <line x1="7" y1="5.5" x2="7" y2="7.8" stroke="#555" stroke-width="1.1" stroke-linecap="round"/>
+            <circle cx="7" cy="9.5" r="0.6" fill="#555"/>
+          </svg>
+          <p class="dlv-cart__notice-text">Our pieces are crafted to order. Please allow 3–4 weeks for production before dispatch.</p>
+        </div>
+
+        <div class="dlv-cart__guarantee">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M7.5 1L1 3.5V7.5C1 11 4 13.5 7.5 14C11 13.5 14 11 14 7.5V3.5L7.5 1Z" stroke="#131313" stroke-width="1"/>
+            <path d="M4.5 7.5L6.5 9.5L10.5 5.5" stroke="#131313" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="dlv-cart__guarantee-text">Your purchase is protected by our service policy. Secure, encrypted checkout.</p>
+        </div>
+      </div>
+
+    </div>
+
+  {%- else -%}
+
+    <div class="dlv-cart__empty">
+      <p class="dlv-cart__empty-eyebrow">De Leville</p>
+      <h1 class="dlv-cart__empty-title">Your Bag is Empty</h1>
+      <p class="dlv-cart__empty-text">Discover our collections of handcrafted jewelry, each piece made to order in solid 18k gold.</p>
+      <a href="/collections/all" class="dlv-cart__empty-btn">Explore the Collection</a>
+    </div>
+
+  {%- endif -%}
+
+</div>
+
+<script>
+(function() {
+  var cartPage = document.getElementById('dlv-cart-page');
+  if (!cartPage) return;
+
+  var pendingKeys = new Set();
+
+  function formatMoney(cents) {
+    if (!cents) return '$0';
+    return '$' + (cents / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace('.00', '');
+  }
+
+  function setLoading(key, on) {
+    var el = cartPage.querySelector('[data-cart-item-key="' + key + '"]');
+    if (el) el.classList.toggle('is-loading', on);
+  }
+
+  function refreshTotals(data) {
+    var subtotalEl = document.getElementById('dlv-cart-subtotal');
+    var totalEl    = document.getElementById('dlv-cart-total');
+    if (subtotalEl) subtotalEl.textContent = formatMoney(data.total_price);
+    if (totalEl)    totalEl.textContent    = formatMoney(data.total_price);
+    if (typeof updateCartCount === 'function') updateCartCount();
+    if (typeof window.updateSideCart === 'function') window.updateSideCart();
+  }
+
+  function removeItem(key) {
+    if (pendingKeys.has(key)) return;
+    pendingKeys.add(key);
+    setLoading(key, true);
+
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      body: JSON.stringify({ id: key, quantity: 0 })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var el = cartPage.querySelector('[data-cart-item-key="' + key + '"]');
+      if (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(-8px)';
+        setTimeout(function() {
+          el.remove();
+          refreshTotals(data);
+          if (data.item_count === 0) window.location.reload();
+        }, 300);
+      }
+    })
+    .catch(function() { setLoading(key, false); })
+    .finally(function() { pendingKeys.delete(key); });
+  }
+
+  function changeQty(key, delta) {
+    if (pendingKeys.has(key)) return;
+    var el = cartPage.querySelector('[data-cart-item-key="' + key + '"]');
+    if (!el) return;
+
+    var input = el.querySelector('.dlv-cart__qty-input');
+    var currentQty = input ? parseInt(input.value, 10) || 0 : 0;
+    var newQty = Math.max(0, currentQty + delta);
+
+    if (newQty === 0) { removeItem(key); return; }
+    if (newQty === currentQty) return;
+
+    pendingKeys.add(key);
+    if (input) input.value = newQty;
+    setLoading(key, true);
+
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      body: JSON.stringify({ id: key, quantity: newQty })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      refreshTotals(data);
+      var lineItem = (data.items || []).find(function(i) { return i.key === key; });
+      if (lineItem) {
+        var priceEl = el.querySelector('[data-item-price]');
+        if (priceEl) priceEl.textContent = formatMoney(lineItem.final_price);
+        el.dataset.itemPrice = lineItem.final_price;
+      }
+      setLoading(key, false);
+    })
+    .catch(function() {
+      if (input) input.value = currentQty;
+      setLoading(key, false);
+    })
+    .finally(function() { pendingKeys.delete(key); });
+  }
+
+  cartPage.addEventListener('click', function(e) {
+    var removeBtn = e.target.closest('[data-remove-key]');
+    if (removeBtn) { removeItem(removeBtn.dataset.removeKey); return; }
+
+    var qtyBtn = e.target.closest('[data-qty-change]');
+    if (qtyBtn) { changeQty(qtyBtn.dataset.key, parseInt(qtyBtn.dataset.qtyChange, 10)); }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": []
+}
+{% endschema %}

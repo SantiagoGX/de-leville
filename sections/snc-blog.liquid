@@ -1,0 +1,649 @@
+{%- comment -%}
+  SNC Blog — Reescrito desde cero
+  Diseño editorial minimalista y elegante.
+  Grid de cards completamente autónomas (imagen fija + cuerpo fijo).
+  Vista artículo inline con ocultado del hero.
+{%- endcomment -%}
+
+{%- liquid
+  assign blog_handle  = section.settings.blog | default: 'news'
+  assign per_page     = section.settings.posts_per_page | default: 9
+  assign show_tags    = section.settings.show_tags
+  assign show_author  = section.settings.show_author
+  assign show_time    = section.settings.show_read_time
+  assign current_blog = blogs[blog_handle]
+  assign cols         = section.settings.grid_columns | default: 3
+-%}
+
+
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+#snc-blog-{{ section.id }} {
+  --ac:       {{ section.settings.accent_color | default: '#000000' }};
+  --ac-pale:  {{ section.settings.accent_pale  | default: '#edf2ee' }};
+  --ink:      #1c1c1a;
+  --ink2:     #5a5a56;
+  --ink3:     #9a9a94;
+  --rule:     rgba(28,28,26,0.10);
+  --bg:       {{ section.settings.bg_color | default: '#fafaf8' }};
+  --card-bg:  #ffffff;
+  --serif:    var(--font-heading-family, 'Futura PT', sans-serif);
+  --sans:     var(--font-body-family, 'Futura PT', sans-serif);
+  --ease:     cubic-bezier(.4,0,.2,1);
+  --cols:     {{ cols }};
+  --pad-h:    {{ section.settings.pad_h | default: 24 }}px;
+  --max-w:    {{ section.settings.max_width | default: 1160 }}px;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--bg);
+  width: 100%;
+  box-sizing: border-box;
+}
+#snc-blog-{{ section.id }} *, #snc-blog-{{ section.id }} *::before, #snc-blog-{{ section.id }} *::after {
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   HERO HIDE — se aplica via JS con data-snc-hidden="1"
+   ============================================================ */
+[data-snc-hidden="1"] {
+  display: none !important;
+}
+
+/* ============================================================
+   INNER WRAPPER (centrado, max-width)
+   ============================================================ */
+.snc__inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding-left: var(--pad-h);
+  padding-right: var(--pad-h);
+}
+
+/* ============================================================
+   FILTER BAR
+   ============================================================ */
+.snc__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0;
+  border-bottom: 0.5px solid var(--rule);
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: .75rem;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.snc__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.snc__filter {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  padding: .5rem 1.1rem;
+  border: none;
+  background: none;
+  color: var(--ink3);
+  cursor: pointer;
+  border-bottom: 1.5px solid transparent;
+  transition: color .2s, border-color .2s;
+  line-height: 1;
+}
+.snc__filter:hover   { color: var(--ink); }
+.snc__filter.is-on   { color: var(--ac); border-bottom-color: var(--ac); }
+
+.snc__bar-right {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.snc__count {
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.snc__toggle { display: flex; gap: 3px; }
+
+.snc__vbtn {
+  width: 28px;
+  height: 28px;
+  border: 0.5px solid var(--rule);
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, border-color .2s;
+  padding: 0;
+  flex-shrink: 0;
+}
+.snc__vbtn.is-on          { background: var(--ink); border-color: var(--ink); }
+.snc__vbtn svg            { width: 13px; height: 13px; display: block; }
+.snc__vbtn.is-on svg path { stroke: #fff; }
+
+/* ============================================================
+   GRID — cada card es 100% autónoma, NO comparte filas
+   ============================================================ */
+.snc__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 2px;
+  background: transparent;
+  /* Sin align-items: todas las celdas son independientes */
+}
+
+.snc__grid.is-list {
+  grid-template-columns: 1fr;
+}
+
+/* ============================================================
+   CARD
+   La clave: imagen con aspect-ratio fijo + cuerpo con
+   altura FIJA usando min-height. Nada depende del vecino.
+   ============================================================ */
+.snc__card {
+  background: var(--card-bg);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  text-align: left;
+  width: 100%;
+  padding: 0;
+  transition: background .25s var(--ease);
+  text-decoration: none;
+  /* Sin height: auto — cada card ocupa solo lo que necesita */
+}
+.snc__card:hover { background: #f7f6f3; }
+
+/* Imagen: siempre 3:2, nunca cambia */
+.snc__card-img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: block;
+  background: transparent;
+}
+.snc__card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .7s var(--ease);
+}
+.snc__card:hover .snc__card-img img { transform: scale(1.05); }
+
+/* Cuerpo: altura interna controlada por line-clamp en TODOS los elementos */
+.snc__card-body {
+  padding: 1.25rem 1.5rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.snc__card-meta {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.snc__tag  { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--ac); line-height: 1; }
+.snc__dot  { width: 3px; height: 3px; border-radius: 50%; background: var(--ink3); flex-shrink: 0; }
+.snc__date { font-size: 11px; color: var(--ink3); line-height: 1; }
+
+/* Título: exactamente 2 líneas siempre */
+.snc__card-title {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--ink);
+  /* Forzar siempre exactamente 2 líneas */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: calc(1.2rem * 1.25 * 2);   /* font-size × line-height × 2 líneas */
+  margin: 0;
+}
+
+/* Excerpt: exactamente 2 líneas siempre */
+.snc__card-exc {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--ink2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: calc(13px * 1.6 * 2);      /* font-size × line-height × 2 líneas */
+  margin: 0;
+}
+
+/* Footer: siempre al mismo nivel porque el cuerpo tiene altura fija */
+.snc__card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: .85rem;
+  margin-top: .35rem;
+  border-top: 0.5px solid var(--rule);
+}
+.snc__card-author { font-size: 11px; color: var(--ink3); line-height: 1; }
+.snc__read {
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ac);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1;
+}
+.snc__arr { transition: transform .2s; display: inline-block; }
+.snc__card:hover .snc__arr { transform: translateX(5px); }
+
+/* ============================================================
+   MODO LISTA
+   ============================================================ */
+.snc__grid.is-list .snc__card {
+  flex-direction: row;
+}
+.snc__grid.is-list .snc__card-img {
+  width: 240px;
+  aspect-ratio: auto;
+  flex-shrink: 0;
+  height: auto;
+  min-height: 180px;
+}
+.snc__grid.is-list .snc__card-body {
+  flex: 1;
+  padding: 1.4rem 1.75rem;
+  justify-content: center;
+}
+.snc__grid.is-list .snc__card-title {
+  height: auto;
+  -webkit-line-clamp: 3;
+}
+.snc__grid.is-list .snc__card-exc {
+  height: auto;
+  -webkit-line-clamp: 3;
+}
+
+/* ============================================================
+   PAGINACIÓN
+   ============================================================ */
+.snc__pagination {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .4rem;
+  padding: 2.5rem 0;
+  border-top: 0.5px solid var(--rule);
+  margin-top: 2px;
+}
+.snc__page {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .5rem 1.1rem;
+  border: 0.5px solid var(--rule);
+  background: none;
+  color: var(--ink2);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s, color .2s, border-color .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.snc__page:hover,
+.snc__page.is-on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  #snc-blog-{{ section.id }} { --cols: 2; }
+}
+@media (max-width: 768px) {
+  .snc__toggle { display: none !important; }
+}
+@media (max-width: 600px) {
+  #snc-blog-{{ section.id }} { --cols: 1; }
+  .snc__grid.is-list .snc__card { flex-direction: column; }
+  .snc__grid.is-list .snc__card-img { width: 100%; aspect-ratio: 3/2; min-height: 0; }
+}
+</style>
+
+<div id="snc-blog-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="snc-blog">
+
+  {%- comment -%}━━━━━━━━━━ GRID VIEW ━━━━━━━━━━{%- endcomment -%}
+  <div id="snc-gv-{{ section.id }}">
+    <div class="snc__inner">
+
+      {%- comment -%} Barra filtros {%- endcomment -%}
+      <div class="snc__bar">
+        <div class="snc__filters" id="snc-filters-{{ section.id }}">
+          <button class="snc__filter is-on" onclick="sncF('{{ section.id }}',this,'all')">
+            {{ section.settings.label_all | default: 'All' }}
+          </button>
+          {%- if show_tags -%}
+            {%- assign _seen = '' -%}
+            {%- for article in current_blog.articles -%}
+              {%- for tag in article.tags -%}
+                {%- assign _t = tag | strip -%}
+                {%- unless _seen contains _t -%}
+                  {%- assign _seen = _seen | append: _t | append: '|' -%}
+                  <button class="snc__filter" onclick="sncF('{{ section.id }}',this,'{{ _t | handle }}')">{{ _t }}</button>
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+
+        <div class="snc__bar-right">
+          <span class="snc__count" id="snc-cnt-{{ section.id }}">
+            {{ current_blog.articles_count }}&thinsp;{{ section.settings.label_articles | default: 'articles' }}
+          </span>
+          {%- if section.settings.show_toggle -%}
+            <div class="snc__toggle">
+              <button class="snc__vbtn is-on" id="snc-vg-{{ section.id }}" onclick="sncV('{{ section.id }}','grid')" title="Grid">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M1 1h5v5H1zM8 1h5v5H8zM1 8h5v5H1zM8 8h5v5H8z" stroke="#1c1c1a" stroke-width="1.2"/></svg>
+              </button>
+              <button class="snc__vbtn" id="snc-vl-{{ section.id }}" onclick="sncV('{{ section.id }}','list')" title="List">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M1 3h12M1 7h12M1 11h12" stroke="#1c1c1a" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- comment -%} Cards {%- endcomment -%}
+      {%- paginate current_blog.articles by per_page -%}
+        <div class="snc__grid" id="snc-cards-{{ section.id }}">
+          {%- for article in current_blog.articles -%}
+            {%- assign _th = '' -%}
+            {%- for tag in article.tags -%}
+              {%- assign _th = _th | append: tag | handle | append: ' ' -%}
+            {%- endfor -%}
+            {%- assign _wc = article.content | strip_html | split: ' ' | size -%}
+            {%- assign _rm = _wc | divided_by: 200 | plus: 1 -%}
+
+            <a
+              href="{{ article.url }}"
+              class="snc__card"
+              data-tags="{{ _th | strip }}"
+            >
+              <div class="snc__card-img">
+                {%- if article.image -%}
+                  {{ article.image | image_url: width: 900 | image_tag:
+                      loading: 'lazy',
+                      alt: article.image.alt | default: article.title,
+                      width: article.image.width,
+                      height: article.image.height }}
+                {%- endif -%}
+              </div>
+
+              <div class="snc__card-body">
+                <div class="snc__card-meta">
+                  {%- if article.tags.size > 0 -%}
+                    <span class="snc__tag">{{ article.tags | first }}</span>
+                    <span class="snc__dot"></span>
+                  {%- endif -%}
+                  <span class="snc__date">{{ article.published_at | date: '%b %d, %Y' }}</span>
+                </div>
+
+                <h3 class="snc__card-title">{{ article.title }}</h3>
+
+                <p class="snc__card-exc">
+                  {%- if article.excerpt != blank -%}
+                    {{ article.excerpt | strip_html }}
+                  {%- else -%}
+                    {{ article.content | strip_html | truncate: 130 }}
+                  {%- endif -%}
+                </p>
+
+                <div class="snc__card-foot">
+                  <span class="snc__card-author">
+                    {%- if show_author -%}{{ article.author }}{%- endif -%}
+                    {%- if show_time -%}
+                      {%- if show_author %}&thinsp;&middot;&thinsp;{%- endif -%}
+                      {{ _rm }}&thinsp;min
+                    {%- endif -%}
+                  </span>
+                  <span class="snc__read">
+                    {{ section.settings.label_read | default: 'Read' }}&thinsp;<span class="snc__arr">&#8594;</span>
+                  </span>
+                </div>
+              </div>
+            </a>
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <div class="snc__pagination">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}" class="snc__page">&#8592;&thinsp;Prev</a>
+            {%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}" class="snc__page">{{ part.title }}</a>
+              {%- else -%}
+                <span class="snc__page is-on">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}" class="snc__page">Next&thinsp;&#8594;</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endpaginate -%}
+
+    </div>{%- comment -%}/snc__inner{%- endcomment -%}
+  </div>{%- comment -%}/grid view{%- endcomment -%}
+
+
+</div>
+
+<script>
+(function(){
+  var SID = '{{ section.id }}';
+  function g(id){ return document.getElementById(id); }
+
+  /* ── Filtro ── */
+  window['sncF'] = function(id, btn, cat){
+    g('snc-filters-'+id).querySelectorAll('.snc__filter').forEach(function(b){ b.classList.remove('is-on'); });
+    btn.classList.add('is-on');
+    var n = 0;
+    g('snc-cards-'+id).querySelectorAll('.snc__card').forEach(function(c){
+      var tags = ' ' + (c.dataset.tags||'') + ' ';
+      var show = cat === 'all' || tags.indexOf(' '+cat+' ') !== -1;
+      c.style.display = show ? '' : 'none';
+      if(show) n++;
+    });
+    var el = g('snc-cnt-'+id);
+    if(el) el.textContent = n + '\u2009{{ section.settings.label_articles | default: 'articles' }}';
+  };
+
+  /* ── Toggle vista ── */
+  window['sncV'] = function(id, v){
+    var grid = g('snc-cards-'+id);
+    if(!grid) return;
+    grid.classList.toggle('is-list', v === 'list');
+    var bg = g('snc-vg-'+id), bl = g('snc-vl-'+id);
+    if(bg) bg.classList.toggle('is-on', v === 'grid');
+    if(bl) bl.classList.toggle('is-on', v === 'list');
+  };
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SNC Blog",
+  "tag": "section",
+  "class": "section--snc-blog",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Blog"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog to display"
+    },
+    {
+      "type": "range",
+      "id": "posts_per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 9
+    },
+    {
+      "type": "select",
+      "id": "grid_columns",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "2", "label": "2 columns" },
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "header",
+      "content": "Card options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show tag filters",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_time",
+      "label": "Show read time",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_toggle",
+      "label": "Show grid / list toggle",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent_pale",
+      "label": "Pale accent color",
+      "default": "#edf2ee"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#fafaf8"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max content width",
+      "min": 800,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "default": 1160
+    },
+    {
+      "type": "range",
+      "id": "pad_h",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Texts"
+    },
+    {
+      "type": "text",
+      "id": "label_all",
+      "label": "'All' label",
+      "default": "All"
+    },
+    {
+      "type": "text",
+      "id": "label_articles",
+      "label": "Articles label",
+      "default": "articles"
+    },
+    {
+      "type": "text",
+      "id": "label_read",
+      "label": "Read button",
+      "default": "Read"
+    },
+  ],
+  "presets": [
+    {
+      "name": "SNC Blog"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["blog"]
+  }
+}
+{% endschema %}

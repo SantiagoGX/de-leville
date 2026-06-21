@@ -1,0 +1,1549 @@
+{%- comment -%}
+  SNC Footer - Footer personalizado según diseño Figma
+  Estructura:
+  - Bloques reordenables: Newsletter+Social, Navegación, Firma.
+{%- endcomment -%}
+<style>
+  .snc-footer {
+    width: 100%;
+    padding: 20px;
+    letter-spacing: -0.04em;
+    transition: background-color 0.3s ease;
+  }
+  .snc-footer.full-width {
+    display: grid;
+    grid-template-columns: var(--content-grid);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .snc-footer.full-width > .snc-footer--container {
+    grid-column: 1 / -1;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .snc-footer--no-outer {
+    padding: 0;
+  }
+  .snc-footer--container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .snc-footer--main {
+    width: 100%;
+    margin: 0;
+    padding: 35px 40px 25px;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, border-radius 0.3s ease;
+  }
+  .snc-footer--top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 0;
+  }
+  .snc-footer--logo-newsletter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .snc-footer--logo {
+    display: block;
+    text-decoration: none;
+  }
+  .snc-footer--logo.is-inverted {
+    filter: invert(1);
+  }
+  .snc-footer--logo img,
+  .snc-footer--logo-img {
+    width: var(--logo-width, 200px);
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+  .snc-footer--newsletter-block {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .snc-footer--newsletter-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .snc-footer--newsletter-title {
+    line-height: 1.2;
+    margin: 0;
+  }
+  .snc-footer--newsletter-paragraph,
+  .snc-footer--newsletter-paragraph p {
+    line-height: 1.5;
+    margin: 0;
+    font-weight: inherit;
+    font-size: inherit;
+    color: inherit;
+  }
+  .snc-footer--payment-icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .snc-footer--payment-icons .icon {
+    height: 24px;
+    width: auto;
+    display: block;
+  }
+  .snc-footer--newsletter {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    flex-wrap: nowrap;
+    position: relative;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    transition: border-color 0.2s ease;
+  }
+  .snc-footer--newsletter:focus-within {
+    border-bottom-color: #000000;
+  }
+  .snc-footer--newsletter.snc-footer--newsletter--inside {
+    position: relative;
+    width: var(--newsletter-input-width, 150px);
+    gap: 0;
+  }
+  .snc-footer--newsletter.snc-footer--newsletter--inside .snc-footer--newsletter-fields {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+  }
+  .snc-footer--newsletter.snc-footer--newsletter--inside .snc-footer--newsletter-input {
+    width: 100%;
+    padding-right: 40px;
+  }
+  .snc-footer--newsletter.snc-footer--newsletter--inside .snc-footer--newsletter-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+  .snc-footer--newsletter-input {
+    font-family: var(--font-body-family);
+    font-size: 15px;
+    color: #000000;
+    border: none;
+    background: transparent;
+    padding: 10px 0;
+    width: var(--newsletter-input-width, 150px);
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  .snc-footer--newsletter-input:focus,
+  .snc-footer--newsletter-input:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  .snc-footer--newsletter-input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+  }
+  .snc-footer--newsletter-btn {
+    width: 32px;
+    height: auto;
+    padding: 10px 0;
+    background-color: transparent;
+    border: none;
+    outline: none !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    color: #000000;
+  }
+  .snc-footer--newsletter-btn:focus,
+  .snc-footer--newsletter-btn:focus-visible {
+    outline: none !important;
+  }
+  .snc-footer--newsletter-btn:hover {
+    transform: scale(1.1);
+  }
+  .snc-footer--newsletter-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #000000;
+    stroke-width: 2;
+  }
+  /* Loading state */
+  .snc-footer--newsletter.is-submitting .snc-footer--newsletter-btn {
+    opacity: 0.25;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .snc-footer--newsletter.is-submitting .snc-footer--newsletter-input {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+  /* Success fade-in */
+  @keyframes sncSuccessFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0);   }
+  }
+  .snc-footer--newsletter-success {
+    animation: sncSuccessFadeIn 0.45s cubic-bezier(.22,.61,.36,1) both;
+  }
+  /* Error — muted, refined */
+  .snc-footer--newsletter-error {
+    font-size: 11px !important;
+    letter-spacing: 0.04em !important;
+    color: rgba(160, 55, 55, 0.82) !important;
+  }
+  .snc-footer--social {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .snc-footer--social.align-bottom {
+    align-self: flex-end;
+  }
+  .snc-footer--social-link {
+    width: var(--social-container-size, 50px);
+    height: var(--social-container-size, 50px);
+    border-radius: 50%;
+    border: 1.5px solid #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    text-decoration: none;
+  }
+  .snc-footer--social-link:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+    transform: scale(1.05);
+  }
+  .snc-footer--social-icon {
+    width: var(--social-icon-size, 26px);
+    height: var(--social-icon-size, 26px);
+    object-fit: contain;
+  }
+  .snc-footer--divider {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.06);
+    margin: 0;
+  }
+  .snc-footer--menus {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 0;
+    width: 100%;
+  }
+  .snc-footer--menu-items {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: var(--menu-gap-desktop, 30px);
+  }
+  .snc-footer--menu-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .snc-footer--menu-column.is-empty {
+    display: none;
+  }
+  .snc-footer--menu-title {
+    font-family: var(--font-body-family);
+    font-size: 13px;
+    font-weight: var(--menu-title-weight, 400);
+    color: var(--menu-title-color, rgba(0, 0, 0, 0.4));
+    text-transform: none;
+    letter-spacing: -0.04em;
+    margin: 0;
+  }
+  .snc-footer--menu-title-btn {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+  }
+  .snc-footer--menu-title-btn:focus-visible {
+    outline: 2px solid rgba(0, 0, 0, 0.4);
+    outline-offset: 2px;
+  }
+  .snc-footer--menu-toggle-icon {
+    display: none;
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+  }
+  .snc-footer--menu-toggle-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  .snc-footer--menu-column.is-open .snc-footer--menu-toggle-icon {
+    transform: rotate(180deg);
+  }
+  .snc-footer--menu-column .snc-footer--menu-links {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+  }
+  .snc-footer--menu-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .snc-footer--menu-link {
+    font-size: 16px;
+    font-weight: var(--menu-link-weight, 400);
+    color: var(--menu-link-color, #000000);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    display: block;
+  }
+  .snc-footer--menu-link:hover {
+    opacity: 0.7;
+  }
+  .snc-footer--contact-item {
+    font-family: var(--font-heading-family);
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 8px;
+    transition: opacity 0.2s ease;
+  }
+  .snc-footer--contact-item:hover {
+    opacity: 0.7;
+  }
+  .snc-footer--contact-item:last-child {
+    margin-bottom: 0;
+  }
+  .snc-footer--bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-top: 0;
+    border-top: none;
+  }
+  .snc-footer--newsletter-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .snc-footer--credits-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: var(--font-body-family);
+    font-size: 12px;
+    font-weight: var(--credits-font-weight, 600);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.4);
+  }
+  .snc-footer--credits-dash {
+    width: 30px;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+  .snc-footer--credits-link {
+    color: rgba(0, 0, 0, 0.4);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .snc-footer--credits-link:hover {
+    color: #000000;
+  }
+  .snc-footer--credits-right {
+    font-size: 12px;
+    font-family: var(--font-body-family);
+    font-weight: var(--credits-font-weight, 600);
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.4);
+  }
+  .snc-footer--logo-text-block {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .snc-footer--logo-text-image {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  /* ── Tablet (≤900px) ── */
+  @media (max-width: 900px) {
+    .snc-footer--top-row { flex-direction: column; align-items: flex-start; }
+    .snc-footer--logo-newsletter { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .snc-footer--social { width: 100%; justify-content: flex-start; gap: 8px; }
+    .snc-footer--social-link { width: 34px; height: 34px; }
+    .snc-footer--social-icon { width: 17px; height: 17px; }
+    .snc-footer--main { padding: 20px 18px 14px; }
+    .snc-footer--menus { flex-direction: column; }
+    .snc-footer--menu-items {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+    }
+    .snc-footer--menu-column {
+      overflow: hidden;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    /* Remove border from last 4 children — covers the last visible column (HELP)
+       and the 3 empty/hidden columns after it */
+    .snc-footer--menu-column:nth-last-child(-n+4) { border-bottom: none; }
+    .snc-footer--menu-title-btn { padding: 10px 0; }
+    .snc-footer--menu-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .snc-footer--menu-toggle-icon { display: inline-flex; }
+    .snc-footer--menu-toggle-icon svg { width: 11px; height: 11px; }
+    .snc-footer--menu-column .snc-footer--menu-links {
+      max-height: 0; opacity: 0; overflow: hidden; pointer-events: none;
+    }
+    .snc-footer--menu-column.is-open .snc-footer--menu-links {
+      max-height: 400px; opacity: 1; pointer-events: auto;
+    }
+    .snc-footer--menu-links { gap: 4px; padding: 4px 0 10px; }
+    .snc-footer--menu-link { font-size: 13px; line-height: 1.4; }
+    .snc-footer--menu-column.is-empty { display: none; }
+
+    /* Block-level divider: reduce inline-style margin override */
+    .snc-footer--divider { margin-top: 14px !important; margin-bottom: 14px !important; }
+  }
+
+  /* ── Mobile (≤600px) ── */
+  @media (max-width: 600px) {
+    .snc-footer { padding: 8px 0; }
+    .snc-footer--no-outer { padding: 0; }
+    .snc-footer--container { padding: 0 16px; }
+    .snc-footer--main { padding: 18px 22px 12px; }
+
+    /* Logo in logo_text block: cap size on mobile */
+    .snc-footer--logo-text-image { max-width: 110px !important; width: 110px !important; }
+
+    /* Social — very compact */
+    .snc-footer--social { gap: 7px; }
+    .snc-footer--social-link { width: 30px; height: 30px; border-width: 1px; }
+    .snc-footer--social-icon { width: 14px; height: 14px; }
+
+    /* Newsletter */
+    .snc-footer--newsletter { flex-direction: column; align-items: flex-start; gap: 6px; width: 100%; }
+    .snc-footer--newsletter.snc-footer--newsletter--inside { width: 100%; }
+    .snc-footer--newsletter-input { width: 100%; box-sizing: border-box; font-size: 13px; padding: 7px 0; }
+
+    /* Nav menus — single column */
+    .snc-footer--menu-items { grid-template-columns: 1fr; }
+    .snc-footer--menu-title-btn { padding: 9px 0; }
+    .snc-footer--menu-link { font-size: 12px; }
+    .snc-footer--menu-links { gap: 3px; padding: 3px 0 8px; }
+
+    /* Block divider: minimal on mobile */
+    .snc-footer--divider { margin-top: 10px !important; margin-bottom: 10px !important; }
+
+    /* Bottom row */
+    .snc-footer--bottom-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .snc-footer--credits-left { font-size: 10px; gap: 6px; }
+    .snc-footer--credits-right { font-size: 10px; text-align: left; }
+    .snc-footer--credits-dash { width: 14px; }
+  }
+</style>
+{%- assign show_outer = section.settings.show_outer_bg -%}
+{%- assign main_bg = section.settings.main_bg_color | default: '#ffffff' -%}
+{%- assign outer_bg = section.settings.outer_bg_color | default: '#F1F1F1' -%}
+{%- if section.settings.rounded_corners -%}
+  {%- assign border_radius = section.settings.border_radius | default: 10 | append: 'px' -%}
+{%- else -%}
+  {%- assign border_radius = '0px' -%}
+{%- endif -%}
+<footer
+  class="snc-footer full-width{% unless show_outer %} snc-footer--no-outer{% endunless %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="snc-footer"
+  style="background-color: {% if show_outer %}{{ outer_bg }}{% else %}transparent{% endif %};"
+>
+  <div class="snc-footer--container">
+    <div class="snc-footer--main" style="background-color: {{ main_bg }}; border-radius: {{ border_radius }};">
+      {%- for block in section.blocks -%}
+        <div class="snc-footer--block-wrapper" {{ block.shopify_attributes }}>
+          {%- case block.type -%}
+            {%- when 'newsletter_social' -%}
+              {%- assign social_position = block.settings.social_position | default: 'top' -%}
+              <div class="snc-footer--top-row" style="--social-icon-size: {{ block.settings.social_icon_size | default: 26 }}px; --social-container-size: {{ block.settings.social_container_size | default: 50 }}px;">
+                <div class="snc-footer--logo-newsletter">
+                  {%- if block.settings.show_payment_icons -%}
+                    <div class="snc-footer--payment-icons">
+                      {%- for type in shop.enabled_payment_types -%}
+                        {{ type | payment_type_svg_tag: class: 'icon icon--full-color', height: block.settings.payment_icon_height }}
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+                <div class="snc-footer--social {% if social_position == 'bottom' %}align-bottom{% endif %}">
+                  {%- if settings.social_facebook_link != blank -%}
+                    <a href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener noreferrer" class="snc-footer--social-link" aria-label="Facebook">
+                      {%- if settings.social_facebook_icon != blank -%}
+                        <img src="{{ settings.social_facebook_icon | image_url: width: 52 }}" alt="Facebook" class="snc-footer--social-icon">
+                      {%- else -%}
+                        <img src="{{ 'ic_baseline-facebook.svg' | asset_url }}" alt="Facebook" class="snc-footer--social-icon">
+                      {%- endif -%}
+                    </a>
+                  {%- endif -%}
+                  {%- if settings.social_instagram_link != blank -%}
+                    <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer" class="snc-footer--social-link" aria-label="Instagram">
+                      {%- if settings.social_instagram_icon != blank -%}
+                        <img src="{{ settings.social_instagram_icon | image_url: width: 52 }}" alt="Instagram" class="snc-footer--social-icon">
+                      {%- else -%}
+                        <img src="{{ 'mingcute_instagram-fill.svg' | asset_url }}" alt="Instagram" class="snc-footer--social-icon">
+                      {%- endif -%}
+                    </a>
+                  {%- endif -%}
+                  {%- if settings.social_tiktok_link != blank -%}
+                    <a href="{{ settings.social_tiktok_link }}" target="_blank" rel="noopener noreferrer" class="snc-footer--social-link" aria-label="TikTok">
+                      {%- if settings.social_tiktok_icon != blank -%}
+                        <img src="{{ settings.social_tiktok_icon | image_url: width: 52 }}" alt="TikTok" class="snc-footer--social-icon">
+                      {%- else -%}
+                        <img src="{{ 'lineicons_tiktok-alt.svg' | asset_url }}" alt="TikTok" class="snc-footer--social-icon">
+                      {%- endif -%}
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- when 'navigation' -%}
+              <div class="snc-footer--menus" style="--menu-title-color: {{ block.settings.menu_title_color }}; --menu-link-color: {{ block.settings.menu_link_color | default: '#000000' }}; --menu-title-weight: {{ block.settings.menu_title_weight | default: 400 }}; --menu-link-weight: {{ block.settings.menu_link_weight | default: 400 }};">
+                <div class="snc-footer--menu-items" style="--menu-gap-desktop: {{ block.settings.menu_gap_desktop | default: 30 }}px; --menu-gap-mobile: {{ block.settings.menu_gap_mobile | default: 20 }}px;">
+                  {%- for i in (1..6) -%}
+                    {%- assign title_key = 'menu' | append: i | append: '_title' -%}
+                    {%- assign menu_key = 'menu' | append: i -%}
+                    {%- assign menu_id = 'snc-footer-menu-' | append: section.id | append: '-' | append: forloop.index -%}
+                    {%- assign menu_handle = block.settings[menu_key] -%}
+                    {%- assign has_menu_links = false -%}
+                    {%- if menu_handle != blank and linklists[menu_handle] != blank and linklists[menu_handle].links.size > 0 -%}
+                      {%- assign has_menu_links = true -%}
+                    {%- endif -%}
+                    <div class="snc-footer--menu-column{% unless has_menu_links %} is-empty{% endunless %}" data-mobile-collapse>
+                      <button type="button" class="snc-footer--menu-title-btn" aria-expanded="false" aria-controls="{{ menu_id }}">
+                        <span class="snc-footer--menu-title">{{ block.settings[title_key] }}</span>
+                        <span class="snc-footer--menu-toggle-icon" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9l6 6 6-6"/>
+                          </svg>
+                        </span>
+                      </button>
+                      {%- if block.settings[menu_key] != blank -%}
+                        <ul class="snc-footer--menu-links" id="{{ menu_id }}">
+                          {%- for link in linklists[block.settings[menu_key]].links -%}
+                            <li>
+                              <a href="{{ link.url }}" class="snc-footer--menu-link">{{ link.title }}</a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+                    </div>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- when 'signature_logo' -%}
+              <div class="snc-footer--bottom-row" style="--credits-font-weight: {{ block.settings.credits_font_weight | default: 600 }};">
+                {%- if block.settings.credits_name != blank or block.settings.credits_text != blank -%}
+                <div class="snc-footer--credits-left">
+                  {%- if block.settings.credits_text != blank -%}
+                    <span>{{ block.settings.credits_text }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.credits_text != blank and block.settings.credits_name != blank -%}
+                    <span class="snc-footer--credits-dash"></span>
+                  {%- endif -%}
+                  {%- if block.settings.credits_name != blank -%}
+                    {%- if block.settings.credits_link != blank -%}
+                      <a href="{{ block.settings.credits_link }}" target="_blank" rel="noopener noreferrer" class="snc-footer--credits-link">
+                        {{ block.settings.credits_name }}
+                      </a>
+                    {%- else -%}
+                      <span>{{ block.settings.credits_name }}</span>
+                    {%- endif -%}
+                  {%- endif -%}
+                </div>
+                {%- endif -%}
+                {%- if block.settings.show_logo -%}
+                  {%- assign logo = block.settings.logo -%}
+                  {%- assign logo_width = block.settings.logo_width | default: 260 -%}
+                  {%- if logo != blank -%}
+                    <a href="{{ routes.root_url }}" class="snc-footer--logo {% if block.settings.invert_logo_color %}is-inverted{% endif %}" aria-label="{{ shop.name }}" style="--logo-width: {{ logo_width }}px;">
+                      {%- assign logo_width_2x = logo_width | times: 2 -%}
+                      {{- logo | image_url: width: logo_width_2x | image_tag: alt: logo.alt | default: shop.name, loading: 'lazy', width: logo_width, height: nil, class: 'snc-footer--logo-img' -}}
+                    </a>
+                  {%- else -%}
+                    <a href="{{ routes.root_url }}" class="snc-footer--logo {% if block.settings.invert_logo_color %}is-inverted{% endif %}" aria-label="{{ shop.name }}">
+                      <span style="font-family: var(--font-typos); font-size: 28px; color: {{ block.settings.default_logo_color | default: '#000000' }}; font-weight: 500;">{{ shop.name }}</span>
+                    </a>
+                  {%- endif -%}
+                {%- endif -%}
+                <div class="snc-footer--credits-right">
+                  {%- assign current_year = 'now' | date: '%Y' -%}
+                  {{ block.settings.copyright_text | default: 'TODOS LOS DERECHOS RESERVADOS' }} | {{ current_year }} ©️ {{ block.settings.brand_name | default: shop.name | upcase }}.
+                </div>
+              </div>
+            {%- when 'signature_cards' -%}
+              <div class="snc-footer--bottom-row" style="--credits-font-weight: {{ block.settings.credits_font_weight | default: 600 }};">
+                {%- if block.settings.credits_text != blank or block.settings.credits_name != blank -%}
+                  <div class="snc-footer--credits-left" style="color: {{ block.settings.text_color }};">
+                    {%- if block.settings.credits_text != blank -%}
+                      <span>{{ block.settings.credits_text }}</span>
+                    {%- endif -%}
+                    {%- if block.settings.credits_text != blank and block.settings.credits_name != blank -%}
+                      <span class="snc-footer--credits-dash" style="background-color: {{ block.settings.text_color }}; opacity: 0.5;"></span>
+                    {%- endif -%}
+                    {%- if block.settings.credits_name != blank -%}
+                      {%- if block.settings.credits_link != blank -%}
+                        <a href="{{ block.settings.credits_link }}" target="_blank" rel="noopener noreferrer" class="snc-footer--credits-link" style="color: {{ block.settings.text_color }};">
+                          {{ block.settings.credits_name }}
+                        </a>
+                      {%- else -%}
+                        <span>{{ block.settings.credits_name }}</span>
+                      {%- endif -%}
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.show_payment_icons -%}
+                  <div class="snc-footer--payment-icons" style="justify-content: center;">
+                    {%- assign payment_icons = block.settings.payment_icons | split: ',' -%}
+                    {%- for type in payment_icons -%}
+                      {{ type | strip | payment_type_svg_tag: class: 'icon icon--full-color', height: block.settings.payment_icon_height }}
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+                <div class="snc-footer--credits-right" style="color: {{ block.settings.text_color }};">
+                  {%- assign current_year = 'now' | date: '%Y' -%}
+                  {{ block.settings.copyright_text | default: 'TODOS LOS DERECHOS RESERVADOS' }} | {{ current_year }} ©️ {{ block.settings.brand_name | default: shop.name | upcase }}.
+                </div>
+              </div>
+            {%- when 'logo_text' -%}
+              {%- assign text_align_value = 'center' -%}
+              {%- if block.settings.alignment == 'flex-start' -%}
+                {%- assign text_align_value = 'left' -%}
+              {%- elsif block.settings.alignment == 'flex-end' -%}
+                {%- assign text_align_value = 'right' -%}
+              {%- endif -%}
+              <div class="snc-footer--logo-text-block" style="align-items: {{ block.settings.alignment }}; gap: {{ block.settings.gap }}px; text-align: {{ text_align_value }}; padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px;">
+                {%- assign logo_file = 'Logo_Oficialinvertido.svg' -%}
+                {%- if block.settings.logo_version == 'light' -%}
+                  {%- assign logo_file = 'Logo_Oficial_De_Leville.svg' -%}
+                {%- endif -%}
+                <img src="{{ logo_file | asset_url }}" alt="{{ shop.name }}" class="snc-footer--logo-text-image" style="width: {{ block.settings.logo_width }}px;" loading="lazy">
+                {%- if block.settings.text != blank -%}
+                  <div class="snc-footer--logo-text-content {{ block.settings.text_style }}" style="max-width: {{ block.settings.text_width }}px; text-align: {{ text_align_value }}; width: 100%;">
+                    {{ block.settings.text | newline_to_br }}
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.show_newsletter -%}
+                  {%- liquid
+                    assign newsletter_button_position = block.settings.newsletter_button_position | default: 'outside'
+                    assign newsletter_btn_bg = block.settings.newsletter_btn_bg | default: '#000000'
+                    assign newsletter_btn_icon_color = block.settings.newsletter_btn_icon_color | default: '#FFFFFF'
+                    assign newsletter_btn_hover_bg = block.settings.newsletter_btn_hover_bg | default: '#1e3326'
+                    assign newsletter_input_width = block.settings.newsletter_input_width | default: 250
+                  -%}
+                  {%- assign newsletter_form_id = 'snc-newsletter-' | append: section.id | append: '-' | append: block.id -%}
+                  <div class="snc-footer--newsletter-block" style="--newsletter-input-width: {{ newsletter_input_width }}px; --newsletter-btn-bg: {{ newsletter_btn_bg }}; --newsletter-btn-icon-color: {{ newsletter_btn_icon_color }}; --newsletter-btn-hover-bg: {{ newsletter_btn_hover_bg }}; margin-top: 15px; width: 100%; display: flex; flex-direction: column; align-items: {{ block.settings.alignment }};">
+                    <form
+                      id="{{ newsletter_form_id }}"
+                      class="snc-footer--newsletter snc-footer--newsletter--{{ newsletter_button_position }}"
+                      data-klaviyo-newsletter
+                      data-list-id="XHdTb2"
+                      {% if block.settings.klaviyo_company_id != blank %}data-company-id="{{ block.settings.klaviyo_company_id }}"{% endif %}
+                      novalidate
+                    >
+                      <div class="snc-footer--newsletter-success" style="display:none; align-items:center; gap:8px; font-family:var(--font-body-family, sans-serif); font-size:14px; color:#000000; padding:10px 0; width:100%;" aria-live="polite">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><path d="M20 6L9 17l-5-5"/></svg>
+                        <span>{{ block.settings.newsletter_success_text | default: 'Thank you.' }}</span>
+                      </div>
+                      <div class="snc-footer--newsletter-fields">
+                        <input type="email" class="snc-footer--newsletter-input" placeholder="{{ block.settings.newsletter_email_placeholder | default: 'Your email address' }}" required autocomplete="off" inputmode="email" data-form-type="other" data-lpignore="true" spellcheck="false" autocorrect="off" autocapitalize="off" aria-label="{{ block.settings.newsletter_email_placeholder | default: 'Your email address' }}">
+                        <button type="submit" class="snc-footer--newsletter-btn" aria-label="Subscribe">
+                          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="snc-footer--newsletter-error" style="display:none; position:absolute; top:100%; left:0; font-family:var(--font-body-family, sans-serif); font-size:12px; color:#DA4B4B; margin-top:4px; width:100%;" aria-live="polite"></div>
+                    </form>
+                  </div>
+                {%- endif -%}
+              </div>
+          {%- endcase -%}
+        </div>
+        {%- if block.settings.show_divider and forloop.last == false -%}
+          <div class="snc-footer--divider" style="margin-top: {{ block.settings.divider_gap }}px; margin-bottom: {{ block.settings.divider_gap }}px;"></div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</footer>
+<script>
+(function() {
+  function initKlaviyoNewsletterForms() {
+    var forms = document.querySelectorAll('[data-klaviyo-newsletter]');
+    if (!forms.length) return;
+
+    function getKlaviyoCompanyId(form) {
+      // 1. data-company-id on the form (set via theme editor — most reliable)
+      if (form && form.dataset.companyId) return form.dataset.companyId;
+      // 2. Klaviyo SDK v3+ exposes it on window.klaviyo
+      if (window.klaviyo && window.klaviyo.companyId) return window.klaviyo.companyId;
+      // 3. Script tag (Klaviyo Shopify app injects klaviyo.js or static-tracking CDN)
+      var script = document.querySelector('script[src*="klaviyo.js"], script[src*="static-tracking.klaviyo.com"]');
+      if (script) {
+        try {
+          var id = new URL(script.src).searchParams.get('company_id');
+          if (id) return id;
+        } catch(e) {}
+      }
+      return null;
+    }
+
+    forms.forEach(function(form) {
+      if (form._klaviyoInit) return;
+      form._klaviyoInit = true;
+
+      var listId = form.dataset.listId;
+      var fieldsEl = form.querySelector('.snc-footer--newsletter-fields');
+      var successEl = form.querySelector('.snc-footer--newsletter-success');
+      var errorEl = form.querySelector('.snc-footer--newsletter-error');
+      var inputEl = form.querySelector('input[type="email"]');
+      var btnEl = form.querySelector('button[type="submit"]');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var email = inputEl.value.trim();
+        if (!email) return;
+
+        btnEl.disabled = true;
+        form.classList.add('is-submitting');
+        errorEl.style.display = 'none';
+
+        var companyId = getKlaviyoCompanyId(form);
+
+        if (!companyId) {
+          if (window._learnq) {
+            window._learnq.push(['identify', { '$email': email }]);
+            window._learnq.push(['subscribe', { '$email': email, '$list_id': listId }]);
+            showSuccess();
+          } else {
+            showError('Subscription unavailable. Please try again later.');
+          }
+          return;
+        }
+
+        fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(companyId), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'revision': '2024-02-15' },
+          body: JSON.stringify({
+            data: {
+              type: 'subscription',
+              attributes: {
+                profile: {
+                  data: {
+                    type: 'profile',
+                    attributes: { email: email }
+                  }
+                },
+                custom_source: 'Footer'
+              },
+              relationships: {
+                list: {
+                  data: { type: 'list', id: listId }
+                }
+              }
+            }
+          })
+        })
+        .then(function(res) {
+          if (res.ok || res.status === 202) { showSuccess(); return; }
+          return res.json().catch(function() { return {}; }).then(function(body) {
+            console.error('[De Leville Newsletter] Klaviyo error ' + res.status + ':', JSON.stringify(body));
+            throw new Error(res.status);
+          });
+        })
+        .catch(function(err) {
+          console.error('[De Leville Newsletter] Submit error:', err);
+          showError('Something went wrong. Please try again.');
+        });
+
+        function showSuccess() {
+          form.classList.remove('is-submitting');
+          fieldsEl.style.display = 'none';
+          successEl.style.display = 'flex';
+        }
+        function showError(msg) {
+          form.classList.remove('is-submitting');
+          errorEl.textContent = msg;
+          errorEl.style.display = 'block';
+          btnEl.disabled = false;
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initKlaviyoNewsletterForms);
+  } else {
+    initKlaviyoNewsletterForms();
+  }
+  document.addEventListener('shopify:section:load', initKlaviyoNewsletterForms);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SNC Footer",
+  "class": "section--snc-footer",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Outer background"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_outer_bg",
+      "label": "Show outer background",
+      "default": true,
+      "info": "Enables or disables the outer container wrapping the footer."
+    },
+    {
+      "type": "color",
+      "id": "outer_bg_color",
+      "label": "Outer background color",
+      "default": "#F1F1F1"
+    },
+    {
+      "type": "header",
+      "content": "Main Container"
+    },
+    {
+      "type": "color",
+      "id": "main_bg_color",
+      "label": "Container background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "rounded_corners",
+      "label": "Rounded corners",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 10,
+      "info": "Only applies if 'Rounded corners' is active."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "newsletter_social",
+      "name": "Payments and Social",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Social Media"
+        },
+        {
+          "type": "select",
+          "id": "social_position",
+          "label": "Social media position",
+          "options": [
+            { "value": "top", "label": "Top" },
+            { "value": "bottom", "label": "Bottom" }
+          ],
+          "default": "top"
+        },
+        {
+          "type": "range",
+          "id": "social_icon_size",
+          "label": "Icon size",
+          "min": 10,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 26
+        },
+        {
+          "type": "range",
+          "id": "social_container_size",
+          "label": "Container size",
+          "min": 30,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "default": 50
+        },
+        {
+          "type": "header",
+          "content": "Payment Icons"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_payment_icons",
+          "label": "Show payment icons",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "payment_icon_height",
+          "label": "Payment icon height",
+          "min": 20,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "header",
+          "content": "Divider"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_divider",
+          "label": "Show divider below",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "divider_gap",
+          "label": "Divider gap",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 25
+        }
+      ]
+    },
+    {
+      "type": "navigation",
+      "name": "Navigation",
+      "settings": [
+        {
+          "type": "range",
+          "id": "menu_gap_desktop",
+          "label": "Menu column gap (Desktop)",
+          "min": 10,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "menu_gap_mobile",
+          "label": "Menu column gap (Mobile)",
+          "min": 10,
+          "max": 50,
+          "step": 5,
+          "unit": "px",
+          "default": 20,
+          "info": "Applies to screens under 900px."
+        },
+        {
+          "type": "color",
+          "id": "menu_title_color",
+          "label": "Menu title color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "menu_link_color",
+          "label": "Menu link color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "menu_title_weight",
+          "label": "Menu title weight",
+          "options": [
+            { "value": "300", "label": "Light (300)" },
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi Bold (600)" },
+            { "value": "700", "label": "Bold (700)" },
+            { "value": "800", "label": "Extra Bold (800)" },
+            { "value": "900", "label": "Black (900)" }
+          ],
+          "default": "400"
+        },
+        {
+          "type": "select",
+          "id": "menu_link_weight",
+          "label": "Menu link weight",
+          "options": [
+            { "value": "300", "label": "Light (300)" },
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi Bold (600)" },
+            { "value": "700", "label": "Bold (700)" },
+            { "value": "800", "label": "Extra Bold (800)" },
+            { "value": "900", "label": "Black (900)" }
+          ],
+          "default": "400"
+        },
+        {
+          "type": "header",
+          "content": "Menu 1"
+        },
+        {
+          "type": "text",
+          "id": "menu1_title",
+          "label": "Menu 1 title",
+          "default": "More info"
+        },
+        {
+          "type": "link_list",
+          "id": "menu1",
+          "label": "Menu 1"
+        },
+        {
+          "type": "header",
+          "content": "Menu 2"
+        },
+        {
+          "type": "text",
+          "id": "menu2_title",
+          "label": "Menu 2 title",
+          "default": "Legal"
+        },
+        {
+          "type": "link_list",
+          "id": "menu2",
+          "label": "Menu 2"
+        },
+        {
+          "type": "header",
+          "content": "Menu 3"
+        },
+        {
+          "type": "text",
+          "id": "menu3_title",
+          "label": "Menu 3 title",
+          "default": "Help"
+        },
+        {
+          "type": "link_list",
+          "id": "menu3",
+          "label": "Menu 3"
+        },
+        {
+          "type": "header",
+          "content": "Menu 4"
+        },
+        {
+          "type": "text",
+          "id": "menu4_title",
+          "label": "Menu 4 title"
+        },
+        {
+          "type": "link_list",
+          "id": "menu4",
+          "label": "Menu 4"
+        },
+        {
+          "type": "header",
+          "content": "Menu 5"
+        },
+        {
+          "type": "text",
+          "id": "menu5_title",
+          "label": "Menu 5 title"
+        },
+        {
+          "type": "link_list",
+          "id": "menu5",
+          "label": "Menu 5"
+        },
+        {
+          "type": "header",
+          "content": "Menu 6"
+        },
+        {
+          "type": "text",
+          "id": "menu6_title",
+          "label": "Menu 6 title"
+        },
+        {
+          "type": "link_list",
+          "id": "menu6",
+          "label": "Menu 6"
+        },
+        {
+          "type": "header",
+          "content": "Divider"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_divider",
+          "label": "Show divider below",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "divider_gap",
+          "label": "Divider gap",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 25
+        }
+      ]
+    },
+    {
+      "type": "signature_logo",
+      "name": "Signature + Logo",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Center Logo"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_logo",
+          "label": "Show logo",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "invert_logo_color",
+          "label": "Invert logo color",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Footer logo"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "label": "Logo width",
+          "min": 100,
+          "max": 400,
+          "step": 10,
+          "default": 260,
+          "unit": "px"
+        },
+        {
+          "type": "color",
+          "id": "default_logo_color",
+          "label": "Logo color (default text)",
+          "default": "#000000"
+        },
+        {
+          "type": "header",
+          "content": "Credits and Copyright"
+        },
+        {
+          "type": "select",
+          "id": "credits_font_weight",
+          "label": "Text weight",
+          "options": [
+            { "value": "300", "label": "Light (300)" },
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi Bold (600)" },
+            { "value": "700", "label": "Bold (700)" },
+            { "value": "800", "label": "Extra Bold (800)" },
+            { "value": "900", "label": "Black (900)" }
+          ],
+          "default": "600"
+        },
+        {
+          "type": "text",
+          "id": "credits_text",
+          "label": "Credits text"},
+        {
+          "type": "text",
+          "id": "credits_name",
+          "label": "Designer name"},
+        {
+          "type": "url",
+          "id": "credits_link",
+          "label": "Designer URL"
+        },
+        {
+          "type": "text",
+          "id": "copyright_text",
+          "label": "Copyright text",
+          "default": "All rights reserved"
+        },
+        {
+          "type": "text",
+          "id": "brand_name",
+          "label": "Brand name",
+          "default": "DE LEVILLE"
+        },
+        {
+          "type": "header",
+          "content": "Divider"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_divider",
+          "label": "Show divider below",
+          "default": false,
+          "info": "Usually a divider is not shown below the last block."
+        },
+        {
+          "type": "range",
+          "id": "divider_gap",
+          "label": "Divider gap",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 25
+        }
+      ]
+    },
+    {
+      "type": "signature_cards",
+      "name": "Signature + Cards",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Styles"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "header",
+          "content": "Payment Cards"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_payment_icons",
+          "label": "Show payment icons",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "payment_icons",
+          "label": "Payment icons (comma separated)",
+          "default": "visa,master,american_express,paypal",
+          "info": "Ex: visa,master,paypal"
+        },
+        {
+          "type": "range",
+          "id": "payment_icon_height",
+          "label": "Icons height",
+          "min": 20,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "header",
+          "content": "Credits and Copyright"
+        },
+        {
+          "type": "select",
+          "id": "credits_font_weight",
+          "label": "Text weight",
+          "options": [
+            { "value": "300", "label": "Light (300)" },
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi Bold (600)" },
+            { "value": "700", "label": "Bold (700)" },
+            { "value": "800", "label": "Extra Bold (800)" },
+            { "value": "900", "label": "Black (900)" }
+          ],
+          "default": "600"
+        },
+        {
+          "type": "text",
+          "id": "credits_text",
+          "label": "Credits text"},
+        {
+          "type": "text",
+          "id": "credits_name",
+          "label": "Designer name"},
+        {
+          "type": "url",
+          "id": "credits_link",
+          "label": "Designer URL"
+        },
+        {
+          "type": "text",
+          "id": "copyright_text",
+          "label": "Copyright text",
+          "default": "All rights reserved"
+        },
+        {
+          "type": "text",
+          "id": "brand_name",
+          "label": "Brand name",
+          "default": "DE LEVILLE"
+        },
+        {
+          "type": "header",
+          "content": "Divider"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_divider",
+          "label": "Show divider below",
+          "default": false,
+          "info": "Usually a divider is not shown below the last block."
+        },
+        {
+          "type": "range",
+          "id": "divider_gap",
+          "label": "Divider gap",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 25
+        }
+      ]
+    },
+    {
+      "type": "logo_text",
+      "name": "Logo and Text",
+      "settings": [
+        {
+          "type": "select",
+          "id": "logo_version",
+          "label": "Logo version",
+          "options": [
+            { "value": "dark", "label": "Dark" },
+            { "value": "light", "label": "Light" }
+          ],
+          "default": "dark"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "label": "Logo width",
+          "min": 50,
+          "max": 400,
+          "step": 10,
+          "unit": "px",
+          "default": 150
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "label": "Text style",
+          "options": [
+            { "value": "h1", "label": "Main title" },
+            { "value": "h2", "label": "Secondary title" },
+            { "value": "h3", "label": "Small title" },
+            { "value": "body", "label": "Paragraph" },
+            { "value": "small", "label": "Small paragraph" },
+            { "value": "button", "label": "Button" },
+            { "value": "emphasis", "label": "Emphasis" }
+          ],
+          "default": "body"
+        },
+        {
+          "type": "range",
+          "id": "text_width",
+          "label": "Max text width",
+          "min": 200,
+          "max": 1000,
+          "step": 10,
+          "unit": "px",
+          "default": 400
+        },
+        {
+          "type": "range",
+          "id": "gap",
+          "label": "Gap between logo and text",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 20
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Alignment",
+          "options": [
+            { "value": "flex-start", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "flex-end", "label": "Right" }
+          ],
+          "default": "flex-start"
+        },
+        {
+          "type": "header",
+          "content": "Spacing"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top padding",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom padding",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Newsletter"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_newsletter",
+          "label": "Show newsletter",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "klaviyo_company_id",
+          "label": "Klaviyo Company ID",
+          "info": "Your Klaviyo Public API Key (e.g. AbCd1E). Found in Klaviyo → Account → Settings → API Keys."
+        },
+        {
+          "type": "select",
+          "id": "newsletter_button_position",
+          "label": "Submit button position",
+          "options": [
+            { "value": "outside", "label": "Outside input" },
+            { "value": "inside", "label": "Inside input" }
+          ],
+          "default": "inside"
+        },
+        {
+          "type": "text",
+          "id": "newsletter_email_placeholder",
+          "label": "Email placeholder",
+          "default": "Your email address"
+        },
+        {
+          "type": "text",
+          "id": "newsletter_success_text",
+          "label": "Success message",
+          "default": "Successfully subscribed!"
+        },
+        {
+          "type": "range",
+          "id": "newsletter_input_width",
+          "label": "Email input width",
+          "min": 100,
+          "max": 500,
+          "step": 10,
+          "unit": "px",
+          "default": 300
+        },
+        {
+          "type": "color",
+          "id": "newsletter_btn_bg",
+          "label": "Newsletter button background",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "newsletter_btn_icon_color",
+          "label": "Newsletter icon color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "newsletter_btn_hover_bg",
+          "label": "Newsletter button background (Hover)",
+          "default": "#1e3326"
+        },
+        {
+          "type": "header",
+          "content": "Divider"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_divider",
+          "label": "Show divider below",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "divider_gap",
+          "label": "Divider gap",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 25
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Footer",
+      "blocks": [
+        { "type": "newsletter_social" },
+        { "type": "navigation" },
+        { "type": "signature_logo" }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "groups": ["footer"]
+  }
+}
+{% endschema %}

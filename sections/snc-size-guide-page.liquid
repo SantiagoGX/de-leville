@@ -1,0 +1,544 @@
+<section
+  class="snc-size-guide-page"
+  style="
+    --sg-bg: {{ section.settings.background_color }};
+    --sg-title: {{ section.settings.title_color }};
+    --sg-text: {{ section.settings.text_color }};
+    --sg-muted: {{ section.settings.muted_color }};
+    --sg-border: {{ section.settings.border_color }};
+    --sg-max: {{ section.settings.content_max_width }}px;
+    --sg-top: {{ section.settings.padding_top }}px;
+    --sg-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="snc-size-guide-page__inner">
+    <header class="snc-size-guide-page__header">
+      <p class="snc-size-guide-page__kicker">{{ section.settings.kicker }}</p>
+      <h1 class="snc-size-guide-page__title">{{ section.settings.title }}</h1>
+      {%- if section.settings.intro != blank -%}
+        <div class="snc-size-guide-page__intro rte">{{ section.settings.intro }}</div>
+      {%- endif -%}
+    </header>
+
+    {%- assign step_index = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'step' -%}
+        {%- assign step_index = step_index | plus: 1 -%}
+        <article class="snc-sg-step" {{ block.shopify_attributes }}>
+          <div class="snc-sg-step__copy">
+            <p class="snc-sg-step__eyebrow">{{ block.settings.eyebrow | default: step_index }}</p>
+            <h2 class="snc-sg-step__title">{{ block.settings.title }}</h2>
+            <div class="snc-sg-step__text rte">{{ block.settings.text }}</div>
+          </div>
+          {%- if block.settings.image != blank -%}
+            <div class="snc-sg-step__media">
+              {{ block.settings.image | image_url: width: 1600 | image_tag: class: 'snc-sg-step__image', loading: 'lazy' }}
+            </div>
+          {%- endif -%}
+        </article>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <section class="snc-sg-chart">
+      <h2 class="snc-sg-chart__title">{{ section.settings.chart_title }}</h2>
+      <div class="snc-sg-chart__table-wrap">
+        <table class="snc-sg-chart__table">
+          <thead>
+            <tr>
+              <th>US</th>
+              <th>EU</th>
+              <th>Inside Diameter (MM)</th>
+              <th>Circumference (MM)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'size_row' -%}
+                <tr {{ block.shopify_attributes }}>
+                  <td>{{ block.settings.us_size }}</td>
+                  <td>{{ block.settings.eu_size }}</td>
+                  <td>{{ block.settings.inside_diameter }}</td>
+                  <td>{{ block.settings.circumference }}</td>
+                </tr>
+              {%- endif -%}
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="snc-sg-notes">
+      <h2 class="snc-sg-notes__title">{{ section.settings.notes_title }}</h2>
+      <div class="snc-sg-notes__text rte">{{ section.settings.notes_text }}</div>
+      <p class="snc-sg-notes__concierge">
+        {{ section.settings.concierge_label }}
+        <a href="mailto:{{ section.settings.concierge_email }}">{{ section.settings.concierge_email }}</a>
+      </p>
+      <p class="snc-sg-notes__signature">{{ section.settings.signature }}</p>
+    </section>
+  </div>
+</section>
+
+<style>
+  .snc-size-guide-page {
+    background: var(--sg-bg);
+    padding: var(--sg-top) 20px var(--sg-bottom);
+    font-family: 'Futura PT', 'Jost', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .snc-size-guide-page__inner {
+    max-width: var(--sg-max);
+    margin: 0 auto;
+  }
+
+  .snc-size-guide-page__header {
+    text-align: center;
+    margin-bottom: 52px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .snc-size-guide-page__kicker {
+    margin: 0 0 10px 0;
+    font-family: 'Futura PT', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sg-muted);
+  }
+
+  .snc-size-guide-page__title {
+    margin: 0;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+    font-weight: 300;
+    font-size: 46px;
+    letter-spacing: 0.005em;
+    color: var(--sg-title);
+    line-height: 1.15;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .snc-size-guide-page__intro {
+    max-width: 560px;
+    margin: 18px auto 0;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: #3a3a3a;
+    font-size: 20px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .snc-sg-step {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 34px;
+    align-items: center;
+    margin-bottom: 52px;
+    padding-bottom: 42px;
+    border-bottom: 1px solid var(--sg-border);
+  }
+
+  .snc-sg-step__eyebrow {
+    margin: 0 0 8px 0;
+    color: var(--sg-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-family: 'Futura PT', sans-serif;
+  }
+
+  .snc-sg-step__title {
+    margin: 0 0 10px 0;
+    color: #1a1a1a;
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: 300;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .snc-sg-step__text {
+    color: var(--sg-text);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .snc-sg-step__text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .snc-sg-step__media {
+    width: 100%;
+  }
+
+  .snc-sg-step__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+  }
+
+  .snc-sg-chart {
+    margin-top: 10px;
+  }
+
+  .snc-sg-chart__title,
+  .snc-sg-notes__title {
+    margin: 0 0 16px 0;
+    color: #1a1a1a;
+    text-transform: none;
+    letter-spacing: 0.005em;
+    font-size: 28px;
+    font-weight: 300;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+    line-height: 1.2;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .snc-sg-step__text h3,
+  .snc-sg-step__text h4,
+  .snc-sg-notes__text h3,
+  .snc-sg-notes__text h4 {
+    font-family: 'Futura PT', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 28px 0 10px;
+    color: var(--sg-title);
+  }
+
+  .snc-sg-chart__table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .snc-sg-chart__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    background: #fff;
+  }
+
+  .snc-sg-chart__table th,
+  .snc-sg-chart__table td {
+    border: 1px solid var(--sg-border);
+    padding: 11px 10px;
+    text-align: center;
+    vertical-align: middle;
+    font-family: 'Futura PT', sans-serif;
+  }
+
+  .snc-sg-chart__table th {
+    color: var(--sg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 500;
+    background: #fafafa;
+  }
+
+  .snc-sg-notes {
+    margin-top: 44px;
+  }
+
+  .snc-sg-notes__text {
+    color: var(--sg-text);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .snc-sg-notes__text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .snc-sg-notes__concierge {
+    margin: 26px 0 0 0;
+    color: var(--sg-text);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .snc-sg-notes__concierge a {
+    color: inherit;
+    text-underline-offset: 4px;
+  }
+
+  .snc-sg-notes__signature {
+    margin: 18px 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 11px;
+    color: var(--sg-muted);
+  }
+
+  @media (max-width: 900px) {
+    .snc-sg-step {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-bottom: 38px;
+      padding-bottom: 30px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .snc-size-guide-page {
+      padding-top: min(var(--sg-top), 74px);
+      padding-bottom: min(var(--sg-bottom), 84px);
+    }
+
+    .snc-size-guide-page__header {
+      margin-bottom: 34px;
+    }
+
+    .snc-size-guide-page__intro,
+    .snc-sg-step__text,
+    .snc-sg-notes__text {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .snc-size-guide-page__title {
+      font-size: 34px;
+    }
+
+    .snc-size-guide-page__intro {
+      font-size: 17px;
+    }
+
+    .snc-sg-chart__title,
+    .snc-sg-notes__title {
+      font-size: 24px;
+    }
+
+    .snc-sg-chart__table {
+      font-size: 13px;
+      min-width: 580px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "SNC Size Guide Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "A GUIDE FROM THE MAISON"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Ring Sizing Guide"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro text",
+      "default": "<p>A ring should settle on the hand without argument. Firm at the base of the finger, free enough to turn. These are the three ways to find your size.</p>"
+    },
+    {
+      "type": "text",
+      "id": "chart_title",
+      "label": "Chart title",
+      "default": "Size chart"
+    },
+    {
+      "type": "text",
+      "id": "notes_title",
+      "label": "Notes title",
+      "default": "A few things to know"
+    },
+    {
+      "type": "richtext",
+      "id": "notes_text",
+      "label": "Notes text",
+      "default": "<p>Measure at the end of the day. Fingers are smaller in the morning, fuller at night. The size you wear most of the day is the one that should fit.</p><p>Skip the cold. Fingers contract in low temperatures. A morning measurement in winter will read a full size small.</p><p>Between two numbers, choose the larger one. A ring that is slightly loose will wear comfortably for decades. A ring that is slightly tight becomes a problem.</p><p>The dominant hand is often a half size larger. Worth measuring both.</p><p>Wide bands sit heavier. If the band is wider than six millimeters, consider going up half a size.</p><p>Still unsure? Write to the concierge. We will help you find your size, quietly.</p>"
+    },
+    {
+      "type": "text",
+      "id": "concierge_label",
+      "label": "Concierge label",
+      "default": "Concierge:"
+    },
+    {
+      "type": "text",
+      "id": "concierge_email",
+      "label": "Concierge email",
+      "default": "concierge@deleville.co"
+    },
+    {
+      "type": "text",
+      "id": "signature",
+      "label": "Signature",
+      "default": "DE LEVILLE"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "min": 760,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "default": 1120
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 260,
+      "step": 10,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 260,
+      "step": 10,
+      "unit": "px",
+      "default": 130
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted color",
+      "default": "#6f6f6f"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e6e6e6"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Step label",
+          "default": "1 · Step"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Step title",
+          "default": "Visit a jeweler"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Step text",
+          "default": "<p>The most accurate way. Most jewelers will size a finger at no charge. Ask to be measured at the end of the day, when the hand is at its fullest.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Step image"
+        }
+      ]
+    },
+    {
+      "type": "size_row",
+      "name": "Size row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "us_size",
+          "label": "US",
+          "default": "5"
+        },
+        {
+          "type": "text",
+          "id": "eu_size",
+          "label": "EU",
+          "default": "49"
+        },
+        {
+          "type": "text",
+          "id": "inside_diameter",
+          "label": "Inside diameter (mm)",
+          "default": "15.7"
+        },
+        {
+          "type": "text",
+          "id": "circumference",
+          "label": "Circumference (mm)",
+          "default": "49.3"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Size Guide Page",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "eyebrow": "1 · Visit a jeweler",
+            "title": "Visit a jeweler",
+            "text": "<p>The most accurate way. Most jewelers will size a finger at no charge. Ask to be measured at the end of the day, when the hand is at its fullest.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "eyebrow": "2 · Measure a ring you own",
+            "title": "Measure a ring you own",
+            "text": "<p>Choose a ring that already fits the finger you have in mind. Lay it flat. With a ruler, measure the inside diameter in millimeters, the widest point across the empty middle of the band. Match your reading to the chart below.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "eyebrow": "3 · Measure the finger",
+            "title": "Measure the finger",
+            "text": "<p>Cut a thin strip of paper. Wrap it around the base of the finger, snug but not tight. Mark where the strip overlaps. Measure the length in millimeters. This is the circumference. Match it to the chart.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

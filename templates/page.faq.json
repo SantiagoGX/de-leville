@@ -1,0 +1,158 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "snc_info_hero_NJbGc6": {
+      "type": "snc-info-hero",
+      "name": "SNC Info Hero",
+      "settings": {
+        "image": "shopify://shop_images/De_Leville_FAQ_header.png",
+        "color_scheme": "",
+        "margin_top": 0,
+        "height_vh": 70,
+        "full_width": true,
+        "border_radius": 0,
+        "overlay_type": "gradient",
+        "gradient_direction": "to top",
+        "overlay_color": "#000000",
+        "overlay_opacity": 100,
+        "content_vertical_position": "flex-end",
+        "content_horizontal_position": "flex-start",
+        "text_alignment": "left",
+        "title": "Frequently Asked Questions",
+        "title_max_width": 0,
+        "subtitle": "Everything you need to know about De Leville.",
+        "subtitle_max_width": 0,
+        "text": "",
+        "text_max_width": 0,
+        "title_style": "h1",
+        "title_font_weight": "700",
+        "subtitle_style": "body",
+        "subtitle_font_weight": "400",
+        "text_style": "body",
+        "text_font_weight": "400",
+        "button_style": "button",
+        "button_label": "",
+        "button_link": "",
+        "button_preset": "1"
+      }
+    },
+    "main": {
+      "type": "snc-faq",
+      "blocks": {
+        "faq_item_Kg6QNg": {
+          "type": "faq_item",
+          "settings": {
+            "title": "What materials are De Leville rings made from?",
+            "content": "<p>All De Leville jewelry is crafted from 18-karat solid gold. available in yellow gold, white gold, and rose gold. We do not use gold plating, gold vermeil, or gold-filled materials. Select pieces feature natural diamonds. Every item is made by hand.</p>"
+          }
+        },
+        "faq_item_rK98KY": {
+          "type": "faq_item",
+          "settings": {
+            "title": "How do I find my ring size?",
+            "content": "<p>We recommend visiting a local jeweler for a professional sizing, which is the most accurate method. You can also use our Ring Sizing Guide on our website for at-home measurement instructions. If you’re between sizes, we suggest sizing up. For questions about sizing, reach out to us at concierge@deleville.co. we’re happy to help.</p>"
+          }
+        },
+        "faq_item_giQMJG": {
+          "type": "faq_item",
+          "settings": {
+            "title": "Where do you ship, and how long does delivery take?",
+            "content": "<p>We ship worldwide. Standard shipping within the United States typically takes 5–7 business days. International shipping takes 7–14 business days depending on the destination. All orders are shipped fully insured with tracking provided. You’ll receive a confirmation email with your tracking number once your order ships.</p>"
+          }
+        },
+        "faq_item_QYhm6b": {
+          "type": "faq_item",
+          "settings": {
+            "title": "What is your return policy?",
+            "content": "<p>We offer a 30-day return window from the date of delivery. Items must be in their original, unworn condition with all packaging and documentation. To initiate a return, please contact us at concierge@deleville.co. Custom or engraved pieces are final sale. Full details are available on our Returns & Exchanges page.</p>"
+          }
+        },
+        "faq_item_3MY3B4": {
+          "type": "faq_item",
+          "settings": {
+            "title": "What is a Digital Soul?",
+            "content": "<p>Every De Leville piece comes with a Digital Soul. a blockchain-secured digital certificate that records your piece’s origin, authenticity, and ownership history. Think of it as a permanent identity for your jewelry. You can activate your Digital Soul 30 days after purchase through our dedicated platform. It stays with your piece permanently, even if you choose to pass it on.</p>"
+          }
+        },
+        "faq_item_iXMMyG": {
+          "type": "faq_item",
+          "settings": {
+            "title": "How should I care for my De Leville jewelry?",
+            "content": "<p>18-karat gold is naturally durable, but proper care ensures your piece ages beautifully. Remove your ring before swimming, showering, or using cleaning products. Store it in the De Leville pouch or box when not wearing it. Clean gently with a soft cloth. Avoid contact with perfume, lotions, or harsh chemicals. Visit our Product Care page for detailed instructions.</p>"
+          }
+        },
+        "faq_item_GzAQkE": {
+          "type": "faq_item",
+          "settings": {
+            "title": "What makes the Incontro rings special?",
+            "content": "<p>The Incontro collection. meaning “encounter” in Italian. features our signature interlocking ring design. Two separate ring segments come together to form one complete ring. They’re designed to be given as a pair. a symbol of two lives meeting and becoming one. Each pair can be customized with different gold colors and diamond settings.</p>"
+          }
+        },
+        "faq_item_gift08": {
+          "type": "faq_item",
+          "settings": {
+            "title": "Do you offer gift packaging?",
+            "content": "<p>Every De Leville piece arrives in our signature packaging. a luxury presentation box with branded materials. We take the same care with our packaging as we do with our jewelry. If you’re sending a gift directly to someone, just let us know at concierge@deleville.co and we’ll include a handwritten note.</p>"
+          }
+        },
+        "faq_item_price09": {
+          "type": "faq_item",
+          "settings": {
+            "title": "Why are De Leville pieces priced the way they are?",
+            "content": "<p>Our pricing reflects what goes into every piece: 18-karat solid gold (not plating), natural diamonds where featured, Italian craftsmanship by master artisans, and a Digital Soul certificate of authenticity. We sell directly to you. no retail markup, no middlemen. You’re paying for the materials and the craft, nothing more.</p>"
+          }
+        },
+      },
+      "block_order": [
+        "faq_item_Kg6QNg",
+        "faq_item_rK98KY",
+        "faq_item_giQMJG",
+        "faq_item_QYhm6b",
+        "faq_item_3MY3B4",
+        "faq_item_iXMMyG",
+        "faq_item_GzAQkE",
+        "faq_item_gift08",
+        "faq_item_price09"
+        
+      ],
+      "settings": {
+        "title": "Frequently Asked Questions",
+        "section_title_color": "#000000",
+        "section_title_size": 28,
+        "section_title_weight": 400,
+        "section_title_margin_bottom": 35,
+        "description": "",
+        "section_desc_color": "#666666",
+        "section_desc_size": 16,
+        "section_desc_weight": 400,
+        "section_desc_margin_bottom": 40,
+        "header_alignment": "center",
+        "section_background_color": "#ffffff",
+        "max_width": 800,
+        "margin_top": 65,
+        "margin_bottom": 100,
+        "item_padding_vertical": 20,
+        "item_padding_horizontal": 20,
+        "gap": 10,
+        "border_width": 1,
+        "border_color": "#e5e5e5",
+        "title_color": "#000000",
+        "title_font_size": 16, "title_font_weight": 400,
+        "content_color": "#666666",
+        "content_font_size": 16
+      }
+    }
+  },
+  "order": [
+    "snc_info_hero_NJbGc6",
+    "main"
+  ]
+}

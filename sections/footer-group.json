@@ -1,0 +1,102 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "Footer",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "snc-footer",
+      "blocks": {
+        "logo_text_BzxgmE": {
+          "type": "logo_text",
+          "settings": {
+            "logo_version": "dark",
+            "logo_width": 190,
+            "text": "Born in Rome, 1975. Made by hand. Made to order.",
+            "text_style": "body",
+            "text_width": 400,
+            "gap": 20,
+            "alignment": "center",
+            "padding_top": 40,
+            "padding_bottom": 40,
+            "show_newsletter": true,
+            "klaviyo_company_id": "YaptEj",
+            "newsletter_button_position": "inside",
+            "newsletter_email_placeholder": "Your email address",
+            "newsletter_success_text": "Successfully subscribed!",
+            "newsletter_input_width": 300,
+            "newsletter_btn_bg": "#000000",
+            "newsletter_btn_icon_color": "#ffffff",
+            "newsletter_btn_hover_bg": "#1e3326",
+            "show_divider": true,
+            "divider_gap": 30
+          }
+        },
+        "navigation_UmBBU6": {
+          "type": "navigation",
+          "settings": {
+            "menu_gap_desktop": 100,
+            "menu_gap_mobile": 10,
+            "menu_title_color": "#8c8c8c80",
+            "menu_link_color": "#000000",
+            "menu_title_weight": "400",
+            "menu_link_weight": "400",
+            "menu1_title": "SHOP",
+            "menu1": "footer",
+            "menu2_title": "COMPANY",
+            "menu2": "company",
+            "menu3_title": "HELP",
+            "menu3": "help",
+            "menu4_title": "",
+            "menu4": "",
+            "menu5_title": "",
+            "menu5": "",
+            "menu6_title": "",
+            "menu6": "",
+            "show_divider": false,
+            "divider_gap": 25
+          }
+        },
+        "signature_cards_WMmBC9": {
+          "type": "signature_cards",
+          "settings": {
+            "text_color": "#000000",
+            "show_payment_icons": false,
+            "payment_icons": "visa,master,american_express,paypal",
+            "payment_icon_height": 20,
+            "credits_font_weight": "400",
+            "credits_text": "",
+            "credits_name": "",
+            "credits_link": "",
+            "copyright_text": "All Rights Reserved",
+            "brand_name": "De Leville",
+            "show_divider": false,
+            "divider_gap": 25
+          }
+        }
+      },
+      "block_order": [
+        "logo_text_BzxgmE",
+        "navigation_UmBBU6",
+        "signature_cards_WMmBC9"
+      ],
+      "settings": {
+        "show_outer_bg": true,
+        "outer_bg_color": "#ffffff",
+        "main_bg_color": "#ffffff",
+        "rounded_corners": false,
+        "border_radius": 0
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

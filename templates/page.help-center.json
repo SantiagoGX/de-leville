@@ -1,0 +1,158 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "snc-help-center",
+      "blocks": {
+        "card_7HWx43": {
+          "type": "card",
+          "settings": {
+            "tab_category": "Policies",
+            "title": "Privacy Policy",
+            "text": "",
+            "link_text": "Read more",
+            "link_url": "shopify://policies/privacy-policy"
+          }
+        },
+        "card_3QVJbp": {
+          "type": "card",
+          "disabled": true,
+          "settings": {
+            "tab_category": "General",
+            "title": "About My Order",
+            "text": "<p>How do I track my order?<br/>How can I confirm a purchase?</p>",
+            "link_text": "",
+            "link_url": "#"
+          }
+        },
+        "card_gbhzRG": {
+          "type": "card",
+          "settings": {
+            "tab_category": "General",
+            "title": "About Us",
+            "text": "",
+            "link_text": "Read more",
+            "link_url": "/pages/the-maison"
+          }
+        },
+        "card_Ydj4P4": {
+          "type": "card",
+          "settings": {
+            "tab_category": "General",
+            "title": "Frequently Asked Questions",
+            "text": "",
+            "link_text": "Read more",
+            "link_url": "/pages/faqs"
+          }
+        },
+        "card_gxpxqL": {
+          "type": "card",
+          "settings": {
+            "tab_category": "General",
+            "title": "Product Care",
+            "text": "<p>Learn how to care for your De Leville jewelry.</p>",
+            "link_text": "Read more",
+            "link_url": "/pages/product-care"
+          }
+        },
+        "card_fFxUBW": {
+          "type": "card",
+          "disabled": true,
+          "settings": {
+            "tab_category": "General",
+            "title": "Digital Soul",
+            "text": "<p>Learn about De Leville's blockchain certificate of authenticity.</p>",
+            "link_text": "Read more",
+            "link_url": "/pages/digital-soul"
+          }
+        },
+        "card_4qp8MX": {
+          "type": "card",
+          "disabled": true,
+          "settings": {
+            "tab_category": "General",
+            "title": "Contact Us",
+            "text": "<p>Reach our concierge team for any questions.</p>",
+            "link_text": "Read more",
+            "link_url": "/pages/contact"
+          }
+        },
+        "card_XhDeyN": {
+          "type": "card",
+          "settings": {
+            "tab_category": "General",
+            "title": "Ring Sizing Guide",
+            "text": "<p>Find your perfect ring size with our measurement guide.</p>",
+            "link_text": "Read more",
+            "link_url": "/pages/sizing-guide"
+          }
+        },
+        "card_CNbh6C": {
+          "type": "card",
+          "settings": {
+            "tab_category": "Policies",
+            "title": "Shipping Policy",
+            "text": "",
+            "link_text": "Read more",
+            "link_url": "/pages/shipping-policy"
+          }
+        },
+        "card_AYQgPV": {
+          "type": "card",
+          "settings": {
+            "tab_category": "Policies",
+            "title": "Returns & Exchanges",
+            "text": "",
+            "link_text": "Read more",
+            "link_url": "/pages/returns-exchanges"
+          }
+        }
+      },
+      "block_order": [
+        "card_7HWx43",
+        "card_3QVJbp",
+        "card_gbhzRG",
+        "card_Ydj4P4",
+        "card_gxpxqL",
+        "card_fFxUBW",
+        "card_4qp8MX",
+        "card_XhDeyN",
+        "card_CNbh6C",
+        "card_AYQgPV"
+      ],
+      "settings": {
+        "title": "Help Center",
+        "title_color": "#000000",
+        "description": "<p>Select a topic to find the answer you're looking for.</p>",
+        "margin_top": 100,
+        "margin_bottom": 40,
+        "bg_color": "#ffffff",
+        "tab_active_bg": "#000000",
+        "tab_active_text": "#ffffff",
+        "tab_inactive_bg": "#f1f1f1",
+        "tab_inactive_text": "#494949",
+        "card_bg": "#f9f9f9",
+        "card_title_color": "#000000",
+        "card_text_color": "#666666",
+        "link_text_color": "#000000",
+        "link_font_size": 15,
+        "link_font_weight": 600,
+        "link_margin_top": 65,
+        "link_line_gap": 2,
+        "link_line_thickness": 1,
+        "link_line_color": "#000000"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

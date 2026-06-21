@@ -1,0 +1,40 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "snc-the-maison-page",
+      "settings": {
+        "eyebrow": "The Maison",
+        "title": "A Roman house. Born 1975.",
+        "intro": "<p>Fifty years of Italian craftsmanship. One family. One line, carried forward.</p>",
+        "hero_image": "shopify://shop_images/rome.jpg",
+        "hero_image_alt": "Rome",
+        "hero_caption": "Roma",
+        "origins_title": "Origins.",
+        "quote_text": "\"I see De Leville going up, and up, and up.\"",
+        "quote_cite": "— Eliau Labi · his last words, to his wife Simcha",
+        "founder_image": "shopify://shop_images/nonno.png",
+        "founder_image_alt": "Eliau Labi, founder",
+        "founder_caption": "Eliau Labi · Founder · 1975",
+        "today_title": "The Maison today.",
+        "archive_image": "shopify://shop_images/store_archive.png",
+        "archive_image_alt": "De Leville at Piazza Esquilino 10, Rome, c. 1975",
+        "archive_caption": "Piazza Esquilino 10 · Roma · c. 1975",
+        "heritage_title": "Heritage.",
+        "concierge_email": "concierge@deleville.co",
+        "signature": "Eliau Piha · Grandson · De Leville"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

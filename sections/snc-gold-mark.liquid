@@ -1,0 +1,597 @@
+{% comment %}
+  Section: SNC Gold Mark
+  Luxury editorial split — brand logo left, copy right.
+  data-header-theme="dark" → transparent header with black components.
+  Full-bleed via grid-column: 1 / -1.
+{% endcomment %}
+
+{%- liquid
+  assign bg      = section.settings.bg_color       | default: '#ffffff'
+  assign c_title = section.settings.title_color    | default: '#0d0d0d'
+  assign c_body  = section.settings.body_color     | default: '#6a6a6a'
+  assign sz_h    = section.settings.title_size     | default: 80
+  assign sz_b    = section.settings.text_size      | default: 15
+  assign lmw     = section.settings.logo_max_width | default: 360
+  assign pt      = section.settings.padding_top    | default: 100
+  assign pb      = section.settings.padding_bottom | default: 90
+-%}
+
+<style>
+  /* ── Full-bleed: span all grid columns ── */
+  #snc-goldmark-{{ section.id }} {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ── Section shell: two content columns + 1px divider ── */
+  #snc-goldmark-{{ section.id }} .gm-section {
+    display: grid;
+    grid-template-columns: 45fr 1px 55fr;
+    align-items: stretch;
+    width: 100%;
+    min-height: 640px;
+    background: {{ bg }};
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  /* ── Logo column ── */
+  #snc-goldmark-{{ section.id }} .gm-logo-col {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: {{ pt }}px 60px {{ pb }}px;
+  }
+
+  /* Subtle warm radial glow — barely visible, adds depth */
+  #snc-goldmark-{{ section.id }} .gm-logo-col::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 70% 60% at 50% 50%,
+      rgba(201, 169, 110, 0.08) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  #snc-goldmark-{{ section.id }} .gm-logo-wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    will-change: transform;
+  }
+
+  #snc-goldmark-{{ section.id }} .gm-logo-img {
+    width: 100%;
+    max-width: {{ lmw }}px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    will-change: filter;
+  }
+
+  /* Shadow breathes after logo entrance */
+  @keyframes gm-shadow-breathe-{{ section.id }} {
+    0%, 100% {
+      filter: drop-shadow(0 20px 44px rgba(180, 140, 60, 0.16))
+              drop-shadow(0 8px 18px rgba(0, 0, 0, 0.07));
+    }
+    50% {
+      filter: drop-shadow(0 30px 60px rgba(180, 140, 60, 0.28))
+              drop-shadow(0 14px 28px rgba(0, 0, 0, 0.11));
+    }
+  }
+
+  #snc-goldmark-{{ section.id }} .gm-logo-img.is-floating {
+    animation: gm-shadow-breathe-{{ section.id }} 5.5s ease-in-out infinite;
+  }
+
+  /* ── Vertical rule (occupies the 1px grid column) ── */
+  #snc-goldmark-{{ section.id }} .gm-vr {
+    display: block;
+    background: #d8d8d8;
+    align-self: stretch;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top center;
+  }
+
+  /* ── Text column ── */
+  #snc-goldmark-{{ section.id }} .gm-text-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: {{ pt }}px 80px {{ pb }}px 60px;
+  }
+
+  /* Overline */
+  #snc-goldmark-{{ section.id }} .gm-overline {
+    display: block;
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.44em;
+    text-transform: uppercase;
+    color: #9a9a9a;
+    margin-bottom: 20px;
+    opacity: 0;
+  }
+
+  /* Horizontal rule — grey, not gold */
+  #snc-goldmark-{{ section.id }} .gm-rule {
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: #d8d8d8;
+    margin-bottom: 48px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  /* Title */
+  #snc-goldmark-{{ section.id }} .gm-title {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: clamp(38px, 5vw, {{ sz_h }}px);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: {{ c_title }};
+    line-height: 1.1;
+    margin: 0 0 44px 0;
+  }
+
+  /* Clip-reveal wrappers — injected by JS */
+  #snc-goldmark-{{ section.id }} .gm-word-clip {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  #snc-goldmark-{{ section.id }} .gm-word {
+    display: inline-block;
+  }
+
+  /* Body */
+  #snc-goldmark-{{ section.id }} .gm-body {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: {{ sz_b }}px;
+    font-weight: 400;
+    line-height: 1.95;
+    color: {{ c_body }};
+    letter-spacing: 0.02em;
+    margin: 0 0 44px;
+  }
+
+  #snc-goldmark-{{ section.id }} .gm-body p {
+    margin: 0 0 0.8em 0;
+    opacity: 0;
+  }
+
+  /* Detail stamp */
+  #snc-goldmark-{{ section.id }} .gm-detail {
+    display: block;
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: #9a9a9a;
+    opacity: 0;
+  }
+
+  /* ── Tablet (≤989px): stack vertically ── */
+  @media screen and (max-width: 989px) {
+    #snc-goldmark-{{ section.id }} .gm-section {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    #snc-goldmark-{{ section.id }} .gm-vr {
+      display: none;
+    }
+
+    #snc-goldmark-{{ section.id }} .gm-logo-col {
+      padding: {{ pt }}px 60px 52px;
+    }
+
+    #snc-goldmark-{{ section.id }} .gm-logo-img {
+      max-width: 260px;
+    }
+
+    #snc-goldmark-{{ section.id }} .gm-text-col {
+      padding: 0 60px {{ pb }}px;
+    }
+  }
+
+  /* ── Mobile (≤749px) ── */
+  @media screen and (max-width: 749px) {
+    #snc-goldmark-{{ section.id }} .gm-logo-col {
+      padding: 72px 32px 44px;
+    }
+
+    #snc-goldmark-{{ section.id }} .gm-logo-img {
+      max-width: 190px;
+    }
+
+    #snc-goldmark-{{ section.id }} .gm-text-col {
+      padding: 0 32px 72px;
+    }
+
+    #snc-goldmark-{{ section.id }} .gm-title {
+      font-size: clamp(34px, 9vw, 52px);
+      letter-spacing: 0.08em;
+    }
+
+    #snc-goldmark-{{ section.id }} .gm-body {
+      font-size: 14px;
+    }
+
+    #snc-goldmark-{{ section.id }} .gm-rule {
+      transform-origin: left;
+    }
+  }
+</style>
+
+<div
+  id="snc-goldmark-{{ section.id }}"
+  data-header-theme="dark"
+  data-section-id="{{ section.id }}"
+>
+  <div class="gm-section">
+
+    <!-- Left: Brand logo -->
+    <div class="gm-logo-col">
+      <div class="gm-logo-wrap">
+        {%- if section.settings.logo_image != blank -%}
+          {{- section.settings.logo_image | image_url: width: 720 | image_tag:
+            class: 'gm-logo-img',
+            alt: 'De Leville',
+            loading: 'lazy',
+            widths: '280,360,500,720'
+          -}}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Vertical rule (1px grid column) -->
+    <span class="gm-vr" aria-hidden="true"></span>
+
+    <!-- Right: Editorial text -->
+    <div class="gm-text-col">
+
+      {%- if section.settings.overline != blank -%}
+        <span class="gm-overline">{{ section.settings.overline | escape }}</span>
+      {%- endif -%}
+
+      <span class="gm-rule" aria-hidden="true"></span>
+
+      <h2 class="gm-title" data-gm-split>{{ section.settings.title | escape }}</h2>
+
+      {%- if section.settings.text != blank -%}
+        <div class="gm-body">{{ section.settings.text }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.detail != blank -%}
+        <span class="gm-detail">{{ section.settings.detail | escape }}</span>
+      {%- endif -%}
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var SECTION_ID = {{ section.id | json }};
+
+  /* ── GSAP singleton loader ── */
+  function loadGSAP(cb) {
+    if (window.gsap && window.ScrollTrigger) { cb(); return; }
+    if (window.__gmQ) { window.__gmQ.push(cb); return; }
+    window.__gmQ = [cb];
+
+    function load(src, next) {
+      var s = document.createElement('script');
+      s.src = src; s.onload = next;
+      document.head.appendChild(s);
+    }
+
+    load(
+      'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js',
+      function () {
+        load(
+          'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js',
+          function () {
+            window.gsap.registerPlugin(window.ScrollTrigger);
+            window.__gmQ.forEach(function (fn) { fn(); });
+            delete window.__gmQ;
+          }
+        );
+      }
+    );
+  }
+
+  /* ── Init ── */
+  function init(wrapper) {
+    if (!wrapper || wrapper.dataset.gmInit) return;
+    wrapper.dataset.gmInit = '1';
+
+    var logoWrap = wrapper.querySelector('.gm-logo-wrap');
+    var logoImg  = wrapper.querySelector('.gm-logo-img');
+    var vr       = wrapper.querySelector('.gm-vr');
+    var overline = wrapper.querySelector('.gm-overline');
+    var rule     = wrapper.querySelector('.gm-rule');
+    var titleEl  = wrapper.querySelector('[data-gm-split]');
+    var bodyPs   = Array.from(wrapper.querySelectorAll('.gm-body p'));
+    var detail   = wrapper.querySelector('.gm-detail');
+
+    /* ── Word-clip split for title ── */
+    var wordEls = [];
+    if (titleEl) {
+      var text = titleEl.textContent.trim();
+      titleEl.innerHTML = text.split(/\s+/).map(function (w) {
+        return '<span class="gm-word-clip"><span class="gm-word">' + w + '</span></span>';
+      }).join('\u00A0');
+      wordEls = Array.from(titleEl.querySelectorAll('.gm-word'));
+    }
+
+    loadGSAP(function () {
+      var gsap = window.gsap;
+
+      var tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrapper.querySelector('.gm-section'),
+          start: 'top 75%',
+          once: true
+        },
+        defaults: { ease: 'power3.out' }
+      });
+
+      /* Logo: entrance scale + fade → then float loop + shadow breathe */
+      if (logoWrap) {
+        tl.fromTo(logoWrap,
+          { opacity: 0, y: 32, scale: 0.88 },
+          {
+            opacity: 1, y: 0, scale: 1,
+            duration: 1.8, ease: 'power2.out',
+            onComplete: function () {
+              /* Activate CSS shadow-breathe animation */
+              if (logoImg) logoImg.classList.add('is-floating');
+
+              /* Gentle organic float: two axes at different rhythms */
+              gsap.to(logoWrap, {
+                y: -16, duration: 4.8,
+                ease: 'sine.inOut', yoyo: true, repeat: -1
+              });
+              gsap.to(logoWrap, {
+                x: 8, duration: 7.2,
+                ease: 'sine.inOut', yoyo: true, repeat: -1
+              });
+              /* Very subtle rotation oscillation — feels alive, not dizzy */
+              gsap.to(logoWrap, {
+                rotation: 1.2, duration: 6,
+                ease: 'sine.inOut', yoyo: true, repeat: -1
+              });
+            }
+          },
+          0
+        );
+      }
+
+      /* Vertical rule: draws down from top */
+      if (vr) {
+        tl.fromTo(vr,
+          { opacity: 0, scaleY: 0 },
+          { opacity: 1, scaleY: 1, duration: 1.4, ease: 'power3.inOut', transformOrigin: 'top center' },
+          0.5
+        );
+      }
+
+      /* Overline: fade + slight rise */
+      if (overline) {
+        tl.fromTo(overline,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.75 },
+          0.65
+        );
+      }
+
+      /* Horizontal rule: draws from left */
+      if (rule) {
+        tl.fromTo(rule,
+          { scaleX: 0 },
+          { scaleX: 1, duration: 1.2, ease: 'power3.inOut' },
+          0.8
+        );
+      }
+
+      /* Title: luxury clip-reveal word by word */
+      wordEls.forEach(function (word, i) {
+        tl.fromTo(word,
+          { yPercent: 110 },
+          { yPercent: 0, duration: 0.9, ease: 'power4.out' },
+          1.0 + i * 0.1
+        );
+      });
+
+      /* Body paragraphs: stagger fade + rise */
+      bodyPs.forEach(function (p, i) {
+        tl.fromTo(p,
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+          1.35 + i * 0.15
+        );
+      });
+
+      /* Detail stamp: last to appear */
+      if (detail) {
+        tl.fromTo(detail,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.8 },
+          1.9
+        );
+      }
+    });
+  }
+
+  function boot() {
+    var wrapper = document.getElementById('snc-goldmark-' + SECTION_ID);
+    if (wrapper) init(wrapper);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  /* Re-init on Shopify editor section reload */
+  document.addEventListener('shopify:section:load', function (e) {
+    var w = e.target.querySelector('[id^="snc-goldmark-"]');
+    if (w) { delete w.dataset.gmInit; init(w); }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SNC Gold Mark",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Brand Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_width",
+      "label": "Logo max size",
+      "min": 160,
+      "max": 520,
+      "step": 20,
+      "unit": "px",
+      "default": 360
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#0d0d0d"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body text color",
+      "default": "#6a6a6a"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Overline",
+      "default": "THE DE LEVILLE STANDARD"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "GOLD AS SIGNATURE"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Body text",
+      "default": "<p>The De Leville signature is solid 14k gold. No plating. No shortcuts. No decoration.</p><p>Gold was chosen because it endures. It does not corrode. It does not fade. It does not forget value.</p><p>Where others apply layers, we work with permanence. This decision is deliberate — and irreversible.</p>"
+    },
+    {
+      "type": "text",
+      "id": "detail",
+      "label": "Detail stamp",
+      "default": "Solid 14k Gold · No plating · No shortcuts · No compromise"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title max size",
+      "min": 40,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Body text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 40,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 40,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 90
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Gold Mark",
+      "category": "Editorial"
+    }
+  ]
+}
+{% endschema %}

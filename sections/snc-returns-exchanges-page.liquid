@@ -1,0 +1,64 @@
+<section class="dl-page dl-page--returns">
+  <div class="dl-page-hero">
+    <div class="dl-page-eyebrow">{{ section.settings.eyebrow }}</div>
+    <h1 class="dl-page-title">{{ section.settings.title }}</h1>
+    <div class="dl-page-intro rte">{{ section.settings.intro }}</div>
+  </div>
+
+  <div class="dl-page-section">
+    <h2>{{ section.settings.return_policy_title }}</h2>
+    <div class="rte">{{ section.settings.return_policy_text }}</div>
+
+    <h2>{{ section.settings.exchanges_title }}</h2>
+    <div class="rte">{{ section.settings.exchanges_text }}</div>
+
+    <h2>{{ section.settings.final_sale_title }}</h2>
+    <div class="rte">{{ section.settings.final_sale_text }}</div>
+
+    <h2>{{ section.settings.initiate_title }}</h2>
+    <div class="rte">{{ section.settings.initiate_text }}</div>
+
+    <h2>{{ section.settings.refund_timeline_title }}</h2>
+    <div class="rte">{{ section.settings.refund_timeline_text }}</div>
+  </div>
+</section>
+
+<style>
+  .dl-page--returns { max-width: 100%; color: #1a1a1a; font-family: 'Futura PT', 'Jost', sans-serif; font-weight: 300; line-height: 1.7; }
+  .dl-page--returns .dl-page-hero { text-align: center; padding: 80px 24px 36px; max-width: 720px; margin: 0 auto; }
+  .dl-page--returns .dl-page-eyebrow { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #6c6c6c; margin-bottom: 18px; }
+  .dl-page--returns .dl-page-title { font-family: 'Cormorant Garamond', 'Times New Roman', serif; font-weight: 300; font-size: 46px; letter-spacing: 0.005em; line-height: 1.15; margin: 0 0 22px; color: #1a1a1a; }
+  .dl-page--returns .dl-page-intro { font-size: 17px; max-width: 620px; margin: 0 auto; color: #3a3a3a; }
+  .dl-page--returns .dl-page-section { max-width: 760px; margin: 0 auto; padding: 30px 24px 90px; }
+  .dl-page--returns .dl-page-section h2 { font-family: 'Cormorant Garamond', 'Times New Roman', serif; font-weight: 300; font-size: 28px; letter-spacing: 0.01em; margin: 40px 0 16px; color: #1a1a1a; line-height: 1.2; }
+  .dl-page--returns .dl-page-section p { font-size: 16px; margin: 0 0 14px; color: #2a2a2a; }
+  .dl-page--returns .dl-page-section strong { font-weight: 500; color: #1a1a1a; }
+  @media (max-width: 768px) {
+    .dl-page--returns .dl-page-hero { padding: 56px 20px 26px; }
+    .dl-page--returns .dl-page-title { font-size: 34px; }
+    .dl-page--returns .dl-page-section { padding: 20px 20px 70px; }
+    .dl-page--returns .dl-page-section h2 { font-size: 24px; margin-top: 34px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "SNC Returns Page",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "A note from the maison" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Returns and Exchanges" },
+    { "type": "richtext", "id": "intro", "label": "Intro", "default": "<p>We want you to be completely satisfied with your De Leville piece. If for any reason you’re not, we’re here to help.</p>" },
+    { "type": "text", "id": "return_policy_title", "label": "Return policy title", "default": "Return Policy" },
+    { "type": "richtext", "id": "return_policy_text", "label": "Return policy text", "default": "<p>We accept returns within <strong>30 days</strong> of delivery. To be eligible for a return, your item must be in its original, unworn condition, free from scratches, marks, or signs of wear, in original De Leville packaging with all included materials, and accompanied by proof of purchase.</p><p>Once we receive and inspect your return, we’ll process your refund to the original payment method within 5–7 business days.</p>" },
+    { "type": "text", "id": "exchanges_title", "label": "Exchanges title", "default": "Exchanges" },
+    { "type": "richtext", "id": "exchanges_text", "label": "Exchanges text", "default": "<p>Need a different size? We’re happy to exchange your piece for a different size in the same style, subject to availability. Contact us at concierge@deleville.co to arrange an exchange. We’ll provide a prepaid return label and ship your new size as soon as we receive the original.</p>" },
+    { "type": "text", "id": "final_sale_title", "label": "Final sale title", "default": "Final Sale Items" },
+    { "type": "richtext", "id": "final_sale_text", "label": "Final sale text", "default": "<p>The following items are final sale and cannot be returned or exchanged: custom or engraved pieces; items that have been worn, altered, or damaged after delivery; items returned without original packaging.</p>" },
+    { "type": "text", "id": "initiate_title", "label": "How to initiate title", "default": "How to Initiate a Return" },
+    { "type": "richtext", "id": "initiate_text", "label": "How to initiate text", "default": "<p>To begin a return or exchange, email our concierge team at <strong>concierge@deleville.co</strong> with your order number and reason for return. We’ll respond within 24 hours with a prepaid return shipping label and instructions.</p><p>Please do not ship items back without contacting us first — unauthorized returns may not be processed.</p>" },
+    { "type": "text", "id": "refund_timeline_title", "label": "Refund timeline title", "default": "Refund Timeline" },
+    { "type": "richtext", "id": "refund_timeline_text", "label": "Refund timeline text", "default": "<p>Once we receive your return: Inspection: 1–2 business days. Refund processing: 3–5 business days. Bank/card statement may take an additional 5–10 business days depending on your financial institution.</p><p>You’ll receive an email confirmation at each step.</p>" }
+  ],
+  "presets": [{ "name": "SNC Returns Page" }]
+}
+{% endschema %}

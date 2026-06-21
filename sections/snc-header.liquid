@@ -1,0 +1,5035 @@
+{%- liquid
+  assign announcement_enabled = section.settings.announcement-enabled
+  assign announcement_blocks = section.blocks | where: 'type', 'announcement'
+  assign logo_to_use = settings.logo_dark
+  if section.settings.logo_version == 'light'
+    assign logo_to_use = settings.logo_light
+  endif
+  assign logo_sticky = settings.logo_dark
+  if section.settings.logo_version_sticky == 'light'
+    assign logo_sticky = settings.logo_light
+  endif
+  assign locale_label = section.settings['locale-label'] | default: 'ES'
+  assign currency_label = section.settings['currency-label'] | default: 'MEX$'
+  assign sticky_enabled = section.settings.sticky-enabled
+  assign force_sticky_style = false
+  # De Leville: force_light_theme controls dark-icon + white-bg header.
+  # Applied on all collection pages (all use snc-plp — white bg, no dark hero)
+  # and the list-collections page.
+  assign force_light_theme = false
+  if request.page_type == 'list-collections'
+    assign force_light_theme = true
+  elsif request.page_type == 'collection'
+    assign force_light_theme = true
+  endif
+  assign smooth_scroll_enabled = section.settings.smooth_scroll_enabled
+  assign smooth_scroll_duration = section.settings.smooth_scroll_duration | default: 1.5
+  
+  assign burger_block = section.blocks | where: 'type', 'burger_menu' | first
+  assign burger_menu = blank
+  if burger_block and burger_block.settings.menu != blank
+    assign burger_menu = linklists[burger_block.settings.menu]
+  endif
+
+  assign has_mega_menu = false
+  if burger_menu != blank and burger_menu.links.size > 0
+    assign has_mega_menu = true
+  endif
+  
+  assign burger_menu_gap = burger_block.settings.menu_gap | default: 10
+  assign mobile_drawer_block = section.blocks | where: 'type', 'mobile_drawer' | first
+  assign mobile_drawer_menu = blank
+  if mobile_drawer_block and mobile_drawer_block.settings.mobile_menu != blank
+    assign mobile_drawer_menu = linklists[mobile_drawer_block.settings.mobile_menu]
+  endif
+  assign mobile_drawer_menu_gap = 10
+  if mobile_drawer_block
+    assign mobile_drawer_menu_gap = mobile_drawer_block.settings.menu_gap | default: 10
+  endif
+
+  assign locale_enabled = false
+  if section.settings.show-locale-selector and localization.available_languages.size > 1
+    assign locale_enabled = true
+  endif
+
+  assign region_enabled = false
+  if section.settings.show-region-selector and localization.available_countries.size > 1
+    assign region_enabled = true
+  endif
+
+  assign cart_title_t = 'cart.title' | t
+  assign search_t = 'general.search.search' | t
+  assign account_t = 'layout.header.account_view_link' | t
+ 
+  assign icon_version_setting = section.settings.icon_version | default: 'dark'
+  assign icon_version_sticky_setting = section.settings.icon_version_sticky | default: 'dark'
+
+  if icon_version_setting == 'light'
+    assign icon_burger = settings.global_icon_burger_light
+    assign icon_search = settings.global_icon_search_light
+    assign icon_account = settings.global_icon_account_light
+    assign icon_wishlist = settings.global_icon_wishlist_light
+    assign icon_cart = settings.global_icon_cart_light
+  else
+    assign icon_burger = settings.global_icon_burger_dark
+    assign icon_search = settings.global_icon_search_dark
+    assign icon_account = settings.global_icon_account_dark
+    assign icon_wishlist = settings.global_icon_wishlist_dark
+    assign icon_cart = settings.global_icon_cart_dark
+  endif
+
+  if icon_version_sticky_setting == 'light'
+    assign icon_burger_sticky = settings.global_icon_burger_light
+    assign icon_search_sticky = settings.global_icon_search_light
+    assign icon_account_sticky = settings.global_icon_account_light
+    assign icon_wishlist_sticky = settings.global_icon_wishlist_light
+    assign icon_cart_sticky = settings.global_icon_cart_light
+  else
+    assign icon_burger_sticky = settings.global_icon_burger_dark
+    assign icon_search_sticky = settings.global_icon_search_dark
+    assign icon_account_sticky = settings.global_icon_account_dark
+    assign icon_wishlist_sticky = settings.global_icon_wishlist_dark
+    assign icon_cart_sticky = settings.global_icon_cart_dark
+  endif
+
+  assign show_burger_desktop = section.settings.show_burger_desktop
+
+  assign wishlist_url = section.settings.wishlist_url | default: '/pages/wishlist'
+
+  if icon_wishlist != blank
+    if icon_wishlist.format == 'svg' or icon_wishlist.src contains '.svg'
+      assign cart_wishlist_icon_url = icon_wishlist | image_url
+    else
+      assign cart_wishlist_icon_url = icon_wishlist | image_url: width: 40
+    endif
+  else
+    assign cart_wishlist_icon_url = 'favorite.svg' | asset_url
+  endif
+
+  assign search_block = section.blocks | where: 'type', 'search_overlay' | first
+
+  assign wishlist_bg_enabled = settings.global_wishlist_bg_enabled
+  assign wishlist_bg_color = settings.global_wishlist_bg_color | default: '#FFFFFF'
+  assign wishlist_radius = settings.global_wishlist_radius | default: 0
+  assign wishlist_padding = settings.global_wishlist_padding | default: 8
+  assign wishlist_size = settings.global_wishlist_size | default: 40
+-%}
+
+{%- comment -%}
+  Header Principal con Barra de Anuncio
+{%- endcomment -%}
+<div class="custom-header--announcement-section">
+  {%- if announcement_enabled -%}
+    <div 
+      class="custom-header--announcement" 
+      data-announcement-bar
+      {% if announcement_marquee %}data-marquee="true"{% endif %}
+    >
+      <div class="custom-header--announcement-content">
+        {%- if announcement_blocks.size > 0 -%}
+          <div class="custom-header--announcement-slider-wrapper">
+            {%- if announcement_blocks.size > 1 -%}
+              <button class="custom-header--announcement-arrow prev" aria-label="Previous">
+                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9L1 5L5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            {%- endif -%}
+            
+            <div class="custom-header--announcement-slider" data-autoplay-speed="5000">
+              {%- for block in announcement_blocks -%}
+                <div class="custom-header--announcement-slide {% if forloop.first %}active{% endif %}" {{ block.shopify_attributes }}>
+                  {%- if block.settings.link != blank -%}
+                    <a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>
+                  {%- else -%}
+                    <p>{{ block.settings.text | escape }}</p>
+                  {%- endif -%}
+                </div>
+              {%- endfor -%}
+            </div>
+
+            {%- if announcement_blocks.size > 1 -%}
+              <button class="custom-header--announcement-arrow next" aria-label="Next">
+                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 9L5 5L1 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="custom-header--announcement-play-pause" aria-label="Pause" data-state="playing">
+                <svg class="icon-pause" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 1V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <svg class="icon-play" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;"><path d="M1 1L7 5L1 9V1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+  <header
+    class="custom-header--root{% if force_sticky_style %} force-sticky-style{% endif %}{% if force_light_theme %} force-light-theme{% endif %}"
+    data-sticky="{{ sticky_enabled }}"
+    data-section-id="{{ section.id }}"
+  >
+  <div class="custom-header--wrapper">
+    
+    {%- comment -%} Lado Izquierdo - Desktop {%- endcomment -%}
+    <div class="custom-header--left">
+      {%- comment -%} Menú Hamburguesa {%- endcomment -%}
+      <button 
+        class="custom-header--menu-toggle"
+        {% unless show_burger_desktop %}style="display: none;"{% endunless %}
+        aria-label="{{ 'layout.header.toggle_drawer' | t }}"
+        aria-haspopup="menu"
+        type="button"
+        {% if mobile_drawer_block == blank %}data-burger-inactive="true"{% endif %}
+      >
+        {%- if icon_burger != blank -%}
+          {%- if icon_burger.format == 'svg' or icon_burger.src contains '.svg' -%}
+            {%- assign icon_burger_url = icon_burger | image_url -%}
+          {%- else -%}
+            {%- assign icon_burger_url = icon_burger | image_url: width: 44 -%}
+          {%- endif -%}
+          <img 
+            src="{{ icon_burger_url }}" 
+            alt="Menu" 
+            class="custom-header--burger-icon no-filter icon-static"
+            width="22"
+            height="15"
+            loading="eager"
+          >
+        {%- else -%}
+          <img
+            src="{{ 'Vector_Hamb_De_Leville.svg' | asset_url }}"
+            alt="Menu"
+            class="custom-header--burger-icon no-filter icon-static"
+            width="22"
+            height="15"
+            loading="eager"
+          >
+        {%- endif -%}
+        {%- if icon_burger_sticky != blank -%}
+          {%- if icon_burger_sticky.format == 'svg' or icon_burger_sticky.src contains '.svg' -%}
+            {%- assign icon_burger_sticky_url = icon_burger_sticky | image_url -%}
+          {%- else -%}
+            {%- assign icon_burger_sticky_url = icon_burger_sticky | image_url: width: 44 -%}
+          {%- endif -%}
+          <img src="{{ icon_burger_sticky_url }}" alt="Menu" class="custom-header--burger-icon no-filter icon-sticky" width="22" height="15" loading="eager">
+        {%- else -%}
+          <img src="{{ 'Vectorinvertido.svg' | asset_url }}" alt="Menu" class="custom-header--burger-icon no-filter icon-sticky" width="22" height="15" loading="eager">
+        {%- endif -%}
+      </button>
+
+      {%- comment -%} Navegación primaria - configurable desde el editor {%- endcomment -%}
+      <div class="custom-header--nav-links custom-header--desktop-only" data-mega-nav>
+        {%- assign header_items = section.blocks | where: 'type', 'header_item' -%}
+        {%- if header_items.size > 0 -%}
+          {%- for block in header_items -%}
+            <div class="custom-header--nav-item" {{ block.shopify_attributes }}>
+              <a 
+                href="{{ block.settings.url }}" 
+                class="custom-header--nav-link"
+                {% if block.settings.enable_mega %}data-mega-trigger="{{ block.id }}"{% endif %}
+              >
+                <span>{{ block.settings.title | escape }}</span>
+                {%- if block.settings.enable_mega -%}
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" class="custom-header--arrow-icon">
+                    <path d="M1 3.5L5 7.5L9 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                {%- endif -%}
+              </a>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} Centro - Logo {%- endcomment -%}
+    <div class="custom-header--center">
+      {%- if request.page_type == 'index' -%}
+        <h1 class="custom-header--logo">
+          <a href="{{ routes.root_url }}" style="text-decoration: none; color: inherit;">
+            <img src="{{ 'Logo_Oficialinvertido.svg' | asset_url }}" alt="{{ shop.name }}" class="custom-header--logo-image logo-sticky" loading="eager" width="{{ settings.logo_width | default: 135 }}">
+            <img src="{{ 'Logo_Oficial_De_Leville.svg' | asset_url }}" alt="{{ shop.name }}" class="custom-header--logo-image logo-static" loading="eager" width="{{ settings.logo_width | default: 135 }}">
+          </a>
+        </h1>
+      {%- else -%}
+        <a href="{{ routes.root_url }}" class="custom-header--logo">
+          <img src="{{ 'Logo_Oficialinvertido.svg' | asset_url }}" alt="{{ shop.name }}" class="custom-header--logo-image logo-sticky" loading="eager" width="{{ settings.logo_width | default: 135 }}">
+          <img src="{{ 'Logo_Oficial_De_Leville.svg' | asset_url }}" alt="{{ shop.name }}" class="custom-header--logo-image logo-static" loading="eager" width="{{ settings.logo_width | default: 135 }}">
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Lado Derecho {%- endcomment -%}
+    <div class="custom-header--right">
+      {%- comment -%} Contenido Desktop {%- endcomment -%}
+      <div class="custom-header--desktop-only custom-header--right-desktop">
+        {%- if section.settings['show-locale-selector'] or section.settings['show-region-selector'] -%}
+          <div class="custom-header--right-meta">
+            {%- if section.settings['show-locale-selector'] -%}
+              <span class="custom-header--right-label">{{ locale_label }}</span>
+            {%- endif -%}
+            {%- if section.settings['show-region-selector'] -%}
+              <span class="custom-header--right-label custom-header--right-currency">{{ currency_label }}</span>
+            {%- endif -%}
+          </div>
+          <span class="custom-header--right-divider" aria-hidden="true"></span>
+        {%- endif -%}
+        <div class="custom-header--icons">
+          {%- if search_block -%}
+          <button
+            class="custom-header--icon-button custom-header--search-toggle"
+            data-search-toggle
+            aria-label="{{ search_t }}"
+            type="button"
+          >
+            <img src="{{ 'Frameinvertido.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-search no-filter icon-sticky" width="20" height="20" loading="eager" aria-hidden="true">
+            <img src="{{ 'Framedl.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-search no-filter icon-static" width="20" height="20" loading="eager" aria-hidden="true">
+          </button>
+          {%- else -%}
+          <a
+            class="custom-header--icon-button custom-header--search-toggle"
+            href="{{ routes.search_url }}"
+            aria-label="{{ search_t }}"
+          >
+            <img src="{{ 'Frameinvertido.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-search no-filter icon-sticky" width="20" height="20" loading="eager" aria-hidden="true">
+            <img src="{{ 'Framedl.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-search no-filter icon-static" width="20" height="20" loading="eager" aria-hidden="true">
+          </a>
+          {%- endif -%}
+
+          {%- if shop.customer_accounts_enabled -%}
+            <a 
+              class="custom-header--icon-button"
+              href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+              aria-label="{{ account_t }}"
+            >
+              <img src="{{ 'Frameinvertido-2.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-account no-filter icon-sticky" width="20" height="23.53" loading="eager" aria-hidden="true">
+              <img src="{{ 'Framedl-2.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-account no-filter icon-static" width="20" height="23.53" loading="eager" aria-hidden="true">
+            </a>
+          {%- endif -%}
+
+          {%- if shop.customer_accounts_enabled -%}
+            <a 
+              class="custom-header--icon-button custom-header--wishlist"
+              href="{{ wishlist_url }}"
+              aria-label="Favorites"
+            >
+              <img src="{{ 'Frameinvertido-1.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-favorite no-filter icon-sticky" width="23" height="20" loading="eager" aria-hidden="true">
+              <img src="{{ 'Framedl-1.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-favorite no-filter icon-static" width="23" height="20" loading="eager" aria-hidden="true">
+            </a>
+          {%- endif -%}
+
+          <button
+            class="custom-header--icon-button custom-header--cart"
+            data-cart-toggle
+            aria-haspopup="menu"
+            type="button"
+            aria-label="{{ cart_title_t }}"
+            data-cart-count="{{ cart.item_count }}"
+          >
+            <img src="{{ 'Frameinvertido-3.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-cart no-filter icon-sticky" width="22" height="23" loading="eager" aria-hidden="true">
+            <img src="{{ 'Framedl-3.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-cart no-filter icon-static" width="22" height="23" loading="eager" aria-hidden="true">
+            <span class="custom-header--cart-count" role="status" aria-live="polite" aria-atomic="true" aria-label="{{ cart.item_count }} items in cart" {% if cart.item_count == 0 %}style="display: none;"{% endif %}>{{ cart.item_count }}</span>
+          </button>
+        </div>
+      </div>
+
+      {%- comment -%} Solo Carrito - Mobile {%- endcomment -%}
+      <div class="custom-header--mobile-only">
+        <button
+          class="custom-header--icon-button custom-header--cart"
+          data-cart-toggle
+          aria-haspopup="menu"
+          type="button"
+          aria-label="{{ cart_title_t }}"
+          data-cart-count="{{ cart.item_count }}"
+        >
+          <img src="{{ 'Frameinvertido-3.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-cart no-filter icon-sticky" width="22" height="23" loading="eager" aria-hidden="true">
+          <img src="{{ 'Framedl-3.svg' | asset_url }}" alt="" class="custom-header--icon custom-header--icon-cart no-filter icon-static" width="22" height="23" loading="eager" aria-hidden="true">
+          <span class="custom-header--cart-count" role="status" aria-live="polite" aria-atomic="true" aria-label="{{ cart.item_count }} items in cart" {% if cart.item_count == 0 %}style="display: none;"{% endif %}>{{ cart.item_count }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+</div>
+
+{%- comment -%} Mega menu panel (desktop) {%- endcomment -%}
+{%- assign mega_blocks = section.blocks | where: 'type', 'header_item' -%}
+{%- if mega_blocks.size > 0 -%}
+  <div class="custom-header--mega-overlay" data-mega-overlay></div>
+  <div class="custom-header--mega-guard" data-mega-guard></div>
+  {%- for block in mega_blocks -%}
+    {%- if block.settings.enable_mega -%}
+      <div 
+        class="custom-header--mega-panel" 
+        data-mega-panel="{{ block.id }}"
+        {% if block.settings.mega_full_width %}data-full-width="true"{% endif %}
+        style="
+          --mega-top-margin: {{ block.settings.mega_top_margin | default: 10 }}px;
+          --mega-side-margin: {{ block.settings.mega_side_margin | default: 10 }}px;
+        "
+      >
+        <div class="custom-header--mega-panel-inner" style="
+          --mega-padding: {{ block.settings.mega_padding | default: 20 }}px;
+          --mega-border-radius: {{ block.settings.mega_border_radius | default: 10 }}px;
+          --mega-shadow: {% if block.settings.mega_show_shadow %}{{ block.settings.mega_shadow | default: '0 20px 60px rgba(0, 0, 0, 0.15)' }}{% else %}none{% endif %};
+        ">
+          <div class="custom-header--mega-panel-content" style="gap: {{ block.settings.mega_content_gap | default: 30 }}px;">
+            <nav class="custom-header--mega-nav">
+              {%- if block.settings.mega_menu != blank -%}
+                <ul class="custom-header--mega-nav-list">
+                  {%- for link in linklists[block.settings.mega_menu].links -%}
+                    <li class="custom-header--mega-nav-item">
+                      <a href="{{ link.url }}" class="custom-header--mega-nav-link">
+                        <span>
+                          {%- if block.settings.enable_advanced_colors -%}
+                            {%- for i in (1..20) -%}
+                              {%- assign name_key = 'color_name_' | append: i -%}
+                              {%- assign hex_key = 'color_hex_' | append: i -%}
+                              {%- assign setting_name = settings[name_key] | downcase | strip -%}
+                              {%- assign link_title_lower = link.title | downcase | strip -%}
+                              {%- if setting_name != blank and setting_name == link_title_lower -%}
+                                <span class="snc-color-swatch" style="--swatch-color: {{ settings[hex_key] }};"></span>
+                                {%- break -%}
+                              {%- endif -%}
+                            {%- endfor -%}
+                          {%- endif -%}
+                          {{ link.title }}
+                        </span>
+                        {%- if link.links.size > 0 -%}
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" class="custom-header--mega-arrow">
+                            <path d="M1 3.5L5 7.5L9 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        {%- endif -%}
+                      </a>
+                      {%- if link.links.size > 0 -%}
+                        <ul class="custom-header--mega-subnav">
+                          {%- for child in link.links -%}
+                            <li>
+                              <a href="{{ child.url }}">
+                                {%- if block.settings.enable_advanced_colors -%}
+                                  {%- for i in (1..20) -%}
+                                    {%- assign name_key = 'color_name_' | append: i -%}
+                                    {%- assign hex_key = 'color_hex_' | append: i -%}
+                                    {%- assign setting_name = settings[name_key] | downcase | strip -%}
+                                    {%- assign child_title_lower = child.title | downcase | strip -%}
+                                    {%- if setting_name != blank and setting_name == child_title_lower -%}
+                                      <span class="snc-color-swatch" style="--swatch-color: {{ settings[hex_key] }};"></span>
+                                      {%- break -%}
+                                    {%- endif -%}
+                                  {%- endfor -%}
+                                {%- endif -%}
+                                {{ child.title }}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </nav>
+            {%- if block.settings.mega_full_width -%}
+              <div class="custom-header--mega-panel-text">{{ block.settings.description | escape }}</div>
+            {%- endif -%}
+          </div>
+          {%- if block.settings.mega_full_width -%}
+            <div class="custom-header--mega-panel-media">
+              <div 
+                class="custom-header--mega-panel-image{% if block.settings.image == blank %} is-empty{% endif %}" 
+                {% if block.settings.image != blank %}style="background-image:url({{ block.settings.image | image_url: width: 900 }});" {% endif %}
+              ></div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- comment -%} Burger Menu Overlay {%- endcomment -%}
+  {%- assign default_panel_top_gap = 10 -%}
+  {%- assign default_panel_bottom_gap = 20 -%}
+  {%- assign default_panel_side_gap = 10 -%}
+  {%- assign default_padding_horizontal = 20 -%}
+  {%- assign default_padding_top = 0 -%}
+  {%- assign default_padding_bottom = 40 -%}
+  {%- assign default_border_radius = 10 -%}
+  {%- assign mobile_panel_mode = 'below_header' -%}
+  {%- assign panel_top_gap = default_panel_top_gap -%}
+  {%- assign panel_bottom_gap = default_panel_bottom_gap -%}
+  {%- assign panel_side_gap = default_panel_side_gap -%}
+  {%- assign panel_padding_horizontal = default_padding_horizontal -%}
+  {%- assign panel_padding_top = default_padding_top -%}
+  {%- assign panel_padding_bottom = default_padding_bottom -%}
+  {%- assign panel_border_radius = default_border_radius -%}
+  {%- if mobile_drawer_block -%}
+    {%- assign mobile_panel_mode = mobile_drawer_block.settings.panel_height_mode | default: 'below_header' -%}
+    {%- assign panel_top_gap = mobile_drawer_block.settings.panel_top_gap | default: default_panel_top_gap -%}
+    {%- assign panel_bottom_gap = mobile_drawer_block.settings.panel_bottom_gap | default: default_panel_bottom_gap -%}
+    {%- assign panel_side_gap = mobile_drawer_block.settings.panel_side_gap | default: default_panel_side_gap -%}
+    {%- assign panel_padding_horizontal = mobile_drawer_block.settings.panel_padding_horizontal | default: default_padding_horizontal -%}
+    {%- assign panel_padding_top = mobile_drawer_block.settings.panel_padding_top | default: default_padding_top -%}
+    {%- assign panel_padding_bottom = mobile_drawer_block.settings.panel_padding_bottom | default: default_padding_bottom -%}
+    {%- assign panel_border_radius = mobile_drawer_block.settings.panel_border_radius | default: default_border_radius -%}
+  {%- endif -%}
+  {%- if mobile_panel_mode == 'full_viewport' -%}
+    {%- assign top_offset_value = '0px' -%}
+  {%- else -%}
+    {%- assign top_offset_value = panel_top_gap | append: 'px' -%}
+  {%- endif -%}
+  {%- assign bottom_offset_value = panel_bottom_gap | append: 'px' -%}
+  {%- assign side_offset_value = panel_side_gap | append: 'px' -%}
+  {%- assign padding_horizontal_value = panel_padding_horizontal | append: 'px' -%}
+  {%- assign padding_top_value = panel_padding_top | append: 'px' -%}
+  {%- assign padding_bottom_value = panel_padding_bottom | append: 'px' -%}
+  {%- assign border_radius_value = panel_border_radius | append: 'px' -%}
+  
+  {%- comment -%} Estilos dinámicos del menú móvil {%- endcomment -%}
+  {%- assign menu_item_color = mobile_drawer_block.settings.menu_item_color | default: '#000000' -%}
+  {%- assign menu_item_size = mobile_drawer_block.settings.menu_item_size | default: 18 -%}
+  {%- assign menu_item_weight = mobile_drawer_block.settings.menu_item_weight | default: 400 -%}
+  {%- assign editorial_color = mobile_drawer_block.settings.editorial_color | default: '#000000' -%}
+  {%- assign editorial_size = mobile_drawer_block.settings.editorial_size | default: 18 -%}
+  {%- assign editorial_weight = mobile_drawer_block.settings.editorial_weight | default: 400 -%}
+  {%- assign social_icon_size = mobile_drawer_block.settings.social_icon_size | default: 26 -%}
+  {%- assign social_btn_size = mobile_drawer_block.settings.social_btn_size | default: 40 -%}
+  {%- assign social_btn_bg = mobile_drawer_block.settings.social_btn_bg | default: 'transparent' -%}
+  {%- assign social_btn_border = mobile_drawer_block.settings.social_btn_border | default: 'transparent' -%}
+  {%- assign menu_title_color = mobile_drawer_block.settings.menu_title_color | default: '#000000' -%}
+  {%- assign close_icon_color = mobile_drawer_block.settings.close_icon_color | default: '#000000' -%}
+  {%- assign menu_title_size = mobile_drawer_block.settings.menu_title_size | default: 16 -%}
+  {%- assign menu_title_weight = mobile_drawer_block.settings.menu_title_weight | default: 400 -%}
+  {%- assign search_padding_v = mobile_drawer_block.settings.search_padding_v | default: 12 -%}
+  {%- assign search_padding_h = mobile_drawer_block.settings.search_padding_h | default: 16 -%}
+  {%- assign search_bg_color = mobile_drawer_block.settings.search_bg_color | default: '#F5F5F5' -%}
+  {%- assign search_text_color = mobile_drawer_block.settings.search_text_color | default: '#000000' -%}
+  {%- assign search_border_radius = mobile_drawer_block.settings.search_border_radius | default: 8 -%}
+
+
+  {%- capture mobile_panel_style -%}
+    --mobile-menu-top-offset: {{ top_offset_value }}; --mobile-menu-bottom-offset: {{ bottom_offset_value }}; --mobile-menu-side-offset: {{ side_offset_value }}; --mobile-menu-padding-horizontal: {{ padding_horizontal_value }}; --mobile-menu-padding-top: {{ padding_top_value }}; --mobile-menu-padding-bottom: {{ padding_bottom_value }}; --mobile-menu-border-radius: {{ border_radius_value }}; --mobile-menu-item-color: {{ menu_item_color }}; --mobile-menu-item-size: {{ menu_item_size }}px; --mobile-menu-item-weight: {{ menu_item_weight }}; --mobile-editorial-color: {{ editorial_color }}; --mobile-editorial-size: {{ editorial_size }}px; --mobile-editorial-weight: {{ editorial_weight }}; --mobile-social-icon-size: {{ social_icon_size }}px; --mobile-social-btn-size: {{ social_btn_size }}px; --mobile-social-btn-bg: {{ social_btn_bg }}; --mobile-social-btn-border: {{ social_btn_border }}; --mobile-menu-title-color: {{ menu_title_color }}; --mobile-close-icon-color: {{ close_icon_color }}; --mobile-menu-title-size: {{ menu_title_size }}px; --mobile-menu-title-weight: {{ menu_title_weight }}; --mobile-search-padding-v: {{ search_padding_v }}px; --mobile-search-padding-h: {{ search_padding_h }}px; --mobile-search-bg: {{ search_bg_color }}; --mobile-search-text: {{ search_text_color }}; --mobile-search-radius: {{ search_border_radius }}px;  {%- endcapture -%}
+  {%- if mobile_drawer_menu != blank -%}
+    {%- assign overlay_menu = mobile_drawer_menu -%}
+  {%- else -%}
+    {%- assign overlay_menu = burger_menu -%}
+  {%- endif -%}
+  <div class="custom-header--burger-overlay" data-burger-overlay>
+    <div class="custom-header--burger-backdrop" data-burger-close></div>
+  <div class="custom-header--burger-panel" style="{{ mobile_panel_style }}">
+    {%- comment -%} Header del panel {%- endcomment -%}
+    <div class="custom-header--burger-header">
+      <h2 class="custom-header--burger-title">MENU</h2>
+      
+      <button 
+        class="custom-header--burger-close"
+        data-burger-close
+        aria-label="Close menu"
+        type="button"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="custom-header--burger-close-icon">
+          <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    {%- assign search_placeholder = 'Search' -%}
+    <div class="custom-header--burger-search-container">
+      <form action="{{ routes.search_url }}" method="get" class="custom-header--burger-search-form">
+        <button type="submit" class="custom-header--burger-search-submit" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <input type="text" name="q" placeholder="{{ search_placeholder | escape }}" class="custom-header--burger-search-input" autocomplete="off">
+      </form>
+      <div class="custom-header--burger-search-results" data-burger-search-results></div>
+    </div>
+
+    {%- comment -%} Contenido del menú {%- endcomment -%}
+    <div class="custom-header--burger-content">
+      {%- comment -%} Navegación principal configurable por menú {%- endcomment -%}
+      <nav class="custom-header--burger-nav">
+        <ul class="custom-header--burger-nav-list" style="gap: {{ mobile_drawer_menu_gap }}px;">
+          {%- if overlay_menu != blank and overlay_menu.links.size > 0 -%}
+            {%- assign enable_advanced_colors = false -%}
+            {%- if mobile_drawer_block -%}
+              {%- assign enable_advanced_colors = mobile_drawer_block.settings.enable_advanced_colors -%}
+            {%- elsif burger_block -%}
+              {%- assign enable_advanced_colors = burger_block.settings.enable_advanced_colors -%}
+            {%- endif -%}
+            {%- for link in overlay_menu.links -%}
+              <li class="custom-header--burger-nav-item" data-burger-item>
+                <a 
+                  href="{{ link.url }}" 
+                class="custom-header--burger-nav-link"
+                  {% if link.links.size > 0 %}data-burger-submenu-trigger{% endif %}
+              >
+                  <span>
+                    {%- if enable_advanced_colors -%}
+                      {%- for i in (1..20) -%}
+                        {%- assign name_key = 'color_name_' | append: i -%}
+                        {%- assign hex_key = 'color_hex_' | append: i -%}
+                        {%- assign setting_name = settings[name_key] | downcase | strip -%}
+                        {%- assign link_title_lower = link.title | downcase | strip -%}
+                        {%- if setting_name != blank and setting_name == link_title_lower -%}
+                          <span class="snc-color-swatch" style="--swatch-color: {{ settings[hex_key] }};"></span>
+                          {%- break -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- endif -%}
+                    {{ link.title }}
+                  </span>
+                  {%- if link.links.size > 0 -%}
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" class="custom-header--burger-arrow">
+                  <path d="M1 3.5L5 7.5L9 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {%- endif -%}
+                </a>
+                
+                {%- if link.links.size > 0 -%}
+                  <div class="custom-header--burger-submenu">
+                  <div class="custom-header--burger-submenu-content">
+                      <ul class="custom-header--burger-subnav">
+                        {%- for child in link.links -%}
+                          <li>
+                            <a href="{{ child.url }}">
+                              {%- if enable_advanced_colors -%}
+                                {%- for i in (1..20) -%}
+                                  {%- assign name_key = 'color_name_' | append: i -%}
+                                  {%- assign hex_key = 'color_hex_' | append: i -%}
+                                  {%- assign setting_name = settings[name_key] | downcase | strip -%}
+                                  {%- assign child_title_lower = child.title | downcase | strip -%}
+                                  {%- if setting_name != blank and setting_name == child_title_lower -%}
+                                    <span class="snc-color-swatch" style="--swatch-color: {{ settings[hex_key] }};"></span>
+                                    {%- break -%}
+                                  {%- endif -%}
+                                {%- endfor -%}
+                              {%- endif -%}
+                              {{ child.title }}
+                            </a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                  </div>
+                </div>
+              {%- endif -%}
+              </li>
+            {%- endfor -%}
+          {%- else -%}
+            <li class="custom-header--burger-nav-item custom-header--burger-nav-item--empty">
+              <span>Assign a side menu from the section settings.</span>
+            </li>
+          {%- endif -%}
+        </ul>
+
+        {%- assign overlay_secondary_menu = blank -%}
+        {%- if mobile_drawer_block and mobile_drawer_block.settings.secondary_menu != blank -%}
+          {%- assign overlay_secondary_menu = linklists[mobile_drawer_block.settings.secondary_menu] -%}
+        {%- endif -%}
+        {%- if overlay_secondary_menu != blank and overlay_secondary_menu.links.size > 0 -%}
+          <div class="custom-header--burger-nav-divider"></div>
+          <ul class="custom-header--burger-nav-list custom-header--burger-nav-list--secondary" style="gap: {{ mobile_drawer_menu_gap }}px;">
+            {%- for link in overlay_secondary_menu.links -%}
+              <li class="custom-header--burger-nav-item" data-burger-item>
+                <a href="{{ link.url }}" class="custom-header--burger-nav-link custom-header--burger-nav-link--secondary">
+                  <span>{{ link.title }}</span>
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </nav>
+
+      {%- assign show_footer_content = true -%}
+      {%- if mobile_drawer_block and mobile_drawer_block.settings.show_footer_content == false -%}
+        {%- assign show_footer_content = false -%}
+      {%- endif -%}
+
+      {%- if show_footer_content -%}
+      {%- comment -%} Bloque editorial {%- endcomment -%}
+      {%- if mobile_drawer_block -%}
+        {%- assign final_editorial_text = mobile_drawer_block.settings.editorial_text -%}
+        {%- if final_editorial_text == blank -%}
+          {%- assign final_editorial_text = 'Cada huarache es una historia tejida a mano, un recuerdo que camina con nosotros.' -%}
+        {%- endif -%}
+      {%- else -%}
+        {%- assign final_editorial_text = burger_block.settings.editorial_text -%}
+      {%- endif -%}
+
+      {%- if final_editorial_text != blank -%}
+        <div class="custom-header--burger-editorial">
+          <p class="custom-header--burger-editorial-text">{{ final_editorial_text }}</p>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Redes sociales {%- endcomment -%}
+      {%- assign fb_url = mobile_drawer_block.settings.social_facebook_url | default: settings.social_facebook_link -%}
+      {%- assign ig_url = mobile_drawer_block.settings.social_instagram_url | default: settings.social_instagram_link -%}
+      {%- assign tt_url = mobile_drawer_block.settings.social_tiktok_url | default: settings.social_tiktok_link -%}
+      {%- if fb_url != blank or ig_url != blank or tt_url != blank -%}
+        <div class="custom-header--burger-social">
+          {%- render 'snc-header-social-icons', block: mobile_drawer_block -%}
+        </div>
+      {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{%- comment -%} Barra de Búsqueda Overlay {%- endcomment -%}
+{%- if search_block -%}
+<div class="custom-header--search-overlay" data-search-overlay style="
+  --search-result-title-color: {{ search_block.settings.result_title_color | default: '#000000' }};
+  --search-result-title-size: {{ search_block.settings.result_title_size | default: 14 }}px;
+  --search-result-title-weight: {{ search_block.settings.result_title_weight | default: 700 }};
+  --search-result-price-size: {{ search_block.settings.result_price_size | default: 13 }}px;
+  --search-result-price-weight: {{ search_block.settings.result_price_weight | default: 400 }};
+  --search-result-image-width: {{ search_block.settings.result_image_width | default: 50 }}px;
+  --search-result-image-brightness: {{ search_block.settings.result_image_brightness | default: 100 }}%;
+  --search-view-all-color: {{ search_block.settings.view_all_color | default: '#000000' }};
+  --search-view-all-weight: {{ search_block.settings.view_all_weight | default: 700 }};
+  --search-input-weight: {{ search_block.settings.search_input_weight | default: 400 }};
+  --search-bar-radius: {{ search_block.settings.search_bar_radius | default: 10 }}px;
+  --search-results-radius: {{ search_block.settings.search_results_radius | default: 10 }}px;
+">
+  <div class="custom-header--search-backdrop" data-search-close></div>
+  <div class="custom-header--search-wrapper">
+    <div class="custom-header--search-bar-container">
+    <form action="{{ routes.search_url }}" method="get" class="custom-header--search-form">
+      <img src="{{ 'Framedl.svg' | asset_url }}" alt="" class="custom-header--search-icon no-filter custom-header--search-form-icon" width="18" height="18" loading="eager" aria-hidden="true">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search"
+        class="custom-header--search-input"
+        autocomplete="off"
+        aria-label="Search"
+      >
+      <button
+        type="submit"
+        class="custom-header--search-submit"
+        aria-label="Search"
+        style="display:none"
+      >
+        <img src="{{ 'Framedl.svg' | asset_url }}" alt="" class="custom-header--search-icon no-filter" width="20" height="20" loading="eager" aria-hidden="true">
+      </button>
+    </form>
+    <button type="button" class="custom-header--search-close-btn" aria-label="Close search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    </div>
+    
+    <div class="custom-header--search-results" data-search-results></div>
+    
+  </div>
+</div>
+{%- endif -%}
+
+{%- comment -%} Carrito Lateral Overlay {%- endcomment -%}
+{%- if cart_block -%}
+<div class="custom-header--cart-overlay{% if cart_full_height %} custom-header--cart-overlay--full-height{% endif %}" data-cart-overlay>
+  <div class="custom-header--cart-backdrop" data-cart-close></div>
+  <div class="custom-header--cart-panel">
+    {%- comment -%} Header del carrito {%- endcomment -%}
+    <div class="custom-header--cart-header">
+      <div class="custom-header--cart-switch">
+        {%- if wishlist_block_count > 0 -%}
+          <button type="button" class="custom-header--cart-switch-btn is-active" data-cart-view="cart">
+            {{ cart_tab_label }}
+          </button>
+          <button type="button" class="custom-header--cart-switch-btn" data-cart-view="wishlist">
+            {{ wishlist_tab_label }}
+          </button>
+        {%- else -%}
+          <span class="custom-header--cart-title">{{ cart_title_fallback_text }}</span>
+        {%- endif -%}
+      </div>
+      <button 
+        class="custom-header--cart-close"
+        data-cart-close
+        aria-label="Close cart"
+        type="button"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="custom-header--cart-close-icon">
+          <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    {%- comment -%} Contenido del carrito {%- endcomment -%}
+    <div class="custom-header--cart-body" data-lenis-prevent>
+      <div id="custom-header--cart-view">
+        {%- comment -%} Barra de progreso de envío gratis {%- endcomment -%}
+      {%- assign free_shipping_threshold = free_shipping_threshold_val | times: 100 -%}
+      {%- assign cart_total = cart.total_price -%}
+      {%- assign remaining_amount = free_shipping_threshold | minus: cart_total -%}
+      {%- if remaining_amount > 0 -%}
+        {%- assign progress_percentage = cart_total | times: 100 | divided_by: free_shipping_threshold | at_least: 0 | at_most: 100 -%}
+      {%- else -%}
+        {%- assign progress_percentage = 100 -%}
+        {%- assign remaining_amount = 0 -%}
+      {%- endif -%}
+
+      <div class="custom-header--cart-shipping-bar">
+        {%- if cart_total >= free_shipping_threshold -%}
+          <div class="custom-header--cart-shipping-text free-shipping-achieved">
+            <span class="custom-header--cart-confetti-icon">✦</span>
+            {{ free_shipping_success_message }}
+          </div>
+        {%- else -%}
+        <div class="custom-header--cart-shipping-text">
+            {{ free_shipping_text_before }} <strong class="custom-header--cart-shipping-amount">{{ remaining_amount | money_without_trailing_zeros }}</strong> {{ free_shipping_text_after }}
+        </div>
+        {%- endif -%}
+        <div class="custom-header--cart-progress-container">
+          <div class="custom-header--cart-progress-bar">
+            <div 
+              class="custom-header--cart-progress-fill"
+              style="width: {{ progress_percentage }}%;"
+            ></div>
+          </div>
+          <div class="custom-header--cart-progress-labels">
+            <span class="custom-header--cart-progress-label">$0</span>
+            <span class="custom-header--cart-progress-label">{{ free_shipping_threshold | money_without_trailing_zeros }}</span>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Lista de productos {%- endcomment -%}
+      <div class="custom-header--cart-items">
+        {%- if cart.item_count > 0 -%}
+          {%- for item in cart.items -%}
+          <div class="custom-header--cart-item" data-cart-item-key="{{ item.key }}">
+            <div class="custom-header--cart-item-image-container">
+              <a href="{{ item.url }}" style="display:block; height:100%;">
+                {%- if item.image -%}
+                <img 
+                  src="{{ item.image | image_url: width: 113 }}" 
+                  alt="{{ item.image.alt | escape }}"
+                  class="custom-header--cart-item-image"
+                  width="113"
+                  loading="lazy"
+                >
+                {%- else -%}
+                <div class="custom-header--cart-item-image-placeholder"></div>
+                {%- endif -%}
+              </a>
+            </div>
+            <div class="custom-header--cart-item-details">
+              <div class="custom-header--cart-item-heading">
+                <h3 class="custom-header--cart-item-title"><a href="{{ item.url }}" style="text-decoration: none; color: inherit;">{{ item.product.title }}</a></h3>
+                <button 
+                  class="custom-header--cart-wishlist"
+                  data-cart-wishlist="{{ item.product.handle }}"
+                  data-handle="{{ item.product.handle }}"
+                  aria-label="Favorites"
+                  type="button"
+                >
+                  <img src="{{ cart_wishlist_icon_url }}" alt="Favorites">
+                </button>
+              </div>
+              {%- if item.variant.title != 'Default Title' -%}
+                <div class="custom-header--cart-item-variant">{{ item.variant.title }}</div>
+              {%- endif -%}
+              <div class="custom-header--cart-item-meta">
+                <div class="custom-header--cart-item-price">
+                  {%- if item.original_price != item.final_price -%}
+                    <span class="custom-header--cart-item-price-original">{{ item.original_price | money }}</span>
+                  {%- endif -%}
+                  <span class="custom-header--cart-item-price-final">{{ item.final_price | money }}</span>
+                </div>
+                <div class="custom-header--cart-item-qty">
+                  <div class="custom-header--cart-qty-selector">
+                    <button type="button" class="custom-header--cart-qty-btn" data-qty-change="-1" data-key="{{ item.key }}" aria-label="Decrease quantity">
+                      <img src="{% if settings.global_icon_minus != blank %}{{ settings.global_icon_minus | image_url: width: 20 }}{% else %}{{ 'minus.svg' | asset_url }}{% endif %}" alt="" class="custom-header--cart-qty-icon" loading="lazy">
+                    </button>
+                    <input type="text" class="custom-header--cart-qty-input" value="{{ item.quantity }}" readonly>
+                    <button type="button" class="custom-header--cart-qty-btn" data-qty-change="1" data-key="{{ item.key }}" aria-label="Increase quantity">
+                      <img src="{% if settings.global_icon_plus != blank %}{{ settings.global_icon_plus | image_url: width: 20 }}{% else %}{{ 'plus.svg' | asset_url }}{% endif %}" alt="" class="custom-header--cart-qty-icon" loading="lazy">
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="custom-header--cart-empty" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 40px 20px;">
+            {%- if cart_empty_image != blank -%}
+              <img 
+                src="{{ cart_empty_image | image_url: width: 400 }}" 
+                alt="Empty cart"
+                class="custom-header--cart-empty-image"
+                style="margin-bottom: 20px; opacity: 0.5;"
+              >
+            {%- endif -%}
+            {%- if cart_empty_title != blank -%}
+              <h3 class="custom-header--cart-empty-title {{ cart_empty_title_style }}" style="margin: 0 0 10px 0;">{{ cart_empty_title }}</h3>
+            {%- endif -%}
+            {%- if cart_empty_text != blank -%}
+              <div class="custom-header--cart-empty-text {{ cart_empty_text_style }}" style="margin-bottom: 30px; color: #666;">{{ cart_empty_text }}</div>
+            {%- endif -%}
+            <div class="custom-header--cart-empty-buttons" style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 280px;">
+              {%- if cart_empty_btn_1_text != blank -%}
+                <a href="{{ cart_empty_btn_1_link }}" class="custom-header--cart-empty-btn" style="background-color: {{ cart_empty_btn_1_bg }}; color: {{ cart_empty_btn_1_text_color }} !important;">{{ cart_empty_btn_1_text }}</a>
+              {%- endif -%}
+              {%- if cart_empty_btn_2_text != blank -%}
+                <a href="{{ cart_empty_btn_2_link }}" class="custom-header--cart-empty-btn secondary" style="background-color: {{ cart_empty_btn_2_bg }}; color: {{ cart_empty_btn_2_text_color }} !important; border-color: {{ cart_empty_btn_2_text_color }};">{{ cart_empty_btn_2_text }}</a>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+      
+      {%- if upsell_collection != blank and collections[upsell_collection].products_count > 0 -%}
+        <div class="custom-header--cart-upsell">
+          <div class="custom-header--cart-upsell-header">
+            <div>
+              {%- if upsell_title != blank -%}
+                <h4 class="custom-header--cart-upsell-title">{{ upsell_title }}</h4>
+              {%- endif -%}
+              {%- if upsell_text != blank -%}
+                <p class="custom-header--cart-upsell-text">{{ upsell_text }}</p>
+              {%- endif -%}
+            </div>
+            <div class="custom-header--cart-upsell-nav">
+              <button type="button" class="custom-header--cart-upsell-arrow prev" aria-label="Previous"><svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9L1 5L5 1"/></svg></button>
+              <button type="button" class="custom-header--cart-upsell-arrow next" aria-label="Next"><svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 9L5 5L1 1"/></svg></button>
+            </div>
+          </div>
+          <div class="custom-header--cart-upsell-slider">
+            {%- for product in collections[upsell_collection].products limit: upsell_limit -%}
+              {%- assign variant = product.selected_or_first_available_variant -%}
+              <div class="custom-header--cart-upsell-item">
+                <div class="custom-header--cart-upsell-image-container"><img src="{{ product.featured_image | image_url: width: 200 }}" alt="{{ product.title }}" loading="lazy"></div>
+                <div class="custom-header--cart-upsell-details">
+                  <h5 class="custom-header--cart-upsell-product-title">{{ product.title }}</h5>
+                  <div class="custom-header--cart-upsell-meta">
+                    <span class="custom-header--cart-upsell-price">{{ product.price | money }}</span>
+                    <button
+                      type="button"
+                      class="custom-header--cart-upsell-add"
+                      data-upsell-add="{{ variant.id }}"
+                      aria-label="{{ upsell_add_button_text }} {{ product.title }}"
+                    >
+                      {{ upsell_add_button_text }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+      
+      <div class="custom-header--cart-summary" {% if cart.item_count == 0 %}style="display: none;"{% endif %}>
+        <div class="custom-header--cart-summary-row">
+          <span>Subtotal</span>
+          <span class="custom-header--cart-subtotal-price">{{ cart.total_price | money }}</span>
+        </div>
+        <div class="custom-header--cart-summary-row">
+          <span>Shipping</span>
+          <span class="custom-header--cart-shipping-value">Calculated at checkout</span>
+        </div>
+        <div class="custom-header--cart-summary-row total">
+          <span>Total</span>
+          <span class="custom-header--cart-total-price">{{ cart.total_price | money }}</span>
+        </div>
+      </div>
+      </div>
+
+      {%- if wishlist_block_count > 0 -%}
+      <div id="custom-header--wishlist-view" style="display: none;">
+        <div class="custom-header--wishlist-view-inner">
+          <div class="custom-header--wishlist-header">
+            <h3>{{ wishlist_title_text }}</h3>
+            <p>{{ wishlist_description_text }}</p>
+          </div>
+          <div class="custom-header--wishlist-items custom-header--cart-items" data-wishlist-layout="{{ wishlist_layout }}">
+            <!-- Items will be injected here via JS -->
+          </div>
+        </div>
+      </div>
+      {%- endif -%}
+    </div>
+    <div class="custom-header--cart-toast" aria-live="polite"></div>
+    
+    {%- comment -%} Footer del carrito {%- endcomment -%}
+    <div class="custom-header--cart-footer">
+      <a 
+        href="/checkout" 
+        class="custom-header--cart-checkout-button"
+        {% if cart.item_count == 0 %}style="display: none;"{% endif %}
+      >
+        {{ cart_checkout_btn_label }}
+      </a>
+      <div class="custom-header--cart-payment-info">
+        <div class="custom-header--cart-guarantee">
+          {%- if cart_block.settings.cart-guarantee-icon != blank -%}
+            <img 
+              src="{{ cart_block.settings.cart-guarantee-icon | image_url: width: 20 }}" 
+              alt=""
+              class="custom-header--cart-guarantee-icon"
+              width="20"
+              height="20"
+              loading="lazy"
+              aria-hidden="true"
+            >
+          {%- endif -%}
+          <p class="custom-header--cart-guarantee-text">
+            {{ cart_block.settings.cart-guarantee-text | default: 'Your purchase is protected by our service policy' }}
+          </p>
+        </div>
+        <div class="custom-header--cart-payment-icons">
+          {%- assign payment_icons = cart_block.settings.cart_payment_icons | split: ',' -%}
+          {%- for type in payment_icons -%}
+            {{ type | strip | payment_type_svg_tag: class: 'icon icon--full-color' }}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}
+
+{%- comment -%} Collection image map — used as fallback when predictive search returns c.image = null {%- endcomment -%}
+<script>
+window.__dlCollectionImages = {
+  {%- for coll in collections -%}
+    {{ coll.handle | json }}: {%- if coll.featured_image -%}{{ coll.featured_image | image_url: width: 200 | json }}{%- elsif coll.products.first.featured_image -%}{{ coll.products.first.featured_image | image_url: width: 200 | json }}{%- else -%}null{%- endif -%}{%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}
+};
+</script>
+
+{%- comment -%} Script para comportamiento del header {%- endcomment -%}
+<script>
+(() => {
+  const sectionId = '{{ section.id }}';
+  const registry = window.__sncHeaderLifecycle = window.__sncHeaderLifecycle || {};
+  if (registry[sectionId]) {
+    registry[sectionId].cleanup();
+  }
+
+  const instance = { listeners: [], intervals: [] };
+
+  const on = (target, event, handler, options) => {
+    if (!target) return;
+    target.addEventListener(event, handler, options);
+    instance.listeners.push({ target, event, handler, options });
+  };
+
+  const setIntervalTracked = (fn, delay) => {
+    const id = setInterval(fn, delay);
+    instance.intervals.push(id);
+    return id;
+  };
+
+  instance.cleanup = () => {
+    instance.listeners.forEach(({ target, event, handler, options }) => {
+      target.removeEventListener(event, handler, options);
+    });
+    instance.intervals.forEach(clearInterval);
+    instance.listeners = [];
+    instance.intervals = [];
+  };
+
+  registry[sectionId] = instance;
+
+  on(document, 'shopify:section:unload', function(event) {
+    if (event.detail.sectionId === sectionId) {
+      instance.cleanup();
+    }
+  });
+
+  (function() {
+    const sectionId = '{{ section.id }}';
+    window.__customHeaderRegistry = window.__customHeaderRegistry || {};
+
+    function cleanup() {
+      const instance = window.__customHeaderRegistry[sectionId];
+      if (!instance) return;
+
+      if (instance.scrollHandler) {
+        window.removeEventListener('scroll', instance.scrollHandler);
+      }
+
+      if (instance.scrollTimeout) {
+        cancelAnimationFrame(instance.scrollTimeout);
+      }
+
+      if (instance.resizeObserver) {
+        instance.resizeObserver.disconnect();
+      }
+
+      if (instance.resizeHandler) {
+        window.removeEventListener('resize', instance.resizeHandler);
+      }
+
+      delete window.__customHeaderRegistry[sectionId];
+    }
+
+    function init() {
+      cleanup();
+
+      const section = document.getElementById(`shopify-section-${sectionId}`);
+      if (!section) return;
+
+      const header = section.querySelector('.custom-header--root');
+      const announcementBar = section.querySelector('[data-announcement-bar]');
+      const marquee = section.querySelector('[data-marquee="true"] .custom-header--announcement-marquee');
+      const stickyEnabled = {{ sticky_enabled | json }};
+
+      const getAnnouncementHeight = () => {
+        if (!announcementBar) return 0;
+        if (announcementBar.classList.contains('custom-header--announcement-hidden')) {
+          return 0;
+        }
+        return announcementBar.offsetHeight;
+      };
+
+      const setHeaderOffset = () => {
+        if (!header) return;
+        const height = getAnnouncementHeight();
+        const headerHeight = header.offsetHeight;
+        const totalHeight = height + headerHeight;
+        header.style.setProperty('--custom-header-announcement-height', `${height}px`);
+        document.documentElement.style.setProperty('--custom-header-total-height', `${totalHeight}px`);
+        document.body.style.setProperty('--custom-header-total-height', `${totalHeight}px`);
+      };
+
+      setHeaderOffset();
+
+      function applyAutoTheme() {
+        if (!header) return;
+        // Only update data-dl-header-mode on pages that start transparent (homepage,
+        // collection pages with dark hero). Solid and always-dark pages are excluded.
+        var heroTheme = window.__dlHeroTheme || 'none';
+        var canUpdate = heroTheme === 'dark' || heroTheme === 'light';
+
+        // Use elementsFromPoint to find what section is behind the header center
+        const hRect = header.getBoundingClientRect();
+        const cx = Math.round(window.innerWidth / 2);
+        const cy = Math.round(hRect.top + hRect.height / 2);
+        const stack = document.elementsFromPoint(cx, cy);
+        for (const el of stack) {
+          if (header.contains(el) || el === header) continue;
+          // Walk up to find data-header-theme
+          let node = el;
+          while (node && node !== document.body) {
+            if (node.dataset && node.dataset.headerTheme) {
+              const sectionTheme = node.dataset.headerTheme;
+              header.dataset.activeTheme = sectionTheme;
+              if (canUpdate) {
+                // "light" theme = dark-bg section needs white icons → transparent-dark
+                // "dark"  theme = light-bg section needs black icons → transparent-light
+                document.documentElement.setAttribute('data-dl-header-mode',
+                  sectionTheme === 'light' ? 'transparent-dark' : 'transparent-light');
+              }
+              return;
+            }
+            node = node.parentElement;
+          }
+        }
+        delete header.dataset.activeTheme;
+        // Fallback: no tagged section found → assume light/white section
+        if (canUpdate) {
+          document.documentElement.setAttribute('data-dl-header-mode', 'transparent-light');
+        }
+      }
+
+      let scrollHandler = null;
+      let scrollTimeout = null;
+
+      scrollHandler = () => {
+        // Run immediately on every scroll tick — no throttle needed, very lightweight
+        applyAutoTheme();
+
+        if (scrollTimeout) return;
+        scrollTimeout = requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const scrolled = scrollY > 50;
+
+          if (announcementBar && !{{ section.settings.announcement_sticky | default: false | json }}) {
+            announcementBar.classList.toggle('custom-header--announcement-hidden', scrolled);
+            setHeaderOffset();
+          }
+
+          const isDarkPage = document.body.classList.contains('template-suffix-nft');
+          if (header && stickyEnabled && !isDarkPage) {
+            header.classList.toggle('is-sticky', scrollY > 10);
+          }
+
+          scrollTimeout = null;
+        });
+      };
+
+      scrollHandler();
+      on(window, 'scroll', scrollHandler, { passive: true });
+
+      // Initial detection on page load
+      applyAutoTheme();
+
+      let resizeObserver = null;
+      let resizeHandler = null;
+
+      if (announcementBar && 'ResizeObserver' in window) {
+        resizeObserver = new ResizeObserver(setHeaderOffset);
+        resizeObserver.observe(announcementBar);
+      } else {
+        resizeHandler = () => setHeaderOffset();
+        on(window, 'resize', resizeHandler);
+      }
+
+      if (marquee) {
+        marquee.style.setProperty('--custom-header-marquee-speed', '{{ announcement_speed }}s');
+      }
+
+      window.__customHeaderRegistry[sectionId] = {
+        scrollHandler,
+        scrollTimeout,
+        resizeObserver,
+        resizeHandler
+      };
+    }
+
+    if (document.readyState === 'loading') {
+      on(document, 'DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+    on(document, 'shopify:section:load', function(event) {
+      if (event.detail.sectionId === sectionId) {
+        init();
+      }
+    });
+
+    on(document, 'shopify:section:unload', function(event) {
+      if (event.detail.sectionId === sectionId) {
+        cleanup();
+      }
+    });
+  })();
+
+  // Manejar mega menú (desktop)
+  (function() {
+    const sectionId = '{{ section.id }}';
+    let section = document.getElementById(`shopify-section-${sectionId}`);
+    if (!section) {
+      const root = document.querySelector(`.custom-header--root[data-section-id="${sectionId}"]`);
+      if (root) section = root.closest('.shopify-section') || root.parentElement;
+    }
+    if (!section) return;
+    const header = section.querySelector('.custom-header--root');
+
+    const nav = section.querySelector('[data-mega-nav]');
+    const triggers = nav ? nav.querySelectorAll('[data-mega-trigger]') : [];
+    const panels = section.querySelectorAll('[data-mega-panel]');
+    const guard = section.querySelector('[data-mega-guard]');
+    const overlay = section.querySelector('[data-mega-overlay]');
+    if (panels.length === 0 || triggers.length === 0) return;
+
+    const closeDelay = 400;
+    let hideTimeout = null;
+    let isPanelOpen = false;
+
+    function openPanel(blockId) {
+      if (!blockId) return;
+      panels.forEach(p => {
+        if (p.dataset.megaPanel !== blockId) {
+          p.classList.remove('custom-header--mega-panel-open');
+        }
+      });
+      const targetPanel = section.querySelector(`[data-mega-panel="${blockId}"]`);
+      if (!targetPanel) return;
+      targetPanel.classList.add('is-initialized');
+      void targetPanel.offsetWidth;
+      targetPanel.classList.add('custom-header--mega-panel-open');
+      if (isPanelOpen) return;
+      isPanelOpen = true;
+      if (guard) guard.classList.add('is-visible');
+      if (overlay) {
+        overlay.classList.add('is-initialized');
+        void overlay.offsetWidth;
+        overlay.classList.add('is-visible');
+      }
+      if (header) header.classList.add('is-modal-active');
+    }
+
+    function closePanel() {
+      isPanelOpen = false;
+      panels.forEach(p => p.classList.remove('custom-header--mega-panel-open'));
+      if (guard) guard.classList.remove('is-visible');
+      if (overlay) overlay.classList.remove('is-visible');
+      if (header) header.classList.remove('is-modal-active');
+    }
+
+    function scheduleClose() {
+      cancelClose();
+      hideTimeout = setTimeout(closePanel, closeDelay);
+    }
+
+    function cancelClose() {
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+    }
+
+    triggers.forEach(trigger => {
+      trigger.addEventListener('mouseenter', () => {
+        cancelClose();
+        openPanel(trigger.dataset.megaTrigger);
+      });
+      trigger.addEventListener('focus', () => {
+        cancelClose();
+        openPanel(trigger.dataset.megaTrigger);
+      });
+    });
+
+    if (nav) {
+      nav.addEventListener('mouseenter', cancelClose);
+      nav.addEventListener('mouseleave', scheduleClose);
+      nav.addEventListener('focusin', cancelClose);
+      nav.addEventListener('focusout', (event) => {
+        const nextTarget = event.relatedTarget;
+        const isInsideAnyPanel = Array.from(panels).some(p => p.contains(nextTarget));
+        if (!nav.contains(nextTarget) && !isInsideAnyPanel) {
+          scheduleClose();
+        }
+      });
+    }
+
+    panels.forEach(p => {
+      p.addEventListener('mouseenter', cancelClose);
+      p.addEventListener('mouseleave', scheduleClose);
+    });
+
+    if (guard) {
+      guard.addEventListener('mouseenter', cancelClose);
+      guard.addEventListener('mouseleave', scheduleClose);
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', () => {
+        cancelClose();
+        closePanel();
+      });
+    }
+
+    on(document, 'keydown', function(event) {
+      if (event.key === 'Escape') {
+        cancelClose();
+        closePanel();
+      }
+    });
+
+    window.__customHeaderMega = window.__customHeaderMega || {};
+    window.__customHeaderMega[sectionId] = {
+      close: closePanel
+    };
+
+    on(document, 'shopify:section:unload', function(event) {
+      if (event.detail.sectionId === sectionId && window.__customHeaderMega) {
+        closePanel();
+        delete window.__customHeaderMega[sectionId];
+      }
+    });
+  })();
+
+  // Manejar burger menu
+  (function() {
+    const sectionId = '{{ section.id }}';
+    let section = document.getElementById(`shopify-section-${sectionId}`);
+    if (!section) {
+      const root = document.querySelector(`.custom-header--root[data-section-id="${sectionId}"]`);
+      if (root) section = root.closest('.shopify-section') || root.parentElement;
+    }
+    const container = section || document;
+    const header = container.querySelector('.custom-header--root');
+
+    const menuToggle = container.querySelector('.custom-header--menu-toggle');
+    const overlay = container.querySelector('[data-burger-overlay]');
+    const closeButtons = container.querySelectorAll('[data-burger-close]');
+    const backdrop = container.querySelector('.custom-header--burger-backdrop');
+    const submenuTriggers = container.querySelectorAll('[data-burger-submenu-trigger]');
+
+    if (!menuToggle || !overlay) return;
+
+    function closeMegaPanel() {
+      if (window.__customHeaderMega && window.__customHeaderMega[sectionId]) {
+        window.__customHeaderMega[sectionId].close();
+      }
+    }
+
+    function openMenu() {
+      overlay.classList.add('is-initialized');
+      void overlay.offsetWidth;
+      overlay.classList.add('custom-header--burger-overlay-open');
+      document.body.style.overflow = 'hidden';
+      closeMegaPanel();
+      const searchOverlay = container.querySelector('[data-search-overlay]');
+      if (searchOverlay && searchOverlay.classList.contains('custom-header--search-overlay-open')) {
+        searchOverlay.classList.remove('custom-header--search-overlay-open');
+      }
+      const cartOverlay = document.querySelector('[data-cart-overlay]');
+      if (cartOverlay && cartOverlay.classList.contains('custom-header--cart-overlay-open')) {
+        cartOverlay.classList.remove('custom-header--cart-overlay-open');
+      }
+      if (header) header.classList.add('is-modal-active');
+    }
+
+    function closeMenu() {
+      overlay.classList.remove('custom-header--burger-overlay-open');
+      document.body.style.overflow = '';
+      document.body.classList.remove('menu-open');
+      const openSubmenus = overlay.querySelectorAll('.custom-header--burger-submenu-open');
+      openSubmenus.forEach(item => item.classList.remove('custom-header--burger-submenu-open'));
+      if (header) header.classList.remove('is-modal-active');
+    }
+
+    menuToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.hasAttribute('data-burger-inactive')) return;
+      openMenu();
+    });
+
+    closeButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+      });
+    });
+
+    if (backdrop) {
+      backdrop.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+      });
+    }
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay || e.target === backdrop) {
+        closeMenu();
+      }
+    });
+
+    submenuTriggers.forEach(trigger => {
+      trigger.addEventListener('click', function(e) {
+        const navItem = trigger.closest('.custom-header--burger-nav-item');
+        if (!navItem) return;
+        e.preventDefault();
+        const isOpen = navItem.classList.contains('custom-header--burger-submenu-open');
+        if (isOpen) {
+          navItem.classList.remove('custom-header--burger-submenu-open');
+        } else {
+          const allItems = overlay.querySelectorAll('.custom-header--burger-nav-item');
+          allItems.forEach(item => item.classList.remove('custom-header--burger-submenu-open'));
+          navItem.classList.add('custom-header--burger-submenu-open');
+        }
+      });
+    });
+
+    on(document, 'keydown', function(e) {
+      if (e.key === 'Escape' && overlay.classList.contains('custom-header--burger-overlay-open')) {
+        closeMenu();
+      }
+    });
+  })();
+
+  // Manejar barra de búsqueda
+  (function() {
+    const sectionId = '{{ section.id }}';
+    let section = document.getElementById(`shopify-section-${sectionId}`);
+    if (!section) {
+      const root = document.querySelector(`.custom-header--root[data-section-id="${sectionId}"]`);
+      if (root) section = root.closest('.shopify-section') || root.parentElement;
+    }
+    const container = section || document;
+    const header = container.querySelector('.custom-header--root');
+
+    const searchToggles = container.querySelectorAll('[data-search-toggle]');
+    const searchOverlay = container.querySelector('[data-search-overlay]');
+    const searchBackdrop = container.querySelector('.custom-header--search-backdrop');
+    const searchInput = container.querySelector('.custom-header--search-input');
+    const searchResults = container.querySelector('[data-search-results]');
+    const searchTrending = container.querySelector('.custom-header--search-trending');
+
+    if (searchToggles.length === 0 || !searchOverlay) return;
+
+    function closeMegaPanel() {
+      if (window.__customHeaderMega && window.__customHeaderMega[sectionId]) {
+        window.__customHeaderMega[sectionId].close();
+      }
+    }
+
+    function openSearch() {
+      searchOverlay.classList.add('is-initialized');
+      void searchOverlay.offsetWidth;
+      searchOverlay.classList.add('custom-header--search-overlay-open');
+      document.body.style.overflow = 'hidden';
+      const burgerOverlay = container.querySelector('[data-burger-overlay]');
+      if (burgerOverlay && burgerOverlay.classList.contains('custom-header--burger-overlay-open')) {
+        burgerOverlay.classList.remove('custom-header--burger-overlay-open');
+      }
+      const cartOverlay = document.querySelector('[data-cart-overlay]');
+      if (cartOverlay && cartOverlay.classList.contains('custom-header--cart-overlay-open')) {
+        cartOverlay.classList.remove('custom-header--cart-overlay-open');
+      }
+      closeMegaPanel();
+      setTimeout(() => {
+        if (searchInput) searchInput.focus();
+      }, 300);
+      if (header) header.classList.add('is-modal-active');
+    }
+
+    function closeSearch() {
+      searchOverlay.classList.remove('custom-header--search-overlay-open');
+      document.body.style.overflow = '';
+      if (header) header.classList.remove('is-modal-active');
+    }
+
+    searchToggles.forEach(toggle => {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openSearch();
+      });
+    });
+
+    if (searchBackdrop) {
+      searchBackdrop.addEventListener('click', closeSearch);
+    }
+
+    const searchCloseBtn = container.querySelector('.custom-header--search-close-btn');
+    if (searchCloseBtn) {
+      searchCloseBtn.addEventListener('click', closeSearch);
+    }
+
+    on(document, 'keydown', function(e) {
+      if (e.key === 'Escape' && searchOverlay.classList.contains('custom-header--search-overlay-open')) {
+        closeSearch();
+      }
+    });
+
+    let debounceTimer;
+    if (searchInput) {
+      searchInput.addEventListener('input', function(e) {
+        const term = e.target.value.trim();
+        clearTimeout(debounceTimer);
+
+        if (term.length === 0) {
+          if (searchResults) searchResults.innerHTML = '';
+          if (searchTrending) searchTrending.style.display = 'block';
+          return;
+        }
+
+        debounceTimer = setTimeout(() => {
+          fetch(`/search/suggest.json?q=${encodeURIComponent(term)}&resources[type]=product,collection&resources[limit]=5`)
+            .then(res => res.json())
+            .then(data => {
+              const products = data.resources.results.products || [];
+              const collections = data.resources.results.collections || [];
+              
+              if (searchResults) {
+                if (products.length > 0 || collections.length > 0) {
+                  let html = '';
+                  
+                  if (collections.length > 0) {
+                    html += '<div class="custom-header--search-section-title">Collections</div>';
+                    collections.forEach(c => {
+                      const imgUrl = c.image || (window.__dlCollectionImages && window.__dlCollectionImages[c.handle]) || null;
+                      const img = imgUrl ? `<img src="${imgUrl}" alt="${c.title}" class="custom-header--search-result-image">` : `<div class="custom-header--search-result-image placeholder"></div>`;
+                      html += `
+                        <a href="${c.url}" class="custom-header--search-result-item">
+                          ${img}
+                          <div class="custom-header--search-result-info">
+                            <p class="custom-header--search-result-title">${c.title}</p>
+                          </div>
+                        </a>
+                      `;
+                    });
+                  }
+
+                  if (products.length > 0) {
+                    if (collections.length > 0) {
+                      html += '<div class="custom-header--search-section-title">Products</div>';
+                    }
+                    products.forEach(p => {
+                      const rawPrice = parseFloat(p.price);
+                      const fmtPrice = isNaN(rawPrice) ? '' : rawPrice.toLocaleString('en-US', { style: 'currency', currency: '{{ shop.currency }}', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                      html += `
+                        <a href="${p.url}" class="custom-header--search-result-item">
+                          <img src="${p.image}" alt="${p.title}" class="custom-header--search-result-image">
+                          <div class="custom-header--search-result-info">
+                            <p class="custom-header--search-result-title">${p.title}</p>
+                            <p class="custom-header--search-result-price">${fmtPrice}</p>
+                          </div>
+                        </a>
+                      `;
+                    });
+                  }
+                  
+                  html += `
+                    <a href="${window.routes ? window.routes.search_url : '/search'}?q=${encodeURIComponent(term)}" class="custom-header--search-view-all">
+                      View all results
+                    </a>
+                  `;
+                  searchResults.innerHTML = html;
+                  if (searchTrending) searchTrending.style.display = 'none';
+                } else {
+                  searchResults.innerHTML = `<p class="custom-header--search-no-results">No results found</p>`;
+                  if (searchTrending) searchTrending.style.display = 'none';
+                }
+              }
+            });
+        }, 300);
+      });
+    }
+  })();
+
+  // ─────────────────────────────────────────────────────────────
+  // Mobile burger search — predictive suggestions
+  // ─────────────────────────────────────────────────────────────
+  (function() {
+    const burgerInput = document.querySelector('.custom-header--burger-search-input');
+    const burgerResults = document.querySelector('[data-burger-search-results]');
+    if (!burgerInput || !burgerResults) return;
+
+    let burgerDebounce;
+
+    function renderBurgerResults(term, products, collections) {
+      if (products.length === 0 && collections.length === 0) {
+        burgerResults.innerHTML = '<p class="custom-header--search-no-results">No results found</p>';
+        return;
+      }
+      let html = '';
+      if (collections.length > 0) {
+        html += '<div class="custom-header--search-section-title">Collections</div>';
+        collections.forEach(function(c) {
+          const imgUrl = c.image || (window.__dlCollectionImages && window.__dlCollectionImages[c.handle]) || null;
+          const img = imgUrl
+            ? `<img src="${imgUrl}" alt="${c.title}" class="custom-header--search-result-image">`
+            : `<div class="custom-header--search-result-image placeholder"></div>`;
+          html += `<a href="${c.url}" class="custom-header--search-result-item">${img}<div class="custom-header--search-result-info"><p class="custom-header--search-result-title">${c.title}</p></div></a>`;
+        });
+      }
+      if (products.length > 0) {
+        html += '<div class="custom-header--search-section-title">Products</div>';
+        products.forEach(function(p) {
+          const priceFormatted = p.price ? (p.price / 100).toLocaleString('en-US', { style: 'currency', currency: '{{ shop.currency }}' }) : '';
+          html += `<a href="${p.url}" class="custom-header--search-result-item"><img src="${p.image}" alt="${p.title}" class="custom-header--search-result-image"><div class="custom-header--search-result-info"><p class="custom-header--search-result-title">${p.title}</p><p class="custom-header--search-result-price">${priceFormatted}</p></div></a>`;
+        });
+      }
+      const searchUrl = (window.routes && window.routes.search_url) ? window.routes.search_url : '/search';
+      html += `<a href="${searchUrl}?q=${encodeURIComponent(term)}&type=product" class="custom-header--search-view-all">View all results</a>`;
+      burgerResults.innerHTML = html;
+    }
+
+    burgerInput.addEventListener('input', function() {
+      const term = burgerInput.value.trim();
+      clearTimeout(burgerDebounce);
+      if (term.length === 0) {
+        burgerResults.innerHTML = '';
+        return;
+      }
+      burgerDebounce = setTimeout(function() {
+        fetch(`/search/suggest.json?q=${encodeURIComponent(term)}&resources[type]=product,collection&resources[limit]=5`)
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            const products = (data.resources && data.resources.results && data.resources.results.products) || [];
+            const collections = (data.resources && data.resources.results && data.resources.results.collections) || [];
+            renderBurgerResults(term, products, collections);
+          })
+          .catch(function() {
+            burgerResults.innerHTML = '';
+          });
+      }, 280);
+    });
+
+    // Clear results when drawer closes
+    document.addEventListener('click', function(e) {
+      const closeTrigger = e.target.closest('[data-burger-overlay-close], .custom-header--burger-close');
+      if (closeTrigger) {
+        burgerResults.innerHTML = '';
+        burgerInput.value = '';
+      }
+    });
+  })();
+
+  // ─────────────────────────────────────────────────────────────
+  // NUEVO: Interceptar botón de Favorites del header
+  // Al hacer clic en el corazón, abre el modal y activa la pestaña Favorites
+  // en lugar de navegar a /pages/wishlist
+  // ─────────────────────────────────────────────────────────────
+  (function() {
+    document.addEventListener('click', function(e) {
+      const wishlistBtn = e.target.closest('.custom-header--wishlist');
+      if (!wishlistBtn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (typeof window.openCartDrawer === 'function') {
+        window.openCartDrawer();
+      }
+
+      setTimeout(function() {
+        const wishlistTab = document.querySelector('[data-cart-view="wishlist"]');
+        if (wishlistTab) wishlistTab.click();
+      }, 80);
+    });
+  })();
+
+  // Inicializar contador de wishlist en menú lateral
+  (function() {
+    const STORAGE_KEY = 'snc_favorites';
+    
+    function getFavorites() {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+    
+    function updateWishlistCounts() {
+      const favs = getFavorites();
+      const count = favs.length;
+      
+      const wishlistLinks = document.querySelectorAll('.custom-header--wishlist');
+      wishlistLinks.forEach(link => {
+        let badge = link.querySelector('.custom-header--wishlist-count');
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'custom-header--wishlist-count';
+          link.appendChild(badge);
+        }
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+        if (count > 0) {
+          badge.classList.remove('is-bumping');
+          void badge.offsetWidth;
+          badge.classList.add('is-bumping');
+        }
+      });
+    }
+    
+    if (document.readyState === 'loading') {
+      on(document, 'DOMContentLoaded', updateWishlistCounts);
+    } else {
+      updateWishlistCounts();
+    }
+    
+    on(window, 'storage', function(e) {
+      if (e.key === STORAGE_KEY) {
+        updateWishlistCounts();
+      }
+    });
+    
+    on(window, 'snc:wishlist-updated', updateWishlistCounts);
+  })();
+
+  // Manejar slider de anuncios
+  (function() {
+    const sectionId = '{{ section.id }}';
+    const section = document.getElementById(`shopify-section-${sectionId}`);
+    if (!section) return;
+
+    const slider = section.querySelector('.custom-header--announcement-slider');
+    if (!slider) return;
+
+    const slides = slider.querySelectorAll('.custom-header--announcement-slide');
+    if (slides.length < 2) return;
+
+    const prevBtn = section.querySelector('.custom-header--announcement-arrow.prev');
+    const nextBtn = section.querySelector('.custom-header--announcement-arrow.next');
+    const playPauseBtn = section.querySelector('.custom-header--announcement-play-pause');
+    const iconPause = playPauseBtn ? playPauseBtn.querySelector('.icon-pause') : null;
+    const iconPlay = playPauseBtn ? playPauseBtn.querySelector('.icon-play') : null;
+    
+    let currentIndex = 0;
+    let isPlaying = true;
+    let interval;
+    const speed = parseInt(slider.dataset.autoplaySpeed) || 5000;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+      currentIndex = index;
+    }
+
+    function nextSlide() {
+      let newIndex = currentIndex + 1;
+      if (newIndex >= slides.length) newIndex = 0;
+      showSlide(newIndex);
+    }
+
+    function prevSlide() {
+      let newIndex = currentIndex - 1;
+      if (newIndex < 0) newIndex = slides.length - 1;
+      showSlide(newIndex);
+    }
+
+    function startAutoplay() {
+      if (interval) clearInterval(interval);
+      interval = setIntervalTracked(nextSlide, speed);
+      isPlaying = true;
+      if (playPauseBtn) playPauseBtn.dataset.state = 'playing';
+      if (iconPause) iconPause.style.display = 'block';
+      if (iconPlay) iconPlay.style.display = 'none';
+    }
+
+    function stopAutoplay() {
+      if (interval) clearInterval(interval);
+      isPlaying = false;
+      if (playPauseBtn) playPauseBtn.dataset.state = 'paused';
+      if (iconPause) iconPause.style.display = 'none';
+      if (iconPlay) iconPlay.style.display = 'block';
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); if (isPlaying) startAutoplay(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); if (isPlaying) startAutoplay(); });
+
+    if (playPauseBtn) {
+      playPauseBtn.addEventListener('click', () => {
+        isPlaying ? stopAutoplay() : startAutoplay();
+      });
+    }
+
+    startAutoplay();
+  })();
+})();
+</script>
+
+{%- if smooth_scroll_enabled -%}
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+<script>
+  (function() {
+    const initLenis = () => {
+      if (window.Shopify && Shopify.designMode) return;
+      if (window.__sncLenisInitialized) return;
+      if (typeof Lenis !== 'undefined') {
+        const lenis = new Lenis({
+          duration: {{ smooth_scroll_duration }},
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: 'vertical',
+          gestureOrientation: 'vertical',
+          smooth: true,
+          mouseMultiplier: 1,
+          smoothTouch: false,
+          touchMultiplier: 2
+        });
+
+        function raf(time) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+        window.lenis = lenis;
+        window.__sncLenisInitialized = true;
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLenis, { once: true });
+    } else {
+      initLenis();
+    }
+  })();
+</script>
+{%- endif -%}
+
+<style>
+/* ========================================
+   CUSTOM HEADER - ESTILOS PERSONALIZADOS
+   ======================================== */
+
+.drawer--side[data-side="left"],
+.drawer--container[data-view="y-menu"],
+.mobile-nav {
+  display: none !important;
+}
+
+.drawer--side[data-side="right"],
+.drawer--container[data-view="cart-drawer"],
+.cart-drawer {
+  display: none !important;
+}
+
+.styles_CartPreview__card__,
+.styles_CartPreview__card_nonSticky__,
+.styles_CartPreview__card__ *,
+[class*="upcart"],
+[class*="Upcart"],
+[class*="upcart"] *,
+[class*="Upcart"] *,
+drawer-element[class*="cart"],
+[data-app-block="upcart-cart-drawer"],
+upcart-cart-drawer,
+[data-app-embed="upcart"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+.layout--close {
+  display: none !important;
+}
+
+.layout--viewport {
+  overflow-x: visible !important;
+}
+
+.layout--main-content {
+  overflow-x: visible !important;
+}
+
+#shopify-section-header-group,
+#shopify-section-header,
+#shopify-section-custom-header {
+  overflow: visible !important;
+  position: static !important;
+}
+
+.section--custom-header {
+  --custom-header-background: {{ section.settings.header_bg_color | default: '#F1F1F1' }};
+  --custom-header-foreground: {{ section.settings.header_text_color | default: '#000000' }};
+  --custom-header-accent: {{ section.settings.header_text_color | default: '#000000' }};
+  --custom-header-announcement-bg: {{ section.settings.announcement_bg_color | default: '#000000' }};
+  --custom-header-announcement-text: {{ section.settings.announcement_text_color | default: '#ffffff' }};
+  --custom-header-announcement-arrow: {{ section.settings.announcement_arrow_color | default: '#ffffff' }};
+  {% if section.settings.icon_version == 'light' %}
+    --custom-header-bubble-text: #000000;
+  {% else %}
+    --custom-header-bubble-text: #F1F1F1;
+  {% endif %}
+}
+
+{% if request.page_type == 'collection' %}
+.section--custom-header {
+  --custom-header-background: transparent !important;
+}
+{% endif %}
+
+.custom-header--root.is-sticky,
+.custom-header--root.force-sticky-style,
+.custom-header--root.is-modal-active {
+  --custom-header-background: {{ section.settings.header_sticky_bg_color | default: '#FFFFFF' }};
+  --custom-header-foreground: {{ section.settings.header_sticky_text_color | default: '#000000' }};
+  {% if section.settings.icon_version_sticky == 'light' %}
+    --custom-header-bubble-text: #000000;
+  {% else %}
+    --custom-header-bubble-text: #F1F1F1;
+  {% endif %}
+}
+
+.icon-sticky {
+  display: none !important;
+}
+.logo-sticky {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+{% if request.page_type == 'product' or request.page_type == 'list-collections' %}
+.custom-header--root:not(.is-sticky) .icon-static { display: none !important; }
+.custom-header--root:not(.is-sticky) .logo-static {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.custom-header--root:not(.is-sticky) .icon-sticky { display: block !important; }
+.custom-header--root:not(.is-sticky) .logo-sticky {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+{% endif %}
+
+.custom-header--root.is-sticky .icon-static,
+.custom-header--root.force-sticky-style .icon-static,
+.custom-header--root.is-modal-active .icon-static {
+  display: none !important;
+}
+.custom-header--root.is-sticky .logo-static,
+.custom-header--root.force-sticky-style .logo-static,
+.custom-header--root.is-modal-active .logo-static {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.custom-header--root.is-sticky .icon-sticky,
+.custom-header--root.force-sticky-style .icon-sticky,
+.custom-header--root.is-modal-active .icon-sticky {
+  display: block !important;
+}
+.custom-header--root.is-sticky .logo-sticky,
+.custom-header--root.force-sticky-style .logo-sticky,
+.custom-header--root.is-modal-active .logo-sticky {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.custom-header--announcement-section[data-header-dark-page],
+.custom-header--root[data-header-dark-page],
+.custom-header--root[data-header-dark-page].is-sticky,
+.custom-header--root[data-header-dark-page].force-sticky-style {
+  background-color: transparent !important;
+}
+.custom-header--root[data-header-dark-page] .icon-static,
+.custom-header--root[data-header-dark-page].is-sticky .icon-static,
+.custom-header--root[data-header-dark-page].force-sticky-style .icon-static {
+  display: block !important;
+}
+.custom-header--root[data-header-dark-page] .logo-static,
+.custom-header--root[data-header-dark-page].is-sticky .logo-static,
+.custom-header--root[data-header-dark-page].force-sticky-style .logo-static {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.custom-header--root[data-header-dark-page] .icon-sticky,
+.custom-header--root[data-header-dark-page].is-sticky .icon-sticky,
+.custom-header--root[data-header-dark-page].force-sticky-style .icon-sticky {
+  display: none !important;
+}
+.custom-header--root[data-header-dark-page] .logo-sticky,
+.custom-header--root[data-header-dark-page].is-sticky .logo-sticky,
+.custom-header--root[data-header-dark-page].force-sticky-style .logo-sticky {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* force-light-theme — applied on every non-home page. Light bg + DARK logo/icons/nav. */
+/* Note: class naming in this theme is misleading — .logo-sticky is the BLACK logo, .logo-static is the WHITE one. */
+.custom-header--root.force-light-theme,
+.custom-header--root.force-light-theme.is-sticky,
+.custom-header--root.force-light-theme[data-active-theme="dark"],
+.custom-header--root.force-light-theme[data-active-theme="light"] {
+  background-color: #ffffff !important;
+}
+.custom-header--root.force-light-theme .icon-sticky,
+.custom-header--root.force-light-theme.is-sticky .icon-sticky {
+  display: block !important;
+}
+.custom-header--root.force-light-theme .logo-sticky,
+.custom-header--root.force-light-theme.is-sticky .logo-sticky {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.custom-header--root.force-light-theme .icon-static,
+.custom-header--root.force-light-theme.is-sticky .icon-static {
+  display: none !important;
+}
+.custom-header--root.force-light-theme .logo-static,
+.custom-header--root.force-light-theme.is-sticky .logo-static {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.custom-header--root.force-light-theme .custom-header--nav-link,
+.custom-header--root.force-light-theme .custom-header--right-label,
+.custom-header--root.force-light-theme .custom-header--menu-toggle,
+.custom-header--root.force-light-theme a {
+  color: #000000 !important;
+}
+
+/* data-active-theme rules moved to end of file — see "HEADER: ALWAYS TRANSPARENT" block */
+
+.custom-header--announcement {
+  background-color: var(--custom-header-announcement-bg);
+  color: var(--custom-header-announcement-text);
+  height: 36px;
+  padding: 0 20px;
+  margin: 0;
+  text-align: center;
+  position: relative;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-main);
+  font-size: 14.42px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  font-weight: normal;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.custom-header--announcement-content {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 1512px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  line-height: 1;
+}
+
+.custom-header--announcement-content p {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-header--announcement-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transition: transform 600ms ease-out, opacity 500ms ease-out, max-height 600ms ease-out;
+}
+
+.custom-header--announcement-marquee {
+  display: flex;
+  gap: 50px;
+  white-space: nowrap;
+}
+
+.custom-header--announcement-marquee span {
+  display: inline-block;
+}
+
+.custom-header--announcement-slider-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.custom-header--announcement-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  height: 100%;
+  flex: 1;
+}
+
+.custom-header--announcement-slide {
+  display: none;
+  animation: fadeIn 0.5s ease;
+  text-align: center;
+  width: 100%;
+}
+
+.custom-header--announcement-slide.active {
+  display: block;
+}
+
+.custom-header--announcement-slide a,
+.custom-header--announcement-slide p {
+  color: inherit;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14.42px;
+  text-transform: uppercase;
+}
+
+.custom-header--announcement-arrow,
+.custom-header--announcement-play-pause {
+  background: none;
+  border: none;
+  color: var(--custom-header-announcement-arrow);
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.custom-header--announcement-arrow:hover,
+.custom-header--announcement-play-pause:hover {
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.shopify-section.section--custom-header {
+  display: block;
+  height: 0 !important;
+  overflow: visible !important;
+}
+
+.custom-header--announcement-section {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  background-color: var(--custom-header-background);
+  width: 100%;
+  transition: transform 600ms ease-out, opacity 500ms ease-out, max-height 600ms ease-out;
+}
+
+.custom-header--root {
+  --custom-header-announcement-height: 0px;
+  background-color: var(--custom-header-background);
+  position: relative;
+  z-index: 1000;
+  width: 100%;
+  height: {{ section.settings.header_height_desktop }}px;
+  max-height: {{ section.settings.header_height_desktop }}px;
+  min-height: {{ section.settings.header_height_desktop }}px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-header--root[data-sticky="true"] {
+  position: relative;
+}
+
+.custom-header--announcement-section,
+.custom-header--announcement,
+.custom-header--root {
+  pointer-events: auto;
+}
+
+.custom-header--wrapper {
+  max-width: 1512px;
+  width: 100%;
+  margin: 0 auto;
+  height: {{ section.settings.header_height_desktop }}px;
+  max-height: {{ section.settings.header_height_desktop }}px;
+  min-height: {{ section.settings.header_height_desktop }}px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  box-sizing: border-box;
+  overflow: visible;
+  padding: 0 20px;
+}
+
+.custom-header--left {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 0 0 auto;
+}
+
+.custom-header--menu-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+}
+
+.custom-header--burger-icon {
+  width: 22px;
+  height: 15px;
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(20%) sepia(15%) saturate(1500%) hue-rotate(90deg) brightness(0.3);
+}
+
+.custom-header--burger-icon.no-filter {
+  filter: none;
+}
+
+.custom-header--nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-left: {% if show_burger_desktop %}22px{% else %}0{% endif %};
+}
+
+.custom-header--nav-item {
+  position: relative;
+  z-index: 10000;
+}
+
+.custom-header--nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  text-decoration: none;
+  color: var(--custom-header-foreground);
+  font-family: var(--font-main);
+  font-size: 15.42px;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s ease;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  height: auto;
+}
+
+.custom-header--nav-link span:first-child {
+  margin-right: 15px;
+}
+
+.custom-header--nav-link:hover {
+  opacity: 0.7;
+}
+
+.custom-header--dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 10px;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: visible;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  z-index: 10001;
+}
+
+.custom-header--dropdown-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.custom-header--dropdown-content {
+  padding: 20px;
+}
+
+.custom-header--filter-group {
+  margin-bottom: 20px;
+}
+
+.custom-header--filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.custom-header--filter-title {
+  font-family: var(--font-helvetica, 'HelveticaNeue', sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #666666;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.custom-header--filter-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.custom-header--filter-list li {
+  margin-bottom: 8px;
+}
+
+.custom-header--filter-list li:last-child {
+  margin-bottom: 0;
+}
+
+.custom-header--filter-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  color: #333333;
+  font-family: var(--font-main);
+  font-size: 14px;
+  padding: 6px 0;
+  transition: color 0.2s ease;
+}
+
+.custom-header--filter-link:hover {
+  color: #000000;
+}
+
+.custom-header--filter-count {
+  font-size: 12px;
+  color: #999999;
+  margin-left: 8px;
+}
+
+.custom-header--nav-item-active .custom-header--nav-link {
+  opacity: 1;
+}
+
+.custom-header--arrow-icon {
+  width: 10px;
+  height: 10px;
+  display: block;
+  margin-left: 0;
+  color: var(--custom-header-foreground);
+}
+
+.custom-header--nav-item:not(:first-child) {
+  margin-left: 30px;
+}
+
+.custom-header--nav-link--placeholder {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.custom-header--mega-overlay {
+  position: fixed;
+  top: var(--custom-header-total-height, 102.53px);
+  left: 0;
+  width: 100%;
+  height: calc(100vh - var(--custom-header-total-height, 102.53px));
+  background-color: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 1099;
+  display: none;
+}
+
+.custom-header--mega-overlay.is-initialized {
+  display: block;
+}
+
+.custom-header--mega-overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.custom-header--mega-panel {
+  position: fixed;
+  top: calc(var(--custom-header-total-height, 102.53px) + var(--mega-top-margin, 10px));
+  left: var(--mega-side-margin, 10px);
+  right: var(--mega-side-margin, 10px);
+  width: auto;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 1100;
+  display: none;
+}
+
+.custom-header--mega-panel.is-initialized {
+  display: block;
+  margin-top: -2px;
+}
+
+.custom-header--mega-panel-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.custom-header--mega-panel:not([data-full-width="true"]) {
+  left: 50%;
+  right: auto;
+  width: max-content;
+  max-width: calc(100vw - (var(--mega-side-margin, 10px) * 2));
+  transform: translateX(-50%) translateY(-10px);
+}
+
+.custom-header--mega-panel-open.custom-header--mega-panel:not([data-full-width="true"]) {
+  transform: translateX(-50%) translateY(0);
+}
+
+.custom-header--mega-panel:not([data-full-width="true"]) .custom-header--mega-panel-inner {
+  width: auto;
+}
+
+.custom-header--mega-panel-inner {
+  width: 100%;
+  height: auto;
+  min-height: 408px;
+  margin: 0 auto;
+  background: #ffffff;
+  max-height: calc(100vh - var(--custom-header-total-height, 102.53px) - (var(--mega-top-margin, 10px) * 2));
+  border-radius: var(--mega-border-radius, 10px);
+  box-shadow: var(--mega-shadow, 0 20px 60px rgba(0, 0, 0, 0.15));
+  padding: var(--mega-padding, 20px);
+  display: flex;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.custom-header--mega-panel-content {
+  width: 748px;
+  height: auto;
+  min-height: 368px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 30px;
+  flex-shrink: 0;
+}
+
+.custom-header--mega-nav {
+  position: relative;
+  overflow-y: auto;
+  flex-grow: 1;
+  min-height: 0;
+  padding-right: 10px;
+}
+
+.custom-header--mega-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  width: 331px;
+  max-height: none;
+}
+
+.custom-header--mega-nav-item {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  position: static;
+  transition: opacity 0.3s ease;
+}
+
+.custom-header--mega-nav-item:first-child {
+  padding-top: 0;
+}
+
+.custom-header--mega-nav-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.custom-header--mega-nav-list:hover .custom-header--mega-nav-item {
+  opacity: 0.4;
+  transition-delay: 0.1s;
+}
+
+.custom-header--mega-nav-list .custom-header--mega-nav-item:hover {
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.custom-header--mega-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  color: var(--custom-header-foreground);
+  font-family: var(--font-main);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.4;
+  padding: 12px 30px 12px 0;
+  transition: color 0.2s ease;
+}
+
+.custom-header--mega-arrow {
+  width: 10px;
+  height: 10px;
+  transform: rotate(-90deg);
+  opacity: 0.6;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.custom-header--mega-nav-item.is-active .custom-header--mega-nav-link,
+.custom-header--mega-nav-link:hover {
+  color: var(--custom-header-foreground);
+}
+
+.custom-header--mega-nav-item.is-active .custom-header--mega-arrow,
+.custom-header--mega-nav-link:hover .custom-header--mega-arrow {
+  opacity: 1;
+  transform: rotate(-90deg) translateX(2px);
+}
+
+.custom-header--mega-subnav {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 12px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: absolute;
+  top: 0;
+  left: 331px;
+  width: calc(100% - 331px);
+  height: 100%;
+  background-color: transparent;
+  box-shadow: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 10;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.custom-header--mega-subnav li {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.custom-header--mega-subnav li:last-child {
+  border-bottom: none;
+}
+
+.custom-header--mega-subnav a {
+  text-decoration: none;
+  color: var(--custom-header-foreground);
+  font-family: var(--font-main);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.4;
+  padding: 12px 0;
+  display: block;
+  transition: color 0.2s ease;
+}
+
+.custom-header--mega-subnav a:hover {
+  opacity: 0.7;
+}
+
+.custom-header--mega-nav-item:hover .custom-header--mega-subnav {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.custom-header--mega-panel-text {
+  font-family: var(--font-main);
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(0, 0, 0, 0.55);
+  max-width: 331px;
+}
+
+.custom-header--mega-panel-media {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.custom-header--mega-panel-image {
+  width: 668px;
+  height: 100%;
+  min-height: 368px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.3s ease;
+  flex-shrink: 0;
+}
+
+.custom-header--mega-panel-image.is-empty {
+  background-color: transparent;
+  background-image: none;
+}
+
+.custom-header--mega-guard {
+  position: fixed;
+  top: var(--custom-header-total-height, 102.53px);
+  left: 0;
+  width: 100%;
+  height: 20px;
+  pointer-events: none;
+  z-index: 1099;
+}
+
+.custom-header--mega-guard.is-visible {
+  pointer-events: auto;
+}
+
+@media (max-width: 1520px) {
+  .custom-header--mega-panel-inner {
+    height: auto;
+    min-height: 380px;
+  }
+  
+  .custom-header--mega-panel-content {
+    width: 50%;
+    height: auto;
+  }
+  
+  .custom-header--mega-panel-image {
+    width: 100%;
+    height: 100%;
+    min-height: 340px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .custom-header--mega-panel,
+  .custom-header--mega-guard,
+  .custom-header--mega-overlay {
+    display: none !important;
+  }
+}
+
+.custom-header--center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+}
+
+.custom-header--logo {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+  display: grid;
+  place-items: center;
+}
+
+.custom-header--logo-image {
+  width: {{ settings.logo_width | default: 135 }}px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  grid-area: 1 / 1;
+  transition: opacity 200ms ease;
+}
+
+.custom-header--logo-text {
+  font-family: var(--font-main);
+  font-size: 24px;
+  font-weight: normal;
+  letter-spacing: 1px;
+  color: inherit;
+  line-height: 1;
+}
+
+.custom-header--right {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+.custom-header--right-desktop {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: auto;
+  height: 26px;
+  justify-content: flex-end;
+}
+
+.custom-header--right-meta {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font-family: var(--font-main);
+  font-size: 15.42px;
+  color: var(--custom-header-foreground);
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  height: auto;
+}
+
+.custom-header--right-label {
+  line-height: 1;
+}
+
+.custom-header--right-divider {
+  width: 1.5px;
+  height: 11px;
+  background-color: var(--custom-header-foreground);
+  display: block;
+  margin: 0 40px;
+  flex-shrink: 0;
+}
+
+.custom-header--icons {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-left: 0;
+}
+
+.custom-header--icon-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  margin: 0;
+}
+
+.custom-header--icon-button:hover {
+  opacity: 0.7;
+}
+
+.custom-header--icon {
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(20%) sepia(15%) saturate(1500%) hue-rotate(90deg) brightness(0.3);
+}
+
+.custom-header--icon.no-filter {
+  filter: none;
+}
+
+.custom-header--icon-search {
+  width: 20px;
+  height: 20px;
+}
+
+.custom-header--icon-account {
+  width: 20px;
+  height: 23.53px;
+}
+
+.custom-header--icon-favorite {
+  width: 23px;
+  height: 20px;
+}
+
+.custom-header--icon-cart {
+  width: 22px;
+  height: 23px;
+  filter: none;
+}
+
+.custom-header--icon-button:not(:first-child) {
+  margin-left: 25px;
+}
+
+.custom-header--cart-count,
+.custom-header--wishlist-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--custom-header-foreground);
+  color: var(--custom-header-bubble-text);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-helvetica, 'HelveticaNeue', sans-serif);
+}
+
+@keyframes bump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.custom-header--cart-count.is-bumping,
+.custom-header--wishlist-count.is-bumping {
+  animation: bump 0.3s ease-out;
+}
+
+@media (max-width: 768px) {
+  .custom-header--desktop-only {
+    display: none !important;
+  }
+
+  .custom-header--mobile-only {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .custom-header--root {
+    min-height: {{ section.settings.header_height_mobile }}px;
+    height: {{ section.settings.header_height_mobile }}px;
+    max-height: {{ section.settings.header_height_mobile }}px;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  .custom-header--wrapper {
+    padding: 10px 15px;
+    min-height: {{ section.settings.header_height_mobile }}px;
+    height: {{ section.settings.header_height_mobile }}px;
+    max-height: {{ section.settings.header_height_mobile }}px;
+    gap: 15px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .custom-header--left {
+    gap: 0;
+    flex: 0 0 auto;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .custom-header--menu-toggle {
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+  }
+
+  .custom-header--burger-icon {
+    width: 20px;
+    height: 14px;
+  }
+
+  .custom-header--center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    flex: none;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+  }
+
+  .custom-header--logo-image {
+    max-width: 100%;
+    width: {{ settings.logo_width | times: 0.8 | round }}px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .custom-header--logo-text {
+    font-size: 14px;
+  }
+
+  .custom-header--right {
+    gap: 0;
+    flex: 0 0 auto;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .custom-header--icon-button {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin: 0 !important;
+  }
+
+  .custom-header--icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .custom-header--cart-count,
+  .custom-header--wishlist-count {
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+    top: -3px;
+    right: -3px;
+  }
+
+  .custom-header--announcement {
+    height: auto;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .custom-header--dropdown {
+    display: none !important;
+  }
+
+  .custom-header--nav-links {
+    display: none !important;
+  }
+}
+
+.custom-header--mobile-only {
+  display: none;
+}
+
+.custom-header--menu-toggle:focus,
+.custom-header--icon-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.custom-header--nav-link:focus {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+.custom-header--burger-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1200;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  display: none;
+}
+
+.custom-header--burger-overlay.is-initialized {
+  display: block;
+}
+
+.custom-header--burger-overlay-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.custom-header--burger-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.custom-header--burger-panel {
+  position: absolute;
+  top: var(--mobile-menu-top-offset, calc(var(--custom-header-total-height, 66.53px) + 10px));
+  bottom: var(--mobile-menu-bottom-offset, 20px);
+  left: var(--mobile-menu-side-offset, 10px);
+  right: var(--mobile-menu-side-offset, 10px);
+  width: calc(100% - (var(--mobile-menu-side-offset, 10px) * 2));
+  max-width: 360px;
+  background-color: #ffffff;
+  border-radius: var(--mobile-menu-border-radius, 10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateX(-100%) translateY(-20px);
+  opacity: 0;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.custom-header--burger-overlay-open .custom-header--burger-panel {
+  transform: translateX(0) translateY(0);
+  opacity: 1;
+}
+
+.custom-header--burger-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.custom-header--burger-title {
+  font-family: var(--font-main);
+  font-size: var(--mobile-menu-title-size, 16px);
+  font-weight: var(--mobile-menu-title-weight, 400);
+  color: var(--mobile-menu-title-color, #000000);
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.custom-header--burger-close {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.custom-header--burger-close-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  color: var(--mobile-close-icon-color, var(--custom-header-foreground));
+}
+
+.custom-header--burger-close:hover {
+  opacity: 0.7;
+}
+
+.custom-header--burger-search-container {
+  padding: 0 20px;
+  margin-bottom: 10px;
+}
+
+.custom-header--burger-search-form {
+  display: flex;
+  align-items: center;
+  background-color: var(--mobile-search-bg, #F5F5F5);
+  border-radius: var(--mobile-search-radius, 8px);
+  padding: var(--mobile-search-padding-v, 12px) var(--mobile-search-padding-h, 16px);
+  gap: 10px;
+}
+
+.custom-header--burger-search-input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  color: var(--mobile-search-text, #000000);
+  font-family: var(--font-main);
+  font-size: 14px;
+}
+
+.custom-header--burger-search-input::placeholder {
+  color: var(--mobile-search-text, #000000);
+  opacity: 0.7;
+}
+
+.custom-header--burger-search-submit {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mobile-search-text, #000000);
+}
+
+/* ── Mobile search suggestions ── */
+.custom-header--burger-search-results {
+  margin-top: 8px;
+  background: #fff;
+  border-radius: 0;
+  overflow: hidden;
+}
+.custom-header--burger-search-results:empty {
+  display: none;
+}
+.custom-header--burger-search-results .custom-header--search-section-title {
+  font-family: 'Futura PT', var(--font-main, sans-serif);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #999;
+  padding: 12px 0 6px;
+  font-weight: 400;
+  border-top: 1px solid #f0f0f0;
+}
+.custom-header--burger-search-results .custom-header--search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  text-decoration: none;
+  color: inherit;
+}
+.custom-header--burger-search-results .custom-header--search-result-image {
+  width: 56px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 0;
+  background: linear-gradient(180deg, #e2e0df 0%, #f8f7f5 100%);
+  flex-shrink: 0;
+}
+.custom-header--burger-search-results .custom-header--search-result-image.placeholder {
+  background: linear-gradient(180deg, #e2e0df 0%, #f8f7f5 100%);
+}
+.custom-header--burger-search-results .custom-header--search-result-info {
+  flex: 1;
+  min-width: 0;
+}
+.custom-header--burger-search-results .custom-header--search-result-title {
+  font-family: 'Futura PT', var(--font-main, sans-serif);
+  font-size: 13px;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 0 0 3px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.custom-header--burger-search-results .custom-header--search-result-price {
+  font-family: 'Futura PT', var(--font-main, sans-serif);
+  font-size: 12px;
+  font-weight: 300;
+  color: #6c6c6c;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+.custom-header--burger-search-results .custom-header--search-view-all {
+  display: block;
+  text-align: center;
+  padding: 14px 0 2px;
+  font-family: 'Futura PT', var(--font-main, sans-serif);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  text-decoration: none;
+  font-weight: 400;
+  border-top: 1px solid #f0f0f0;
+}
+.custom-header--burger-search-results .custom-header--search-no-results {
+  font-family: 'Futura PT', var(--font-main, sans-serif);
+  font-size: 12px;
+  color: #999;
+  margin: 12px 0 0;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+.custom-header--burger-content {
+  flex: 1;
+  padding: var(--mobile-menu-padding-top, 0) var(--mobile-menu-padding-horizontal, 20px) var(--mobile-menu-padding-bottom, 40px) var(--mobile-menu-padding-horizontal, 20px);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.custom-header--burger-nav {
+  margin-top: 36px;
+  margin-bottom: auto;
+}
+
+.custom-header--burger-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-header--burger-nav-item {
+  margin: 0;
+  padding: 0;
+}
+
+.custom-header--burger-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  text-decoration: none;
+  color: var(--mobile-menu-item-color, #000000);
+  font-family: var(--font-main);
+  font-size: var(--mobile-menu-item-size, 18px);
+  font-weight: var(--mobile-menu-item-weight, 400);
+  line-height: 1.5;
+  transition: opacity 0.2s ease;
+}
+
+.custom-header--burger-nav-divider {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.07);
+  margin: 20px 0;
+  width: 100%;
+}
+
+.custom-header--burger-nav-link--secondary {
+  font-size: calc(var(--mobile-menu-item-size, 18px) * 0.9);
+}
+
+.custom-header--burger-nav-link:hover {
+  opacity: 0.7;
+}
+
+.custom-header--burger-arrow {
+  width: 10px;
+  height: 10px;
+  display: block;
+  margin-left: 0;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.custom-header--burger-nav-item.custom-header--burger-submenu-open .custom-header--burger-arrow {
+  transform: rotate(180deg);
+}
+
+.custom-header--burger-submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.custom-header--burger-nav-item.custom-header--burger-submenu-open .custom-header--burger-submenu {
+  max-height: 2000px;
+}
+
+.custom-header--burger-submenu-content {
+  padding: 12px 0 12px 16px;
+}
+
+.custom-header--burger-subnav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-header--burger-subnav a {
+  text-decoration: none;
+  color: var(--mobile-menu-item-color, #000000);
+  font-family: var(--font-main);
+  font-size: 15px;
+  line-height: 1.5;
+  transition: opacity 0.2s ease;
+}
+
+.custom-header--burger-subnav a:hover {
+  opacity: 0.7;
+}
+
+.custom-header--burger-nav-item--empty {
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.4);
+  padding: 10px 0;
+}
+
+.custom-header--burger-editorial {
+  margin-top: auto;
+  margin-bottom: 10px;
+  padding-top: 20px;
+}
+
+.custom-header--burger-editorial-text {
+  font-family: var(--font-main);
+  font-size: var(--mobile-editorial-size, 18px);
+  font-weight: var(--mobile-editorial-weight, 400);
+  line-height: 28px;
+  letter-spacing: -0.06em;
+  color: var(--mobile-editorial-color, #000000);
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.custom-header--burger-social {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.custom-header--burger-social-link {
+  display: inline-block;
+  color: var(--mobile-social-text-color, #000000);
+  text-decoration: none;
+  font-family: var(--font-main);
+  font-size: var(--mobile-social-text-size, 14px);
+  font-weight: var(--mobile-social-text-weight, 600);
+  letter-spacing: var(--mobile-social-text-spacing, 1px);
+  text-transform: uppercase;
+  transition: opacity 0.2s ease;
+}
+
+.custom-header--burger-social-link:hover {
+  opacity: 0.7;
+}
+
+.custom-header--search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 900;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  display: none;
+}
+
+.custom-header--search-overlay.is-initialized {
+  display: block;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.custom-header--search-overlay-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.custom-header--search-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.custom-header--search-bar-container {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  width: calc(100% - 20px);
+  max-width: calc(1512px - 20px);
+  margin: 0 auto;
+  height: 68px;
+  background-color: #ffffff;
+  border-radius: var(--search-bar-radius, 10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  padding: 0 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.custom-header--search-overlay-open .custom-header--search-bar-container {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.custom-header--search-form {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.custom-header--search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-main);
+  font-size: 18px;
+  color: #333333;
+  padding: 0;
+  margin: 0;
+  font-weight: var(--search-input-weight, 400);
+}
+
+.custom-header--search-input:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.custom-header--search-input::placeholder {
+  color: #999999;
+  font-family: var(--font-main);
+  font-size: 18px;
+}
+
+.custom-header--search-submit {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.custom-header--search-icon {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) saturate(100%) invert(20%) sepia(15%) saturate(1500%) hue-rotate(90deg) brightness(0.3);
+}
+
+.custom-header--search-icon.no-filter {
+  filter: none;
+}
+
+.custom-header--search-submit:hover {
+  opacity: 0.7;
+}
+
+.custom-header--wishlist-items.custom-header--cart-items {
+  gap: var(--wishlist-details-gap, 6px);
+  margin-top: var(--wishlist-content-grid-gap, 12px);
+  margin-bottom: var(--wishlist-items-margin-bottom, 20px);
+}
+
+.custom-header--wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--wishlist-details-gap, 6px);
+}
+
+.custom-header--wishlist-grid.custom-header--wishlist-layout-list {
+  grid-template-columns: 1fr;
+}
+
+.custom-header--wishlist-items[data-wishlist-layout="list"] .custom-header--wishlist-grid-item {
+  width: 100%;
+  max-width: none;
+}
+
+.custom-header--wishlist-items[data-wishlist-layout="list"] .custom-header--wishlist-grid {
+  grid-template-columns: 1fr;
+}
+
+.custom-header--wishlist-items[data-wishlist-layout="list"] .custom-header--wishlist-grid-item {
+  background: none;
+  border: none;
+  box-shadow: none;
+  border-bottom: 1px solid #F0F0F0;
+  border-radius: 0;
+  padding: 0;
+}
+
+.custom-header--wishlist-view-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.custom-header--wishlist-header h3 {
+  margin: 0;
+  margin-top: var(--wishlist-title-margin-top);
+  font-family: var(--font-main);
+  font-size: var(--wishlist-title-size);
+  color: var(--wishlist-title-color);
+  font-weight: 500;
+  margin-bottom: var(--wishlist-title-margin-bottom);
+}
+
+.custom-header--wishlist-header p {
+  margin: 0;
+  font-family: var(--font-main);
+  font-size: var(--wishlist-description-size);
+  color: var(--wishlist-description-color);
+  line-height: 1.4;
+}
+
+.custom-header--wishlist-grid-item {
+  background: var(--wishlist-card-bg);
+  border: var(--wishlist-card-border, 1px solid rgba(0,0,0,0.04));
+  border-radius: var(--wishlist-card-radius);
+  padding: var(--wishlist-card-padding);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  box-shadow: var(--wishlist-card-shadow, 0 4px 12px rgba(0,0,0,0.05));
+}
+
+.custom-header--wishlist-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: auto;
+}
+
+.custom-header--wishlist-item .custom-header--cart-item-image-container {
+  width: 100%;
+}
+
+.custom-header--wishlist-item .custom-header--cart-item-image {
+  height: 180px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.custom-header--wishlist-item .custom-header--cart-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-header--wishlist-grid-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-header--wishlist-select {
+  max-width: 100%;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #E2E2E2;
+  font-family: var(--font-main);
+  font-size: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.custom-header--cart-toast {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 100px;
+  background: #000000;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-family: var(--font-main);
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1010;
+}
+
+.custom-header--cart-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -10px);
+}
+
+@media (max-width: 768px) {
+  .custom-header--burger-panel {
+    max-width: calc(100% - (var(--mobile-menu-side-offset, 10px) * 2));
+  }
+}
+
+@media (min-width: 769px) {
+  .custom-header--burger-nav-list {
+    gap: calc(var(--mobile-drawer-menu-gap, 10px) * 0.6) !important;
+  }
+  .custom-header--burger-nav-link {
+    font-size: calc(var(--mobile-menu-item-size, 18px) * 0.85);
+    padding: 6px 0;
+  }
+  .custom-header--burger-nav {
+    margin-top: 15px;
+  }
+  .custom-header--burger-editorial {
+    padding-top: 15px;
+  }
+  .custom-header--burger-editorial-text {
+    font-size: calc(var(--mobile-editorial-size, 18px) * 0.85);
+    line-height: 1.3;
+  }
+}
+
+  .custom-header--wishlist-remove {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    margin-left: 5px;
+  }
+  .custom-header--wishlist-remove:hover {
+    color: #C0392B;
+  }
+
+  .custom-header--search-trending {
+    margin-top: 30px;
+    text-align: center;
+    width: 100%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 10;
+  }
+  .custom-header--search-trending-title {
+    font-family: var(--font-main);
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+  .custom-header--search-trending-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .custom-header--search-trending-item {
+    font-family: var(--font-main);
+    font-size: 16px;
+    color: #000000;
+    text-decoration: none;
+    padding: 8px 20px;
+    background: #f5f5f5;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+  }
+  .custom-header--search-trending-item:hover {
+    background: #000000;
+    color: #fff;
+  }
+
+  /* ── Desktop predictive search results — LV-style ── */
+  .custom-header--search-results {
+    width: 100%;
+    margin-top: 16px;
+    text-align: left;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: #fafaf8;
+    border-radius: 0;
+    box-shadow: none;
+    border-top: 1px solid #e8e6e3;
+    position: relative;
+    z-index: 10;
+  }
+  .custom-header--search-results:empty {
+    display: none;
+  }
+  .custom-header--search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #eeece9;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s ease;
+  }
+  .custom-header--search-result-item:last-of-type {
+    border-bottom: none;
+  }
+  .custom-header--search-result-item:hover {
+    background: #f3f1ee;
+  }
+  .custom-header--search-result-image {
+    width: 52px;
+    height: 65px;
+    object-fit: cover;
+    border-radius: 0;
+    background: linear-gradient(180deg, #e2e0df 0%, #f8f7f5 100%);
+    flex-shrink: 0;
+    filter: none;
+  }
+  .custom-header--search-result-image.placeholder {
+    background: linear-gradient(180deg, #e2e0df 0%, #f3f1ef 100%);
+  }
+  .custom-header--search-result-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .custom-header--search-result-title {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 13px;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin: 0 0 4px 0;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .custom-header--search-section-title {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    padding: 14px 16px 6px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    border-top: 1px solid #eeece9;
+  }
+  .custom-header--search-section-title:first-child {
+    border-top: none;
+  }
+  .custom-header--search-result-price {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 12px;
+    font-weight: 300;
+    color: #6c6c6c;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+  .custom-header--search-view-all {
+    display: block;
+    text-align: center;
+    padding: 16px;
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: 400;
+    border-top: 1px solid #eeece9;
+    background: #fafaf8;
+    transition: background 0.15s;
+  }
+  .custom-header--search-view-all:hover {
+    background: #f3f1ee;
+    text-decoration: none;
+  }
+  .custom-header--search-no-results {
+    display: block;
+    text-align: center;
+    padding: 20px 16px;
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 12px;
+    color: #999;
+    letter-spacing: 0.08em;
+  }
+
+@media (min-width: 769px) {
+  /* ── Desktop search — full-width editorial panel ── */
+  .custom-header--search-wrapper {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+    z-index: 10;
+    top: calc(var(--custom-header-total-height, 66.53px));
+    background: #fff;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.08);
+    transform: translateY(-8px);
+    transition: transform 0.28s ease-out;
+  }
+  .custom-header--search-overlay-open .custom-header--search-wrapper {
+    transform: translateY(0);
+  }
+  /* Container: override global white-box styles */
+  .custom-header--search-bar-container {
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 20;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+    opacity: 1;
+    height: 76px;
+    padding: 0 clamp(24px, 5vw, 80px);
+    border-bottom: 1px solid #e8e8e4;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .custom-header--search-overlay-open .custom-header--search-bar-container {
+    transform: none;
+    opacity: 1;
+  }
+  /* Leading icon */
+  .custom-header--search-form-icon {
+    flex-shrink: 0;
+    opacity: 0.4;
+  }
+  /* Form fills remaining space */
+  .custom-header--search-form {
+    flex: 1;
+    height: 100%;
+  }
+  .custom-header--search-input {
+    font-size: 20px;
+    color: #1a1a1a;
+    letter-spacing: 0.01em;
+  }
+  .custom-header--search-input::placeholder {
+    font-size: 20px;
+    color: #b8b5b0;
+    letter-spacing: 0.06em;
+  }
+  /* Close button */
+  .custom-header--search-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    color: #999;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  .custom-header--search-close-btn:hover {
+    color: #1a1a1a;
+  }
+  /* Results panel — constrained + centered */
+  .custom-header--search-results {
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    margin-top: 0;
+    background: #fafaf8;
+    border-top: 1px solid #e8e8e4;
+  }
+}
+  
+  .custom-header--wishlist-options {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+  .custom-header--wishlist-select {
+    max-width: 100%;
+    padding: 4px 2px;
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #333;
+    background: #fff;
+    font-family: var(--font-main);
+    cursor: pointer;
+  }
+
+  .snc-color-swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--swatch-color);
+    border: 1px solid rgba(0,0,0,0.1);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   HEADER: ALWAYS TRANSPARENT — ICONS FOLLOW SECTION
+   Single source of truth. Overrides everything above.
+   Two states:
+     default          → dark icons (most sections are light/white)
+     data-active-theme="light" → white icons (dark/video sections like hero)
+   Sections signal which state via data-header-theme="light"|"dark" on their
+   root element. The IntersectionObserver (above) reads this and sets
+   data-active-theme on the header root.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Background: transparent in every possible state */
+.custom-header--root,
+.custom-header--root.is-sticky,
+.custom-header--root.force-sticky-style,
+.custom-header--root.is-modal-active {
+  --custom-header-background: transparent !important;
+}
+
+/* 2. Default: dark icons — correct for light/white sections */
+.custom-header--root .icon-static,
+.custom-header--root .logo-static {
+  display: none !important;
+}
+.custom-header--root .icon-sticky,
+.custom-header--root .logo-sticky {
+  display: block !important;
+}
+
+/* 3. Dark section in view (hero, dark video) → white icons.
+      Applies in ALL states: sticky, non-sticky, force-sticky.
+      opacity overrides here beat the mid-file is-sticky opacity rules
+      (same specificity 0,3,0 — last source wins with !important). */
+.custom-header--root[data-active-theme="light"] .icon-static,
+.custom-header--root[data-active-theme="light"] .logo-static {
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.custom-header--root[data-active-theme="light"] .icon-sticky,
+.custom-header--root[data-active-theme="light"] .logo-sticky {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* 4. force-light-theme — HIGHEST PRIORITY OVERRIDE for non-home pages.
+      Must come last to beat data-active-theme="light" auto-detect. */
+.custom-header--root.force-light-theme,
+.custom-header--root.force-light-theme[data-active-theme="light"],
+.custom-header--root.force-light-theme[data-active-theme="dark"],
+.custom-header--root.force-light-theme.is-sticky {
+  background-color: #ffffff !important;
+  --custom-header-background: #ffffff !important;
+}
+.custom-header--root.force-light-theme .logo-sticky,
+.custom-header--root.force-light-theme .icon-sticky,
+.custom-header--root.force-light-theme[data-active-theme="light"] .logo-sticky,
+.custom-header--root.force-light-theme[data-active-theme="light"] .icon-sticky,
+.custom-header--root.force-light-theme.is-sticky .logo-sticky,
+.custom-header--root.force-light-theme.is-sticky .icon-sticky {
+  display: block !important;
+}
+.custom-header--root.force-light-theme .logo-static,
+.custom-header--root.force-light-theme .icon-static,
+.custom-header--root.force-light-theme[data-active-theme="light"] .logo-static,
+.custom-header--root.force-light-theme[data-active-theme="light"] .icon-static,
+.custom-header--root.force-light-theme.is-sticky .logo-static,
+.custom-header--root.force-light-theme.is-sticky .icon-static {
+  display: none !important;
+}
+.custom-header--root.force-light-theme .custom-header--nav-link,
+.custom-header--root.force-light-theme .custom-header--right-label,
+.custom-header--root.force-light-theme .custom-header--menu-toggle,
+.custom-header--root.force-light-theme a,
+.custom-header--root.force-light-theme[data-active-theme="light"] .custom-header--nav-link,
+.custom-header--root.force-light-theme[data-active-theme="light"] .custom-header--right-label,
+.custom-header--root.force-light-theme[data-active-theme="light"] a {
+  color: #000000 !important;
+}
+.custom-header--announcement-section:has(+ .custom-header--root.force-light-theme),
+.custom-header--root.force-light-theme ~ .custom-header--announcement-section {
+  /* Announcement bar stays its own color; no change needed */
+}
+
+/* ==========================================================
+   De Leville · Header behavior v2 (April 20, 2026)
+   Two-state system driven by data-dl-header-mode on <html>:
+     "transparent" · white content, no background (over dark hero)
+     "solid"       · default white background, dark content
+   Sticky at the top always.
+   ========================================================== */
+
+/* Header uses position: fixed (not sticky) because the parent
+   .shopify-section.section--custom-header has `height: 0 !important`
+   which would break sticky positioning. */
+.custom-header--root[data-sticky="true"],
+.custom-header--root {
+  position: fixed !important;
+  top: var(--custom-header-announcement-height, 36px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+}
+.custom-header--announcement-section {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  z-index: 1002 !important;
+}
+
+/* Push body content below the fixed header.
+   On transparent-hero pages, the first content section pulls itself
+   back up under the header via negative margin (rule below). */
+body {
+  padding-top: var(--custom-header-total-height, 108px);
+}
+
+/* On TRANSPARENT-hero pages, the first content section (the hero itself)
+   pulls itself up under the transparent header so the imagery starts at 0. */
+html[data-dl-header-mode^="transparent"] body {
+  padding-top: 0;
+}
+html[data-dl-header-mode^="transparent"] body > .shopify-section:not(.shopify-section-group-header-group):not([id*="header"]):not([id*="announcement"]):first-of-type {
+  margin-top: 0;
+}
+
+/* TRANSPARENT — base (shared by both dark and light variants) */
+html[data-dl-header-mode^="transparent"] .custom-header--root {
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+/* TRANSPARENT · DARK hero — white logo + white icons over dark imagery */
+html[data-dl-header-mode="transparent-dark"] .custom-header--root .logo-static,
+html[data-dl-header-mode="transparent-dark"] .custom-header--root .icon-static {
+  display: block !important;
+}
+html[data-dl-header-mode="transparent-dark"] .custom-header--root .logo-sticky,
+html[data-dl-header-mode="transparent-dark"] .custom-header--root .icon-sticky {
+  display: none !important;
+}
+html[data-dl-header-mode="transparent-dark"] .custom-header--root .custom-header--nav-link,
+html[data-dl-header-mode="transparent-dark"] .custom-header--root .custom-header--right-label,
+html[data-dl-header-mode="transparent-dark"] .custom-header--root .custom-header--menu-toggle,
+html[data-dl-header-mode="transparent-dark"] .custom-header--root a {
+  color: #ffffff !important;
+}
+html[data-dl-header-mode="transparent-dark"] .custom-header--root .icon-static.custom-header--burger-icon,
+html[data-dl-header-mode="transparent-dark"] .custom-header--root .icon-static.custom-header--icon {
+  filter: brightness(0) invert(1) !important;
+}
+
+/* TRANSPARENT · LIGHT hero — black logo + black icons over light imagery */
+html[data-dl-header-mode="transparent-light"] .custom-header--root .icon-sticky {
+  display: block !important;
+}
+html[data-dl-header-mode="transparent-light"] .custom-header--root .logo-sticky {
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transition: opacity 0s !important;
+}
+html[data-dl-header-mode="transparent-light"] .custom-header--root .logo-static,
+html[data-dl-header-mode="transparent-light"] .custom-header--root .icon-static {
+  display: none !important;
+}
+html[data-dl-header-mode="transparent-light"] .custom-header--root .custom-header--nav-link,
+html[data-dl-header-mode="transparent-light"] .custom-header--root .custom-header--right-label,
+html[data-dl-header-mode="transparent-light"] .custom-header--root .custom-header--menu-toggle,
+html[data-dl-header-mode="transparent-light"] .custom-header--root a {
+  color: #1a1a1a !important;
+}
+html[data-dl-header-mode="transparent-light"] .custom-header--root .custom-header--burger-icon,
+html[data-dl-header-mode="transparent-light"] .custom-header--root .custom-header--icon {
+  filter: none !important;
+}
+
+/* SOLID MODE — default */
+html[data-dl-header-mode="solid"] .custom-header--root,
+.custom-header--root:not([data-dl-header-mode]) {
+  background: #ffffff !important;
+  transition: background-color 300ms ease;
+}
+html[data-dl-header-mode="solid"] .custom-header--root .logo-sticky,
+html[data-dl-header-mode="solid"] .custom-header--root .icon-sticky {
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+html[data-dl-header-mode="solid"] .custom-header--root .logo-static,
+html[data-dl-header-mode="solid"] .custom-header--root .icon-static {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+html[data-dl-header-mode="solid"] .custom-header--root .custom-header--nav-link,
+html[data-dl-header-mode="solid"] .custom-header--root .custom-header--right-label,
+html[data-dl-header-mode="solid"] .custom-header--root .custom-header--menu-toggle,
+html[data-dl-header-mode="solid"] .custom-header--root a {
+  color: #1a1a1a !important;
+}
+
+/* Smooth transition between modes */
+.custom-header--root,
+.custom-header--root a,
+.custom-header--root .custom-header--nav-link,
+.custom-header--root .custom-header--burger-icon,
+.custom-header--root .custom-header--icon {
+  transition: background-color 300ms ease, color 300ms ease, filter 300ms ease, border-color 300ms ease, top 600ms ease-out;
+}
+
+/* Cart badge must always be legible: white number on black bubble */
+.custom-header--root .custom-header--cart-count {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+</style>
+
+{% schema %}
+{
+  "name": "SNC Header",
+  "class": "section--custom-header",
+  "tag": "header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "announcement_bg_color",
+      "label": "Announcement bar background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "announcement_text_color",
+      "label": "Announcement bar text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "announcement_arrow_color",
+      "label": "Announcement bar arrows",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "header_bg_color",
+      "label": "Header background (Static)",
+      "default": "#F1F1F1"
+    },
+    {
+      "type": "color",
+      "id": "header_text_color",
+      "label": "Header text (Static)",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "header_sticky_bg_color",
+      "label": "Header background (Sticky)",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "header_sticky_text_color",
+      "label": "Header text (Sticky)",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "range",
+      "id": "header_height_desktop",
+      "label": "Header height (Desktop)",
+      "min": 50, "max": 150, "step": 2, "unit": "px",
+      "default": 66
+    },
+    {
+      "type": "range",
+      "id": "header_height_mobile",
+      "label": "Header height (Mobile)",
+      "min": 40, "max": 120, "step": 2, "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Desktop Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_burger_desktop",
+      "label": "Show sidebar menu on desktop",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Announcement Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "announcement-enabled",
+      "label": "Enable announcement bar",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "select",
+      "id": "logo_version",
+      "label": "Logo version",
+      "options": [
+        { "value": "dark", "label": "Dark (for light backgrounds)" },
+        { "value": "light", "label": "Light (for dark backgrounds)" }
+      ],
+      "default": "dark",
+      "info": "Configure images in Theme Settings > Logo"
+    },
+    {
+      "type": "select",
+      "id": "logo_version_sticky",
+      "label": "Logo version (Sticky)",
+      "options": [
+        { "value": "dark", "label": "Dark (for light backgrounds)" },
+        { "value": "light", "label": "Light (for dark backgrounds)" }
+      ],
+      "default": "dark",
+      "info": "Configure images in Theme Settings > Logo"
+    },
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    {
+      "type": "select",
+      "id": "icon_version",
+      "label": "Icon version (Static)",
+      "options": [
+        { "value": "dark", "label": "Dark (for light backgrounds)" },
+        { "value": "light", "label": "Light (for dark backgrounds)" }
+      ],
+      "default": "dark",
+      "info": "Configure icons in Theme Settings > Global Icons"
+    },
+    {
+      "type": "select",
+      "id": "icon_version_sticky",
+      "label": "Icon version (Sticky)",
+      "options": [
+        { "value": "dark", "label": "Dark (for light backgrounds)" },
+        { "value": "light", "label": "Light (for dark backgrounds)" }
+      ],
+      "default": "dark",
+      "info": "Configure icons in Theme Settings > Global Icons"
+    },
+    {
+      "type": "header",
+      "content": "Icon Links"
+    },
+    {
+      "type": "url",
+      "id": "wishlist_url",
+      "label": "Wishlist link",
+      "info": "Default: /pages/wishlist"
+    },
+    {
+      "type": "text",
+      "id": "locale-label",
+      "label": "Fixed language label",
+      "default": "ES"
+    },
+    {
+      "type": "text",
+      "id": "currency-label",
+      "label": "Fixed currency label",
+      "default": "MEX$"
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky-enabled",
+      "label": "Enable sticky header",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "static_on_home_only",
+      "label": "Static styles on Home only",
+      "info": "When enabled, all pages except Home will use sticky header colors from the start.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "announcement_sticky",
+      "label": "Keep announcement bar fixed (do not hide on scroll)",
+      "info": "The announcement bar will not hide on scroll.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "smooth_scroll_enabled",
+      "label": "Enable smooth scroll (Lenis)",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "smooth_scroll_duration",
+      "label": "Smooth scroll duration",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.1,
+      "unit": "s",
+      "default": 1.2,
+      "info": "Higher values make the scroll slower and smoother."
+    },
+    {
+      "type": "header",
+      "content": "Localization"
+    },
+    {
+      "type": "checkbox",
+      "id": "show-locale-selector",
+      "label": "Show language selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show-region-selector",
+      "label": "Show currency/region selector",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "burger_menu",
+      "name": "Sidebar Menu (Fallback)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Mobile menu (Fallback)",
+          "info": "This menu will be used in the mobile sidebar if no menu is set in the 'Mobile sidebar menu' block. Does not affect the desktop menu."
+        },
+        {
+          "type": "select",
+          "id": "icon_version",
+          "label": "Icon version",
+          "options": [
+            { "value": "dark", "label": "Dark" },
+            { "value": "light", "label": "Light" }
+          ],
+          "default": "dark"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_advanced_colors",
+          "label": "Enable advanced colors for variants",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "menu_gap",
+          "label": "Menu item spacing",
+          "min": 0,
+          "max": 40,
+          "step": 2,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "textarea",
+          "id": "editorial_text",
+          "label": "Editorial text",
+          "default": "Cada huarache es una historia tejida a mano, un recuerdo que camina con nosotros.",
+          "info": "Text that appears at the bottom of the sidebar menu"
+        }
+      ]
+    },
+    {
+      "type": "mobile_drawer",
+      "name": "Sidebar Menu (Burger)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "mobile_menu",
+          "label": "Main sidebar menu",
+          "info": "Select the menu to show in the sidebar (Burger menu)."
+        },
+        {
+          "type": "link_list",
+          "id": "secondary_menu",
+          "label": "Secondary sidebar menu"
+        },
+        {
+          "type": "select",
+          "id": "icon_version",
+          "label": "Icon version",
+          "options": [
+            { "value": "dark", "label": "Dark" },
+            { "value": "light", "label": "Light" }
+          ],
+          "default": "dark"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_advanced_colors",
+          "label": "Enable advanced colors for variants",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "panel_height_mode",
+          "label": "Menu height",
+          "options": [
+            { "value": "below_header", "label": "Below header" },
+            { "value": "full_viewport", "label": "Full height" }
+          ],
+          "default": "below_header"
+        },
+        {
+          "type": "range",
+          "id": "panel_top_gap",
+          "label": "Top gap",
+          "min": 0,
+          "max": 80,
+          "step": 5,
+          "unit": "px",
+          "default": 10,
+          "info": "Only applies when the menu is below the header."
+        },
+        {
+          "type": "range",
+          "id": "panel_bottom_gap",
+          "label": "Bottom gap",
+          "min": 0,
+          "max": 80,
+          "step": 5,
+          "unit": "px",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "panel_side_gap",
+          "label": "Side gap",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "panel_padding_horizontal",
+          "label": "Inner horizontal padding",
+          "min": 0,
+          "max": 40,
+          "step": 2,
+          "unit": "px",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "panel_padding_top",
+          "label": "Inner top padding",
+          "min": 0,
+          "max": 40,
+          "step": 2,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "panel_padding_bottom",
+          "label": "Inner bottom padding",
+          "min": 0,
+          "max": 80,
+          "step": 2,
+          "unit": "px",
+          "default": 40
+        },
+        {
+          "type": "range",
+          "id": "panel_border_radius",
+          "label": "Border radius",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "menu_gap",
+          "label": "Item spacing",
+          "min": 0,
+          "max": 40,
+          "step": 2,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "header",
+          "content": "Menu Title Styles"
+        },
+        {
+          "type": "color",
+          "id": "menu_title_color",
+          "label": "'MENU' title color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "close_icon_color",
+          "label": "Close icon color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "menu_title_size",
+          "label": "Title size",
+          "min": 12,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "menu_title_weight",
+          "label": "Title weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "default": 400
+        },
+        {
+          "type": "header",
+          "content": "Search Bar"
+        },
+        {
+          "type": "range",
+          "id": "search_padding_v",
+          "label": "Vertical padding",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "default": 12
+        },
+        {
+          "type": "range",
+          "id": "search_padding_h",
+          "label": "Horizontal padding",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "default": 16
+        },
+        {
+          "type": "color",
+          "id": "search_bg_color",
+          "label": "Background color",
+          "default": "#F5F5F5"
+        },
+        {
+          "type": "color",
+          "id": "search_text_color",
+          "label": "Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "search_border_radius",
+          "label": "Border radius",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "header",
+          "content": "Menu Styles"
+        },
+        {
+          "type": "color",
+          "id": "menu_item_color",
+          "label": "Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "menu_item_size",
+          "label": "Font size",
+          "min": 12,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "default": 18
+        },
+        {
+          "type": "range",
+          "id": "menu_item_weight",
+          "label": "Font weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "default": 400
+        },
+        {
+          "type": "checkbox",
+          "id": "show_footer_content",
+          "label": "Show footer content (Text and Social)",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Footer Message (Editorial)"
+        },
+        {
+          "type": "textarea",
+          "id": "editorial_text",
+          "label": "Text",
+          "default": "Cada huarache es una historia tejida a mano, un recuerdo que camina con nosotros."
+        },
+        {
+          "type": "color",
+          "id": "editorial_color",
+          "label": "Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "editorial_size",
+          "label": "Font size",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "default": 18
+        },
+        {
+          "type": "select",
+          "id": "editorial_weight",
+          "label": "Font weight",
+          "options": [
+            { "value": "200", "label": "Extra Light (200)" },
+            { "value": "300", "label": "Light (300)" },
+            { "value": "400", "label": "Normal (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi Bold (600)" },
+            { "value": "700", "label": "Bold (700)" },
+            { "value": "800", "label": "Extra Bold (800)" }
+          ],
+          "default": "400"
+        },
+        {
+          "type": "header",
+          "content": "Social Media"
+        },
+        {
+          "type": "url",
+          "id": "social_facebook_url",
+          "label": "Facebook URL"
+        },
+        {
+          "type": "url",
+          "id": "social_instagram_url",
+          "label": "Instagram URL"
+        },
+        {
+          "type": "url",
+          "id": "social_tiktok_url",
+          "label": "TikTok URL"
+        }
+      ]
+    },
+    {
+      "type": "search_overlay",
+      "name": "Search (Pop-up)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Search Settings"
+        },
+        {
+          "type": "range",
+          "id": "search_bar_radius",
+          "label": "Search bar border radius",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "default": 10,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "search_results_radius",
+          "label": "Results border radius",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "default": 10,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "search_input_weight",
+          "label": "Input text weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "default": 400
+        },
+        {
+          "type": "color",
+          "id": "result_title_color",
+          "label": "Result title color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "result_title_size",
+          "label": "Result title size",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "default": 14,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "result_title_weight",
+          "label": "Result title weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "default": 700
+        },
+        {
+          "type": "range",
+          "id": "result_price_size",
+          "label": "Result price size",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "default": 13,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "result_price_weight",
+          "label": "Result price weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "default": 400
+        },
+        {
+          "type": "range",
+          "id": "result_image_width",
+          "label": "Image width",
+          "min": 30,
+          "max": 100,
+          "step": 5,
+          "default": 50,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "result_image_brightness",
+          "label": "Image brightness",
+          "min": 50,
+          "max": 100,
+          "step": 5,
+          "default": 100,
+          "unit": "%"
+        },
+        {
+          "type": "color",
+          "id": "view_all_color",
+          "label": "'View all' text color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "view_all_weight",
+          "label": "'View all' text weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "default": 700
+        }
+      ]
+    },
+    {
+      "type": "header_item",
+      "name": "Menu Item",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Mega Menu"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_mega",
+          "label": "Enable Mega Menu",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_advanced_colors",
+          "label": "Enable advanced colors for variants",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "mega_full_width",
+          "label": "Full width",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "mega_top_margin",
+          "label": "Header gap",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "mega_side_margin",
+          "label": "Side gap",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "mega_padding",
+          "label": "Inner padding",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "mega_border_radius",
+          "label": "Border radius",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "mega_content_gap",
+          "label": "Vertical gap between menu and text",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "default": 30
+        },
+        {
+          "type": "checkbox",
+          "id": "mega_show_shadow",
+          "label": "Show shadow",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "mega_shadow",
+          "label": "Panel shadow",
+          "default": "0 20px 60px rgba(0, 0, 0, 0.15)",
+          "info": "CSS format: offset-x offset-y blur color"
+        },
+        {
+          "type": "link_list",
+          "id": "mega_menu",
+          "label": "Mega Menu list"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Item image"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Descriptive text"
+        }
+      ]
+    },
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "ENVÍO GRATIS DESDE $2,000 MXN."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Header"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

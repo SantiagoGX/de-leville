@@ -1,0 +1,559 @@
+{%- comment -%}
+  De Leville — Collections Editorial (V5: Home-Showcase card DNA + LV grid)
+  Cards = identical to snc-home-showcase: 4/5 aspect-ratio, cover image,
+  transparent overlay at bottom, fades on hover.
+{%- endcomment -%}
+
+<style>
+  /* ────────────────────────────────────────────────────────────────
+     Base
+  ──────────────────────────────────────────────────────────────── */
+  #shopify-section-{{ section.id }} {
+    background: #ffffff;
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     Hero
+  ──────────────────────────────────────────────────────────────── */
+  .dl-ce-hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #111111;
+  }
+
+  .dl-ce-hero__video,
+  .dl-ce-hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .dl-ce-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.0) 55%);
+    z-index: 1;
+  }
+
+  .dl-ce-hero__content {
+    position: absolute;
+    bottom: 52px;
+    left: 52px;
+    max-width: 420px;
+    color: #ffffff;
+    z-index: 2;
+  }
+
+  .dl-ce-hero__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin: 0 0 14px;
+    font-weight: 400;
+  }
+
+  .dl-ce-hero__title {
+    font-size: clamp(26px, 2.8vw, 42px);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    margin: 0 0 20px;
+  }
+
+  .dl-ce-hero__desc {
+    font-size: 14px;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.78);
+    margin: 0;
+    max-width: 360px;
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     Collection chapter header
+  ──────────────────────────────────────────────────────────────── */
+  .dl-ce-group {
+    width: 100%;
+  }
+
+  .dl-ce-group__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 56px 40px 24px;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  /* ← BIGGER label per user feedback */
+  .dl-ce-group__label {
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+  }
+
+  .dl-ce-group__view-all {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8a8a8a;
+    text-decoration: none;
+    text-underline-offset: 4px;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .dl-ce-group__view-all:hover {
+    color: #1a1a1a;
+    text-decoration: underline;
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     Full-bleed product grid — border separators (no dark empty cells)
+  ──────────────────────────────────────────────────────────────── */
+  .dl-ce-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    background-color: transparent;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     Product card — exact Home Showcase DNA
+     · aspect-ratio 4/5
+     · warm gradient background (visible around product image)
+     · image covers entire card
+     · text overlay at bottom, transparent bg
+     · text fades + image zooms on hover
+  ──────────────────────────────────────────────────────────────── */
+  .dl-ce-grid__item {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* ── Single container: card = image area ── */
+  .dl-ce-grid__card {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: linear-gradient(180deg, #e2e0df 0%, #e8e6e3 14%, #f3f1ef 60%, #f8f7f5 100%);
+  }
+
+  /* ── Cover images ── */
+  .dl-ce-grid__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.38s ease, transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .dl-ce-grid__img--hover {
+    opacity: 0;
+    z-index: 2;
+  }
+
+  @media (pointer: fine) {
+    .dl-ce-grid__item:hover .dl-ce-grid__img:not(.dl-ce-grid__img--hover) {
+      transform: scale(1.03);
+      opacity: 0;
+    }
+    .dl-ce-grid__item:hover .dl-ce-grid__img--hover {
+      opacity: 1;
+      transform: scale(1.03);
+    }
+  }
+
+  /* ── Text overlay ── */
+  .dl-ce-grid__info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 14px 14px 18px;
+    background: transparent;
+    z-index: 5;
+    transition: opacity 0.4s ease;
+  }
+
+  @media (pointer: fine) {
+    .dl-ce-grid__item:hover .dl-ce-grid__info {
+      opacity: 0;
+    }
+  }
+
+  .dl-ce-grid__name {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .dl-ce-grid__price {
+    display: block;
+    font-size: 12px;
+    font-weight: 300;
+    color: #3a3a3a;
+    letter-spacing: 0.03em;
+    opacity: 0.85;
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     Style divider — spans full grid width, auto-inserted on style change
+  ──────────────────────────────────────────────────────────────── */
+  .dl-ce-style-divider {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 0 10px;
+  }
+
+  .dl-ce-style-divider__line {
+    flex: 1;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.10);
+  }
+
+  .dl-ce-style-divider__label {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #8a8a8a;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .dl-ce-style-divider { padding: 20px 0 6px; gap: 14px; }
+    .dl-ce-style-divider__label { font-size: 9px; letter-spacing: 0.22em; }
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     Editorial image (2 columns × 2 rows)
+  ──────────────────────────────────────────────────────────────── */
+  .dl-ce-grid__editorial {
+    grid-column: span 2;
+    grid-row: span 2;
+    position: relative;
+    overflow: hidden;
+    background: #e8e4dd;
+  }
+
+  .dl-ce-grid__editorial img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .dl-ce-grid__editorial:hover img {
+    transform: scale(1.03);
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     Mobile
+  ──────────────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .dl-ce-hero__content {
+      bottom: 32px;
+      left: 24px;
+      right: 24px;
+      max-width: none;
+    }
+
+    .dl-ce-hero__title {
+      font-size: 26px;
+    }
+
+    .dl-ce-group__header {
+      padding: 36px 20px 16px;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .dl-ce-group__label {
+      font-size: 15px;
+    }
+
+    .dl-ce-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dl-ce-grid__editorial {
+      grid-column: span 2;
+      grid-row: span 1;
+      aspect-ratio: 16 / 9;
+    }
+
+  }
+</style>
+
+{% comment %} ── Hero (optional) ── {% endcomment %}
+{% if section.settings.show_hero %}
+  <div class="dl-ce-hero" data-header-theme="light">
+    {% if section.settings.hero_video != blank %}
+      {{ section.settings.hero_video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, class: 'dl-ce-hero__video' }}
+    {% elsif section.settings.hero_image != blank %}
+      {{ section.settings.hero_image | image_url: width: 2400 | image_tag: class: 'dl-ce-hero__img', loading: 'eager', alt: section.settings.hero_title | escape }}
+    {% endif %}
+    <div class="dl-ce-hero__overlay"></div>
+    <div class="dl-ce-hero__content">
+      {% if section.settings.hero_eyebrow != blank %}
+        <p class="dl-ce-hero__eyebrow">{{ section.settings.hero_eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.hero_title != blank %}
+        <h1 class="dl-ce-hero__title">{{ section.settings.hero_title }}</h1>
+      {% endif %}
+      {% if section.settings.hero_desc != blank %}
+        <p class="dl-ce-hero__desc">{{ section.settings.hero_desc }}</p>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% comment %} ── Collection chapters ── {% endcomment %}
+<div data-header-theme="dark">
+  {% for block in section.blocks %}
+    {% if block.type == 'collection' %}
+      {%- assign col = collections[block.settings.collection] -%}
+      {% if col == blank %}{% continue %}{% endif %}
+
+      {%- assign display_title   = block.settings.custom_title | default: col.title -%}
+      {%- assign products_limit  = block.settings.products_limit | default: 12 -%}
+      {%- assign has_editorial   = false -%}
+      {%- if block.settings.editorial_image != blank -%}
+        {%- assign has_editorial = true -%}
+      {%- endif -%}
+      {%- assign editorial_at = block.settings.editorial_position | default: 4 -%}
+
+      <div class="dl-ce-group" {{ block.shopify_attributes }}>
+
+        <div class="dl-ce-group__header">
+          <span class="dl-ce-group__label">{{ display_title | upcase }}</span>
+          <a href="{{ col.url }}" class="dl-ce-group__view-all">View all &middot; {{ col.products_count }} pieces</a>
+        </div>
+
+        <div class="dl-ce-grid">
+          {%- assign pi = 0 -%}
+          {%- assign ce_current_style = '' -%}
+          {%- assign ce_show_dividers = block.settings.show_style_dividers -%}
+          {%- assign ce_keywords = block.settings.style_keywords | default: 'Puro,Segreto,Regale,Essenza' | split: ',' -%}
+          {%- for product in col.products limit: products_limit -%}
+
+            {% comment %} Auto style divider — insert when product style changes {% endcomment %}
+            {%- if ce_show_dividers -%}
+              {%- assign ce_detected = '' -%}
+              {%- for kw in ce_keywords -%}
+                {%- assign kw_t = kw | strip -%}
+                {%- if product.title contains kw_t -%}
+                  {%- assign ce_detected = kw_t -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if ce_detected != '' and ce_detected != ce_current_style -%}
+                {%- assign ce_current_style = ce_detected -%}
+                <div class="dl-ce-style-divider">
+                  <span class="dl-ce-style-divider__line"></span>
+                  <span class="dl-ce-style-divider__label">{{ ce_detected | upcase }}</span>
+                  <span class="dl-ce-style-divider__line"></span>
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+
+            {% comment %} Inject editorial image at the specified product index {% endcomment %}
+            {%- if has_editorial and pi == editorial_at -%}
+              <div class="dl-ce-grid__editorial">
+                {{ block.settings.editorial_image | image_url: width: 1400 | image_tag: loading: 'lazy', alt: display_title | escape }}
+              </div>
+            {%- endif -%}
+
+            {% comment %} Hover image {% endcomment %}
+            {%- assign main_img  = product.featured_image -%}
+            {%- assign hover_img = false -%}
+            {%- if product.images.size > 1 -%}
+              {%- for img in product.images -%}
+                {%- unless img == main_img -%}
+                  {%- assign hover_img = img -%}
+                  {%- break -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- endif -%}
+
+            <a href="{{ product.url }}" class="dl-ce-grid__item">
+              <div class="dl-ce-grid__card">
+                {%- if main_img != blank -%}
+                  {{ main_img | image_url: width: 700 | image_tag:
+                      class: 'dl-ce-grid__img',
+                      loading: 'lazy',
+                      alt: product.title | escape }}
+                  {%- if hover_img -%}
+                    {{ hover_img | image_url: width: 700 | image_tag:
+                        class: 'dl-ce-grid__img dl-ce-grid__img--hover',
+                        loading: 'lazy',
+                        alt: product.title | escape }}
+                  {%- endif -%}
+                {%- endif -%}
+                <div class="dl-ce-grid__info">
+                  <span class="dl-ce-grid__name">{{ product.title }}</span>
+                  <span class="dl-ce-grid__price">{{ product.price | money }}</span>
+                </div>
+              </div>
+            </a>
+
+            {%- assign pi = pi | plus: 1 -%}
+          {%- endfor -%}
+        </div>
+
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "SNC Collections Editorial",
+  "tag": "section",
+  "class": "shopify-section--snc-collections-editorial",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero Section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero",
+      "label": "Show hero section",
+      "default": false
+    },
+    {
+      "type": "video",
+      "id": "hero_video",
+      "label": "Hero video (MP4)"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image (fallback if no video)"
+    },
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Eyebrow",
+      "default": "De Leville"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Title",
+      "default": "The Collections"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_desc",
+      "label": "Description",
+      "default": "Three lines. One house. Each piece numbered, made to order."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "Display name (optional)",
+          "info": "Overrides the collection title in the chapter header."
+        },
+        {
+          "type": "range",
+          "id": "products_limit",
+          "label": "Products to show",
+          "min": 4,
+          "max": 12,
+          "step": 4,
+          "default": 12
+        },
+        {
+          "type": "header",
+          "content": "Style Dividers"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_style_dividers",
+          "label": "Show style dividers",
+          "default": false,
+          "info": "Auto-inserts a label row when the product style changes. Requires products sorted by style in Shopify Admin."
+        },
+        {
+          "type": "text",
+          "id": "style_keywords",
+          "label": "Style keywords (comma-separated)",
+          "default": "Puro,Segreto,Regale,Essenza",
+          "info": "Detected from product titles. Edit if your collection uses different style names."
+        },
+        {
+          "type": "header",
+          "content": "Editorial Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "editorial_image",
+          "label": "Editorial / lifestyle image",
+          "info": "Spans 2 columns × 2 rows inside the grid. Leave empty to hide."
+        },
+        {
+          "type": "range",
+          "id": "editorial_position",
+          "label": "Insert image after product #",
+          "min": 0,
+          "max": 8,
+          "step": 4,
+          "default": 4,
+          "info": "0 = before first product · 4 = after 4th · 8 = after 8th"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Collections Editorial",
+      "category": "De Leville",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}

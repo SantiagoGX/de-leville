@@ -1,0 +1,485 @@
+{%- comment -%}
+  De Leville — SNC Scroll Video
+  LV-style scroll-scrubbed video with pinned sticky container.
+  video.currentTime driven by scroll position.
+  Text overlay fades in at a configurable scroll threshold.
+{%- endcomment -%}
+
+{%- liquid
+  assign scroll_height = section.settings.scroll_height | default: 250
+  assign reveal_threshold = section.settings.text_reveal_threshold | default: 45
+  assign reveal_threshold_dec = reveal_threshold | divided_by: 100.0
+  assign reveal_range_dec = 0.20
+-%}
+
+<style>
+  /* ── Section wrapper: tall enough to give scroll room ── */
+  #shopify-section-{{ section.id }} {
+    position: relative;
+    z-index: 2;
+    background: {{ section.settings.background_color | default: '#0a0a0a' }};
+  }
+
+  .snc-sv {
+    position: relative;
+    height: {{ scroll_height }}vh;
+  }
+
+  /* ── Sticky viewport container ── */
+  .snc-sv__sticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: {{ section.settings.background_color | default: '#0a0a0a' }};
+    opacity: 0; /* JS drives entry fade from 0→1 in first 6% of scroll */
+    will-change: opacity;
+  }
+
+  /* ── Cover strip: hides the last pixel of ring at section bottom ── */
+  .snc-sv__sticky::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: {{ section.settings.background_color | default: '#0a0a0a' }};
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  /* ── Video: fills viewport, no controls ── */
+  .snc-sv__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Overlay gradient: adapts to background color ── */
+  .snc-sv__gradient {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Text overlay: centered, driven entirely by JS (no CSS transition) ── */
+  .snc-sv__text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 60px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    /* No transition: JS sets exact values per frame */
+    will-change: opacity, transform, filter;
+  }
+
+  .snc-sv__eyebrow {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: {{ section.settings.text_color | default: '#ffffff' | color_modify: 'alpha', 0.55 }};
+    margin: 0 0 20px;
+  }
+
+  .snc-sv__title {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: 0.01em;
+    color: {{ section.settings.text_color | default: '#ffffff' }};
+    margin: 0 0 28px;
+    max-width: 700px;
+  }
+
+  .snc-sv__desc {
+    font-family: 'Futura PT', var(--font-main, sans-serif);
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: {{ section.settings.text_color | default: '#ffffff' | color_modify: 'alpha', 0.78 }};
+    max-width: 480px;
+    margin: 0;
+  }
+
+  .snc-sv__desc p { margin: 0 0 10px; }
+  .snc-sv__desc p:last-child { margin: 0; }
+
+  /* ── Scroll progress indicator ── */
+  .snc-sv__progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    width: 0%;
+    background: {{ section.settings.text_color | default: '#ffffff' | color_modify: 'alpha', 0.25 }};
+    z-index: 3;
+    transition: width 0.05s linear;
+    will-change: width;
+  }
+
+  /* ── Word-by-word animation spans ── */
+  .snc-sv__word { display: inline-block; }
+  .snc-sv__word-inner { display: inline-block; }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .snc-sv {
+      height: {{ scroll_height | times: 0.65 | round }}vh;
+      min-height: 160vh;
+    }
+
+    /* Cover strip: larger on mobile to hide ring bottom edge */
+    .snc-sv__sticky::after {
+      height: max(6px, 4vh);
+    }
+
+    /* Text: centered, fills viewport — text materializes between the two rings */
+    .snc-sv__text {
+      padding: 36px 20px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    /* Title: large enough to span the screen and feel present */
+    .snc-sv__title {
+      font-size: clamp(44px, 13vw, 60px);
+      letter-spacing: 0.02em;
+      max-width: 100%;
+      margin-bottom: 22px;
+    }
+
+    /* Description: wider, fills more screen real estate */
+    .snc-sv__desc {
+      max-width: 90vw;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .snc-sv__eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      margin-bottom: 18px;
+    }
+
+    /* Sub-elements start invisible: JS animates each independently */
+    .snc-sv__eyebrow,
+    .snc-sv__desc {
+      opacity: 0;
+    }
+  }
+</style>
+
+<div class="snc-sv" id="snc-sv-{{ section.id }}" data-section-id="{{ section.id }}">
+  <div class="snc-sv__sticky">
+
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag:
+          autoplay: false,
+          loop: false,
+          muted: true,
+          controls: false,
+          playsinline: true,
+          preload: 'auto',
+          class: 'snc-sv__video',
+          id: 'snc-sv-video-' | append: section.id }}
+    {%- elsif section.settings.video_url != blank -%}
+      <video
+        class="snc-sv__video"
+        id="snc-sv-video-{{ section.id }}"
+        src="{{ section.settings.video_url }}"
+        muted
+        playsinline
+        webkit-playsinline
+        preload="auto"
+      ></video>
+    {%- endif -%}
+
+    <div class="snc-sv__gradient"></div>
+
+    <div class="snc-sv__text" id="snc-sv-text-{{ section.id }}">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="snc-sv__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        <h2 class="snc-sv__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.description != blank -%}
+        <div class="snc-sv__desc">{{ section.settings.description }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="snc-sv__progress-bar" id="snc-sv-bar-{{ section.id }}"></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var sectionId   = '{{ section.id }}';
+  var isMobile    = window.matchMedia('(max-width: 768px)').matches;
+  /* Mobile: text appears earlier so the "empty" scroll zone is shorter */
+  var revealAt    = isMobile ? 0.25 : {{ reveal_threshold_dec }};
+  var revealRange = 0.22;
+
+  var wrapper = document.getElementById('snc-sv-' + sectionId);
+  var video   = document.getElementById('snc-sv-video-' + sectionId);
+  var textEl  = document.getElementById('snc-sv-text-' + sectionId);
+  var barEl   = document.getElementById('snc-sv-bar-' + sectionId);
+
+  if (!wrapper || !video) return;
+
+  /* Preload */
+  video.preload = 'auto';
+  video.muted   = true;
+  video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', '');
+  video.load();
+
+  var duration   = 0;
+  var videoReady = false;
+  var rafId      = null;
+  var lastP      = -1;
+
+  /* ── Word-by-word animation (mobile only) ─────────────────────── */
+  var wordEls = null;
+
+  function wrapTitleWords() {
+    var titleEl = textEl ? textEl.querySelector('.snc-sv__title') : null;
+    if (!titleEl) return;
+    var raw   = titleEl.textContent.trim();
+    var words = raw.split(/\s+/);
+    titleEl.innerHTML = words.map(function (w) {
+      return '<span class="snc-sv__word"><span class="snc-sv__word-inner">' + w + '</span></span>';
+    }).join(' '); /* non-breaking space between word wrappers */
+    wordEls = Array.from(titleEl.querySelectorAll('.snc-sv__word-inner'));
+    /* Reset initial state */
+    wordEls.forEach(function (el) {
+      el.style.opacity   = 0;
+      el.style.transform = 'translateY(14px)';
+    });
+  }
+
+  if (isMobile) wrapTitleWords();
+
+  function seekTo(t) {
+    t = Math.max(0, Math.min(duration, t));
+    if (video.seeking) return;
+    video.currentTime = t;
+  }
+
+  function update() {
+    rafId = null;
+
+    var scrollable = wrapper.offsetHeight - window.innerHeight;
+    if (scrollable <= 0) return;
+
+    var p = Math.max(0, Math.min(1,
+      -wrapper.getBoundingClientRect().top / scrollable
+    ));
+
+    if (Math.abs(p - lastP) < 0.001) return;
+    lastP = p;
+
+    if (videoReady && duration > 0) {
+      seekTo(p * duration);
+    }
+
+    /* Entry fade: sticky container fades in over first 6% of scroll
+       — matches the exit fade of the preceding Horizontal Slides section */
+    var stickyContainer = wrapper.querySelector('.snc-sv__sticky');
+    if (stickyContainer) {
+      stickyContainer.style.opacity = p < 0.06
+        ? (p / 0.06).toFixed(3)
+        : '1';
+    }
+
+    /* Overall reveal progress 0→1 */
+    var t = Math.max(0, Math.min(1, (p - revealAt) / revealRange));
+
+    if (wordEls && wordEls.length > 0) {
+      /* ── Mobile: word-by-word crystallization ──
+         Container stays centered & visible (opacity drives per-element).
+         Each word materializes with blur + translateY stagger. */
+      textEl.style.opacity   = 1;
+      textEl.style.transform = '';
+      textEl.style.filter    = '';
+
+      var n = wordEls.length;
+      wordEls.forEach(function (el, i) {
+        /* Stagger: first word at t=0, last word at t=0.6 */
+        var wStart = (i / (n || 1)) * 0.6;
+        var wT     = Math.max(0, Math.min(1, (t - wStart) / 0.55));
+        el.style.opacity   = wT;
+        el.style.transform = 'translateY(' + (8 * (1 - wT)) + 'px)';
+        el.style.filter    = 'blur(' + (3 * (1 - wT)).toFixed(1) + 'px)';
+      });
+
+      /* Eyebrow: appears first, quick */
+      var eyebrowEl = textEl.querySelector('.snc-sv__eyebrow');
+      if (eyebrowEl) {
+        var eyeT = Math.max(0, Math.min(1, t / 0.35));
+        eyebrowEl.style.opacity   = eyeT;
+        eyebrowEl.style.transform = 'translateY(' + (6 * (1 - eyeT)) + 'px)';
+      }
+
+      /* Description: trails title, no blur (keeps readability) */
+      var descEl = textEl.querySelector('.snc-sv__desc');
+      if (descEl) {
+        var descT = Math.max(0, Math.min(1, (t - 0.4) / 0.6));
+        descEl.style.opacity   = descT;
+        descEl.style.transform = 'translateY(' + (8 * (1 - descT)) + 'px)';
+      }
+
+    } else {
+      /* ── Desktop: blur-dissolve reveal ──
+         Text crystallizes out of blur as the rings separate. */
+      var blur = Math.max(0, 10 * (1 - t));
+      textEl.style.opacity   = t;
+      textEl.style.transform = 'translateY(' + (18 * (1 - t)) + 'px)';
+      textEl.style.filter    = 'blur(' + blur.toFixed(1) + 'px)';
+    }
+
+    if (barEl) barEl.style.width = (p * 100) + '%';
+  }
+
+  /* Scroll listener: one rAF per event burst */
+  window.addEventListener('scroll', function () {
+    if (rafId) return;
+    rafId = requestAnimationFrame(update);
+  }, { passive: true });
+
+  /* Video readiness */
+  function onReady() {
+    if (!video.duration || isNaN(video.duration)) return;
+    duration   = video.duration;
+    videoReady = true;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(update);
+  }
+
+  if (video.readyState >= 1 && video.duration > 0) {
+    onReady();
+  } else {
+    ['loadedmetadata','canplay','durationchange'].forEach(function(e){
+      video.addEventListener(e, onReady, { once: true });
+    });
+    setTimeout(function(){ if (!videoReady) onReady(); }, 2000);
+  }
+
+  /* Shopify editor reload */
+  document.addEventListener('shopify:section:load', function(e){
+    if (e.detail.sectionId === sectionId) window.location.reload();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SNC Scroll Video",
+  "tag": "section",
+  "class": "section--snc-scroll-video",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video (Shopify file picker)"
+    },
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Video URL (direct CDN link)",
+      "info": "Paste a direct https:// URL. Used when the file picker above is empty. The video is controlled by scroll — not autoplay."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#0a0a0a",
+      "info": "Visible while the video loads or between frames."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff",
+      "info": "Use #ffffff for dark backgrounds, #1a1a1a for white backgrounds."
+    },
+    {
+      "type": "header",
+      "content": "Text Overlay"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Scroll & Reveal"
+    },
+    {
+      "type": "range",
+      "id": "scroll_height",
+      "label": "Scroll height (controls video speed)",
+      "min": 150,
+      "max": 400,
+      "step": 10,
+      "unit": "vh",
+      "default": 250,
+      "info": "Higher = slower video, more scroll distance. 250vh recommended."
+    },
+    {
+      "type": "range",
+      "id": "text_reveal_threshold",
+      "label": "Text appears at scroll %",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "default": 45,
+      "info": "45 means text starts appearing when 45% of the scroll distance is completed."
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Scroll Video",
+      "category": "De Leville"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,93 @@
+{%- comment -%}
+  snc-llms-txt.liquid — AI crawler information page (llms.txt standard)
+
+  SETUP REQUIRED (one-time, in Shopify Admin):
+  1. Admin → Pages → Add page
+     Title: "llms.txt" | Handle: llms | Template: page.llms
+     Leave content blank (this section renders everything).
+  2. Admin → Navigation → URL Redirects → Add redirect
+     From: /llms.txt  →  To: /pages/llms
+  3. Push theme.
+
+  Accessible at: https://deleville.co/pages/llms
+  and via:       https://deleville.co/llms.txt  (redirect)
+{%- endcomment -%}
+
+<style>
+  #snc-llms-root {
+    max-width: 860px;
+    margin: 80px auto;
+    padding: 0 24px 120px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.75;
+    color: #1a1a1a;
+  }
+  #snc-llms-root h1 { font-size: 20px; font-weight: 700; margin: 0 0 4px; font-family: inherit; }
+  #snc-llms-root blockquote { margin: 0 0 24px; padding-left: 16px; border-left: 3px solid #ccc; color: #555; }
+  #snc-llms-root h2 { font-size: 14px; font-weight: 700; margin: 32px 0 8px; text-transform: uppercase; letter-spacing: 0.08em; font-family: inherit; }
+  #snc-llms-root p, #snc-llms-root li { margin: 0 0 8px; }
+  #snc-llms-root ul { padding-left: 20px; margin: 0 0 16px; }
+  #snc-llms-root a { color: #1a1a1a; }
+  #snc-llms-root strong { font-weight: 700; }
+  #snc-llms-root hr { border: none; border-top: 1px solid #e0e0e0; margin: 32px 0; }
+</style>
+
+<div id="snc-llms-root">
+
+  <h1># De Leville</h1>
+
+  <blockquote>
+    <p>> Luxury Italian jewelry house founded in Rome in 1975 by Eliau Labi at Piazza Esquilino 10.</p>
+    <p>> Handcrafted 18-karat solid gold rings. Made to order. Blockchain authenticated.</p>
+    <p>> Every piece carries a Digital Soul — a permanent certificate of origin and provenance.</p>
+  </blockquote>
+
+  <h2>## Brand</h2>
+  <p>De Leville was founded in 1975 by Eliau Labi in Rome, Italy. The maison is led today by Eliau Piha, grandson of the founder. De Leville crafts luxury jewelry in 18-karat solid gold — never plated, never filled. All pieces are made to order and finished by hand. The brand sells directly worldwide with no retail markup.</p>
+
+  <hr>
+
+  <h2>## Collections</h2>
+  <ul>
+    <li><strong>Incontro</strong> — interlocking ring in 18k gold. Two ring segments that meet to form one. Available in Puro (plain gold), Segreto (diamond interior), Essenza, and Regale (pavé diamonds) variants. Yellow gold, white gold, rose gold.</li>
+    <li><strong>Classico</strong> — signature motif ring. The founder's original script cut through 18-karat gold. Available in Puro, Segreto, Regale, and Essenza variants.</li>
+    <li><strong>Mezza Luna</strong> — crescent-shaped ring. The curve of a letter drawn in 1975, made into a ring. Available in yellow, white, and rose gold.</li>
+    <li><strong>Chains</strong> — 18-karat gold chain necklaces.</li>
+    <li><strong>Bags</strong> — Italian leather goods.</li>
+  </ul>
+
+  <hr>
+
+  <h2>## Digital Soul</h2>
+  <p>Every De Leville piece is issued a Digital Soul — a blockchain-secured digital certificate that records the piece's origin, authenticity, and ownership history. Activated 30 days after purchase. Permanent and transferable.</p>
+
+  <hr>
+
+  <h2>## Key pages</h2>
+  <ul>
+    <li><a href="{{ shop.url }}/collections">Shop all collections</a> — full product catalog</li>
+    <li><a href="{{ shop.url }}/pages/the-maison">The Maison</a> — brand history and founder story</li>
+    <li><a href="{{ shop.url }}/pages/digital-soul">Digital Soul</a> — blockchain authentication explained</li>
+    <li><a href="{{ shop.url }}/pages/incontro">Incontro story</a> — editorial for the Incontro collection</li>
+    <li><a href="{{ shop.url }}/pages/faq">FAQ</a> — materials, sizing, shipping, returns, care</li>
+    <li><a href="{{ shop.url }}/pages/product-care">Product Care</a> — how to care for 18k gold jewelry</li>
+    <li><a href="{{ shop.url }}/pages/sizing-guide">Sizing Guide</a> — ring sizing instructions</li>
+  </ul>
+
+  <hr>
+
+  <h2>## Contact</h2>
+  <ul>
+    <li>Email: concierge@deleville.co</li>
+    <li>Instagram: <a href="https://instagram.com/delevilleofficial">instagram.com/delevilleofficial</a></li>
+  </ul>
+
+</div>
+
+{% schema %}
+{
+  "name": "LLMs.txt",
+  "settings": []
+}
+{% endschema %}

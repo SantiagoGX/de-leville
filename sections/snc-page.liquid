@@ -1,0 +1,226 @@
+{%- assign is_sizing_guide_page = false -%}
+{%- if page.handle == 'sizing-guide' -%}
+  {%- assign is_sizing_guide_page = true -%}
+{%- endif -%}
+
+<div
+  data-section-type="snc-page"
+  class="snc-page{% if is_sizing_guide_page %} snc-page--sizing-guide{% endif %}"
+  style="{% if is_sizing_guide_page %}margin-top: 0; margin-bottom: 0;{% else %}margin-top: {{ section.settings.margin_top }}px; margin-bottom: {{ section.settings.margin_bottom }}px;{% endif %}"
+>
+  {%- if is_sizing_guide_page -%}
+    <section class="snc-sg-editorial">
+      <div class="snc-sg-editorial__inner">
+        <header class="snc-sg-editorial__header">
+          <p class="snc-sg-editorial__kicker">A GUIDE FROM THE MAISON</p>
+          <h1 class="snc-sg-editorial__title">{{ page.title | default: 'Ring Sizing Guide' }}</h1>
+        </header>
+
+        {%- if section.settings.show_content -%}
+          <article class="snc-sg-editorial__content rte">
+            {{ page.content }}
+          </article>
+        {%- endif -%}
+      </div>
+    </section>
+  {%- else -%}
+    {%- if section.settings.show_title -%}
+      <h1>{{ page.title }}</h1>
+    {%- endif -%}
+    {%- if section.settings.show_content -%}
+      <div>{{ page.content }}</div>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+<style>
+  .snc-page--sizing-guide {
+    background: #ffffff;
+  }
+
+  .snc-sg-editorial {
+    padding: clamp(72px, 9vw, 120px) 20px clamp(80px, 10vw, 140px);
+    color: #161616;
+  }
+
+  .snc-sg-editorial__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .snc-sg-editorial__header {
+    text-align: center;
+    margin: 0 0 48px 0;
+  }
+
+  .snc-sg-editorial__kicker {
+    margin: 0 0 10px 0;
+    font-family: 'Futura PT', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6b6b6b;
+  }
+
+  .snc-sg-editorial__title {
+    margin: 0;
+    font-family: 'Futura PT', sans-serif;
+    font-size: clamp(34px, 5vw, 58px);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: #101010;
+    line-height: 1.06;
+  }
+
+  .snc-sg-editorial__content {
+    font-family: 'Futura PT', sans-serif;
+    font-size: 18px;
+    line-height: 1.64;
+    color: #202020;
+  }
+
+  .snc-sg-editorial__content > * {
+    margin-top: 0;
+    margin-bottom: 24px;
+  }
+
+  .snc-sg-editorial__content p {
+    max-width: 72ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .snc-sg-editorial__content h2,
+  .snc-sg-editorial__content h3,
+  .snc-sg-editorial__content h4 {
+    margin-top: 48px;
+    margin-bottom: 14px;
+    text-align: center;
+    font-family: 'Futura PT', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    font-weight: 500;
+    color: #101010;
+    line-height: 1.22;
+  }
+
+  .snc-sg-editorial__content h2 {
+    font-size: clamp(22px, 2.2vw, 30px);
+  }
+
+  .snc-sg-editorial__content h3,
+  .snc-sg-editorial__content h4 {
+    font-size: clamp(16px, 1.6vw, 20px);
+  }
+
+  .snc-sg-editorial__content img {
+    display: block;
+    width: 100%;
+    max-width: 980px;
+    height: auto;
+    margin: 34px auto;
+    border-radius: 2px;
+  }
+
+  .snc-sg-editorial__content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0 38px;
+    font-size: 15px;
+  }
+
+  .snc-sg-editorial__content th,
+  .snc-sg-editorial__content td {
+    border: 1px solid #e8e8e8;
+    padding: 11px 10px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .snc-sg-editorial__content th {
+    background: #fafafa;
+    color: #666666;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .snc-sg-editorial__content a {
+    color: inherit;
+    text-underline-offset: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .snc-sg-editorial {
+      padding-top: 72px;
+      padding-bottom: 84px;
+    }
+
+    .snc-sg-editorial__header {
+      margin-bottom: 32px;
+    }
+
+    .snc-sg-editorial__content {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .snc-sg-editorial__content h2,
+    .snc-sg-editorial__content h3,
+    .snc-sg-editorial__content h4 {
+      margin-top: 34px;
+      margin-bottom: 12px;
+      letter-spacing: 0.08em;
+    }
+
+    .snc-sg-editorial__content table {
+      font-size: 13px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "SNC Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_content",
+      "label": "Show content",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin top",
+      "default": 175
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin bottom",
+      "default": 125
+    }
+  ],
+  "presets": [
+    {
+      "name": "SNC Page"
+    }
+  ]
+}
+{% endschema %}
