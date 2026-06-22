@@ -8,7 +8,7 @@ Guidance for Claude Code when working in this repository.
 
 **At the start of every conversation, before any task, ask:**
 
-> "Hi — before we start, are you Santiago (the developer) or Eliado (the store owner)?"
+> "Hi — before we start, are you Santiago or Eliau?"
 
 Then follow the instructions for that person below.
 
@@ -24,9 +24,9 @@ Then proceed normally.
 
 ---
 
-## If the person is Eliado
+## If the person is Eliau
 
-Eliado is the store owner. He may not be aware of the GitHub setup. Explain it clearly before anything else:
+Eliau is the store owner. He may not be aware of the GitHub setup. Explain it clearly before anything else:
 
 > "Before we start, there's something important you need to know about how this theme works.
 >
