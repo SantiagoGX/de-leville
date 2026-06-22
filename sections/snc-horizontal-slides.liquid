@@ -991,44 +991,13 @@
   }
 
   /* ============================================
-     STICKY EXIT / ENTRY FADE
-     Fades the sticky container out at the end of the section
-     and in at entry — creates a smooth visual handoff to
-     the next section (SNC Scroll Video).
-     Runs for both layout types before the buttons early-return.
+     STICKY EXIT / ENTRY FADE — disabled.
+     Previously faded the sticky container in/out based on scroll
+     position (opacity 0→1 in first 5%, 1→0 in last 20% of section
+     scroll). Removed: caused an abrupt "appears out of nowhere"
+     effect instead of a smooth reveal. Section content now stays
+     fully visible at all times.
      ============================================ */
-  (function () {
-    var stickyFadeEl = sectionEl.querySelector('.test-preview-sticky');
-    if (!stickyFadeEl) return;
-
-    stickyFadeEl.style.willChange = 'opacity';
-    var efRaf = null;
-
-    function updateFade() {
-      efRaf = null;
-      var rect      = sectionEl.getBoundingClientRect();
-      var scrolled  = -rect.top;
-      var totalRoom = sectionEl.offsetHeight - window.innerHeight;
-      if (totalRoom <= 0) return;
-
-      var p = Math.max(0, Math.min(1, scrolled / totalRoom));
-
-      /* Entry: first 5% of section scroll → fade in from 0 to 1 */
-      var entryT = p < 0.05 ? p / 0.05 : 1;
-
-      /* Exit: last 20% of section scroll → fade out from 1 to 0 */
-      var exitT  = p > 0.80 ? (p - 0.80) / 0.20 : 0;
-
-      stickyFadeEl.style.opacity = Math.max(0, entryT - exitT).toFixed(3);
-    }
-
-    window.addEventListener('scroll', function () {
-      if (efRaf) return;
-      efRaf = requestAnimationFrame(updateFade);
-    }, { passive: true });
-
-    updateFade();
-  })();
 
   /* ============================================
      SCROLL HORIZONTAL — solo desktop
