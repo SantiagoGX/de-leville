@@ -158,10 +158,23 @@
     font-size: 14px;
     font-weight: 400;
     letter-spacing: 0.02em;
-    outline: none;
+    outline: none !important;
+    box-shadow: none !important;
     -webkit-appearance: none;
     appearance: none;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .snc-waitlist--input:focus,
+  .snc-waitlist--input:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .snc-waitlist--form,
+  .snc-waitlist--btn {
+    -webkit-tap-highlight-color: transparent;
   }
 
   .snc-waitlist--root.has-image .snc-waitlist--input {
