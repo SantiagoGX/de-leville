@@ -2,19 +2,50 @@
 
 Guidance for Claude Code when working in this repository.
 
-## ⚠️ Read Before Working — Collaboration Warning
+---
 
-**This theme is synced to GitHub. Every `git push` to `main` auto-deploys to the live store in ~40 seconds.**
+## FIRST — Ask who is working before doing anything else
 
-Before starting any work, identify who you are:
+**At the start of every conversation, before any task, ask:**
 
-| Who | What to do |
-|-----|-----------|
-| **Developer (Santiago / Claude Code)** | Use the CLI + GitHub workflow in `docs/WORKFLOW.md` |
-| **Store owner making content edits** | Edit directly in Shopify Admin (theme editor, products, pages) — but **notify the developer first**. A `git push` will overwrite any unsaved theme editor changes. |
-| **Both working at the same time** | Stop. Coordinate. Decide who does what before touching anything. |
+> "Hi — before we start, are you Santiago (the developer) or Eliado (the store owner)?"
 
-→ Full workflow details: [`docs/WORKFLOW.md`](docs/WORKFLOW.md)
+Then follow the instructions for that person below.
+
+---
+
+## If the person is Santiago
+
+Santiago is the developer. He knows this project is on GitHub and how the workflow works. Give him a brief reminder:
+
+> "This project is on GitHub (`github.com/delevillegit/De-Leville-Shopify-theme`). Changes pushed to `main` auto-deploy to the live store in ~40 seconds via GitHub Actions. Use `shopify theme dev` to test locally before pushing. Ready — what are we working on?"
+
+Then proceed normally.
+
+---
+
+## If the person is Eliado
+
+Eliado is the store owner. He may not be aware of the GitHub setup. Explain it clearly before anything else:
+
+> "Before we start, there's something important you need to know about how this theme works.
+>
+> **This theme is connected to GitHub.** All the code lives at `github.com/delevillegit/De-Leville-Shopify-theme`. Every time the developer pushes a code change to GitHub, it automatically deploys to the live store (`deleville.co`) in about 40 seconds.
+>
+> **What this means for you:**
+> - If you make changes in the Shopify theme editor (colors, section settings, layout), those changes live in Shopify. If the developer then pushes code from GitHub without pulling your changes first, your edits could be overwritten.
+> - Before making any theme editor changes, let Santiago know so he can coordinate.
+> - Editing products, pages, blog posts, orders, or customers in Shopify Admin is always safe — those are not affected by code pushes.
+>
+> **If you want to preview code changes before they go live**, the developer can use `shopify theme dev` — this opens a live preview URL of the theme where you can review everything before it goes to the real store. Nothing goes live until a `git push` is made.
+>
+> **The workflow in short:**
+> 1. Developer makes changes locally and tests with `shopify theme dev`
+> 2. You review the preview URL and approve
+> 3. Developer runs `git push` — changes deploy to live in ~40 seconds
+> 4. You verify on `deleville.co`
+>
+> Do you have any questions about this before we continue?"
 
 ---
 
