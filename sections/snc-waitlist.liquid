@@ -244,18 +244,60 @@
     min-height: 16px;
   }
 
-  @media (max-width: 560px) {
+  /* ─────────────────────────────────────────
+     MOBILE — primary breakpoint
+     font-size: 16px on inputs prevents iOS zoom-on-focus
+     100svh = small viewport height (excludes browser chrome on mobile)
+  ───────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .snc-waitlist--root.has-image {
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+
+    .snc-waitlist--root.has-image .snc-waitlist--content {
+      padding: 0 20px 52px;
+    }
+
+    .snc-waitlist--bg img {
+      object-position: {{ section.settings.mobile_image_position }};
+    }
+
+    .snc-waitlist--overline {
+      margin-bottom: 14px;
+    }
+
+    .snc-waitlist--title {
+      font-size: {{ section.settings.title_size | times: 0.65 | round }}px;
+      letter-spacing: -0.01em;
+    }
+
+    .snc-waitlist--description {
+      font-size: 14px;
+      max-width: 100%;
+      margin-bottom: 28px;
+    }
+
     .snc-waitlist--form {
       flex-direction: column;
       gap: 10px;
+      max-width: 100%;
+    }
+
+    .snc-waitlist--input {
+      height: 54px;
+      font-size: 16px;
+      text-align: center;
     }
 
     .snc-waitlist--btn {
       width: 100%;
+      height: 54px;
+      font-size: 13px;
     }
 
-    .snc-waitlist--title {
-      font-size: {{ section.settings.title_size | times: 0.72 | round }}px;
+    .snc-waitlist--disclaimer {
+      margin-top: 12px;
     }
   }
 </style>
@@ -356,6 +398,20 @@
         { "value": "bottom center", "label": "Bottom" },
         { "value": "center left", "label": "Left" },
         { "value": "center right", "label": "Right" }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "select",
+      "id": "mobile_image_position",
+      "label": "Image position (mobile)",
+      "options": [
+        { "value": "center center", "label": "Center" },
+        { "value": "top center", "label": "Top" },
+        { "value": "center left", "label": "Left" },
+        { "value": "center right", "label": "Right" },
+        { "value": "60% center", "label": "Right-center" },
+        { "value": "40% center", "label": "Left-center" }
       ],
       "default": "center center"
     },
