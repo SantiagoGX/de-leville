@@ -116,33 +116,55 @@
     color: {{ section.settings.muted_color }};
   }
 
-  /* ── Form ── */
+  /* ── Form — single unified capsule, input + submit fused as one shape ── */
   .snc-waitlist--form {
     display: flex;
-    gap: 8px;
-    max-width: 460px;
+    align-items: center;
+    height: 56px;
+    max-width: 440px;
     margin: 0 auto;
+    border-radius: 999px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .snc-waitlist--root.has-image .snc-waitlist--form {
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
+
+  .snc-waitlist--root.has-image .snc-waitlist--form:focus-within {
+    border-color: rgba(255, 255, 255, 0.80);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .snc-waitlist--root:not(.has-image) .snc-waitlist--form {
+    background: {{ section.settings.input_bg }};
+    border: 1px solid {{ section.settings.input_border_color }};
+  }
+
+  .snc-waitlist--root:not(.has-image) .snc-waitlist--form:focus-within {
+    border-color: {{ section.settings.title_color }};
   }
 
   .snc-waitlist--input {
     flex: 1;
-    height: 50px;
-    padding: 0 22px;
+    height: 100%;
+    min-width: 0;
+    padding: 0 6px 0 24px;
+    background: transparent;
+    border: none;
     font-family: 'Futura PT', sans-serif;
     font-size: 14px;
     font-weight: 400;
     letter-spacing: 0.02em;
-    border-radius: 999px;
     outline: none;
-    transition: border-color 0.2s ease;
     -webkit-appearance: none;
     appearance: none;
     box-sizing: border-box;
   }
 
   .snc-waitlist--root.has-image .snc-waitlist--input {
-    background: rgba(255, 255, 255, 0.10);
-    border: 1px solid rgba(255, 255, 255, 0.35);
     color: #ffffff;
   }
 
@@ -150,14 +172,7 @@
     color: rgba(255, 255, 255, 0.50);
   }
 
-  .snc-waitlist--root.has-image .snc-waitlist--input:focus {
-    border-color: rgba(255, 255, 255, 0.80);
-    background: rgba(255, 255, 255, 0.15);
-  }
-
   .snc-waitlist--root:not(.has-image) .snc-waitlist--input {
-    background: {{ section.settings.input_bg }};
-    border: 1px solid {{ section.settings.input_border_color }};
     color: {{ section.settings.title_color }};
   }
 
@@ -166,24 +181,25 @@
     opacity: 0.6;
   }
 
-  .snc-waitlist--root:not(.has-image) .snc-waitlist--input:focus {
-    border-color: {{ section.settings.title_color }};
-  }
-
   .snc-waitlist--btn {
     flex-shrink: 0;
-    height: 50px;
-    padding: 0 28px;
-    font-family: 'Futura PT', sans-serif;
-    font-size: 12px;
-    font-weight: 100;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    width: 44px;
+    height: 44px;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     border-radius: 999px;
     cursor: pointer;
-    white-space: nowrap;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .snc-waitlist--btn svg {
+    width: 12px;
+    height: 12px;
+    display: block;
+    transform: rotate(90deg);
   }
 
   .snc-waitlist--root.has-image .snc-waitlist--btn {
@@ -198,6 +214,10 @@
 
   .snc-waitlist--btn:hover {
     opacity: 0.78;
+  }
+
+  .snc-waitlist--btn:active {
+    transform: scale(0.94);
   }
 
   /* ── Disclaimer / success / error ── */
@@ -279,21 +299,17 @@
     }
 
     .snc-waitlist--form {
-      flex-direction: column;
-      gap: 10px;
+      height: 58px;
       max-width: 100%;
     }
 
     .snc-waitlist--input {
-      height: 54px;
       font-size: 16px;
-      text-align: center;
     }
 
     .snc-waitlist--btn {
-      width: 100%;
-      height: 54px;
-      font-size: 13px;
+      width: 46px;
+      height: 46px;
     }
 
     .snc-waitlist--disclaimer {
@@ -355,8 +371,10 @@
               required
               aria-label="{{ section.settings.placeholder | escape }}"
             >
-            <button type="submit" class="snc-waitlist--btn">
-              {{ section.settings.button_label | escape }}
+            <button type="submit" class="snc-waitlist--btn" aria-label="{{ section.settings.button_label | escape }}">
+              <svg viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="50,0 100,100 0,100" />
+              </svg>
             </button>
           </div>
 
