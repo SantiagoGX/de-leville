@@ -988,6 +988,51 @@
 </div>
 
 <script>
+  // Email capture — document-level delegation so it fires regardless of section state
+  (function() {
+    var _dlvEmailHandled = false;
+    document.addEventListener('submit', async function(e) {
+      var form = e.target.closest('[data-snc-ap-email-form]');
+      if (!form) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      var emailInput = form.querySelector('[type="email"]');
+      var btn        = form.querySelector('[type="submit"]');
+      var errorEl    = form.querySelector('[data-snc-ap-email-error]');
+      var redirectUrl = (form.dataset.redirectUrl || '').trim() || '/pages/leathergoods';
+
+      if (!emailInput || !emailInput.value.trim()) return;
+
+      var email = emailInput.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (errorEl) { errorEl.textContent = 'Please enter a valid email address.'; errorEl.hidden = false; }
+        return;
+      }
+      if (errorEl) { errorEl.textContent = ''; errorEl.hidden = true; }
+
+      form.classList.add('is-submitting');
+      if (btn) btn.disabled = true;
+
+      try { localStorage.setItem('dlv_leather_waitlist', '1'); } catch (err) {}
+
+      try {
+        var controller = new AbortController();
+        var t = setTimeout(function() { controller.abort(); }, 4000);
+        await fetch('/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(form)).toString(),
+          redirect: 'manual',
+          signal: controller.signal
+        });
+        clearTimeout(t);
+      } catch (err) {}
+
+      window.location.href = redirectUrl;
+    });
+  })();
+
   document.addEventListener('DOMContentLoaded', function() {
     const section = document.querySelector('#shopify-section-{{ section.id }} .snc-animated-product');
     if (!section) return;
@@ -1090,51 +1135,6 @@
       stickyContainer.style.height = `${stickyHeight}px`;
       section.style.height = `${sectionHeight}px`;
     }
-
-    // ── Banner email capture — submit → set flag → redirect ──
-    section.querySelectorAll('[data-snc-ap-email-form]').forEach(function(form) {
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        var emailInput = form.querySelector('[type="email"]');
-        var btn = form.querySelector('[type="submit"]');
-        var errorEl = form.querySelector('[data-snc-ap-email-error]');
-        var redirectUrl = form.dataset.redirectUrl || '/pages/leathergoods';
-
-        if (!emailInput || !emailInput.value.trim()) return;
-
-        var email = emailInput.value.trim();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          if (errorEl) { errorEl.textContent = 'Please enter a valid email address.'; errorEl.hidden = false; }
-          return;
-        }
-        if (errorEl) { errorEl.textContent = ''; errorEl.hidden = true; }
-
-        // Dim form while submitting
-        form.classList.add('is-submitting');
-        if (btn) btn.disabled = true;
-
-        // Set localStorage immediately — unlocks scroll on destination page
-        try { localStorage.setItem('dlv_leather_waitlist', '1'); } catch (err) {}
-
-        // Fire to Shopify in background (max 4s), then redirect regardless
-        try {
-          var controller = new AbortController();
-          var t = setTimeout(function() { controller.abort(); }, 4000);
-          await fetch('/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(new FormData(form)).toString(),
-            redirect: 'manual',
-            signal: controller.signal
-          });
-          clearTimeout(t);
-        } catch (err) {
-          // timeout or network error — localStorage already set, proceed
-        }
-
-        window.location.href = redirectUrl;
-      });
-    });
 
     if (isMobile) {
       initMobileHorizontalScroll();
