@@ -283,7 +283,13 @@
         { "type": "image_picker", "id": "image_2", "label": "Image" },
         { "type": "header", "content": "Banner Overlay (single image only)" },
         { "type": "color", "id": "overlay_color", "label": "Overlay color", "default": "#000000" },
-        { "type": "range", "id": "overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 100, "step": 5, "default": 40, "unit": "%" }
+        { "type": "range", "id": "overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 100, "step": 5, "default": 40, "unit": "%" },
+        { "type": "header", "content": "Email Capture (single-image banner only)" },
+        { "type": "checkbox", "id": "show_email_capture", "label": "Replace button with email capture form", "default": false },
+        { "type": "text", "id": "email_placeholder", "label": "Input placeholder", "default": "Your email address" },
+        { "type": "text", "id": "email_success_message", "label": "Success message", "default": "You’re on the list." },
+        { "type": "text", "id": "email_cta_label", "label": "Post-submit link label", "default": "Explore Leather Goods" },
+        { "type": "url", "id": "email_cta_link", "label": "Post-submit link URL" }
       ]
     }
   ],
@@ -592,6 +598,155 @@
     pointer-events: none;
   }
 
+  /* ── Banner email capture form ── */
+  .snc-ap-banner-email-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .snc-ap-email-capsule {
+    display: flex;
+    align-items: center;
+    height: 54px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    transition: border-color 0.2s ease, background 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .snc-ap-email-capsule:focus-within {
+    border-color: rgba(255, 255, 255, 0.80);
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  .snc-ap-email-input {
+    flex: 1;
+    height: 100%;
+    min-width: 0;
+    padding: 0 6px 0 22px;
+    background: transparent;
+    border: none;
+    font-family: 'Futura PT', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: #ffffff;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .snc-ap-email-input::placeholder {
+    color: rgba(255, 255, 255, 0.48);
+  }
+
+  .snc-ap-email-input:focus,
+  .snc-ap-email-input:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .snc-ap-email-btn {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: #111111;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .snc-ap-email-btn svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+  .snc-ap-email-btn:hover { opacity: 0.75; }
+  .snc-ap-email-btn:active { transform: scale(0.94); }
+  .snc-ap-email-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .snc-ap-email-success {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .snc-ap-email-success-text {
+    font-family: 'Futura PT', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+  }
+
+  .snc-ap-email-success-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Futura PT', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    padding: 10px 22px;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    width: fit-content;
+  }
+
+  .snc-ap-email-success-cta:hover {
+    border-color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .snc-ap-email-error {
+    font-family: 'Futura PT', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: rgba(255, 160, 160, 0.9);
+    margin: 0;
+    min-height: 16px;
+  }
+
+  @media (max-width: 767px) {
+    .snc-ap-email-capsule {
+      height: 58px;
+    }
+
+    .snc-ap-email-input {
+      font-size: 16px; /* prevent iOS zoom */
+    }
+
+    .snc-ap-email-btn {
+      width: 46px;
+      height: 46px;
+    }
+
+    .snc-ap-banner-email-wrap {
+      max-width: 100%;
+    }
+  }
+
   @media (max-width: 768px) {
     .snc-animated-product__banner-wrap {
       height: min(80vh, {{ section.settings.image_height_mobile }}px);
@@ -707,16 +862,57 @@
               {%- assign overlay_color = block.settings.overlay_color | default: '#000000' -%}
               {%- assign overlay_opacity = block.settings.overlay_opacity | default: 40 | divided_by: 100.0 -%}
               {%- assign banner_link = block.settings.button_link -%}
-              {%- if banner_link != blank -%}<a href="{{ banner_link }}" class="snc-animated-product__banner-link">{%- endif -%}
+              {%- assign show_email = block.settings.show_email_capture -%}
+              {%- unless show_email -%}
+                {%- if banner_link != blank -%}<a href="{{ banner_link }}" class="snc-animated-product__banner-link">{%- endif -%}
+              {%- endunless -%}
               <div class="snc-animated-product__banner-wrap">
                 {{ block.settings.image_1 | image_url: width: 2000 | image_tag: class: 'snc-animated-product__banner-img', loading: 'eager' }}
                 <div class="snc-animated-product__banner-overlay" style="background-color:{{ overlay_color }};opacity:{{ overlay_opacity }};"></div>
                 <div class="snc-ap-banner-text">
                   {%- if block_title != blank -%}<h3 class="snc-ap-banner-name">{{ block_title }}</h3>{%- endif -%}
-                  {%- if btn_text != blank -%}<span class="btn-preset-{{ section.settings.button_preset }} snc-ap-banner-cta">{{ btn_text }}</span>{%- endif -%}
+                  {%- if show_email -%}
+                    <div class="snc-ap-banner-email-wrap">
+                      <form class="snc-ap-email-form" data-snc-ap-email-form action="/contact" method="post" novalidate>
+                        <input type="hidden" name="form_type" value="customer">
+                        <input type="hidden" name="utf8" value="✓">
+                        <input type="hidden" name="contact[tags]" value="newsletter,leather-waitlist">
+                        <div class="snc-ap-email-capsule">
+                          <input
+                            type="email"
+                            name="contact[email]"
+                            class="snc-ap-email-input"
+                            placeholder="{{ block.settings.email_placeholder | default: 'Your email address' | escape }}"
+                            autocomplete="email"
+                            required
+                            aria-label="{{ block.settings.email_placeholder | default: 'Your email address' | escape }}"
+                          >
+                          <button type="submit" class="snc-ap-email-btn" aria-label="Join">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </button>
+                        </div>
+                        <p class="snc-ap-email-error" data-snc-ap-email-error hidden></p>
+                      </form>
+                      <div class="snc-ap-email-success" data-snc-ap-email-success hidden>
+                        <p class="snc-ap-email-success-text">{{ block.settings.email_success_message | default: "You're on the list." | escape }}</p>
+                        {%- if block.settings.email_cta_link != blank -%}
+                          <a href="{{ block.settings.email_cta_link }}" class="snc-ap-email-success-cta">
+                            {{ block.settings.email_cta_label | default: 'Explore' | escape }}
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          </a>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  {%- else -%}
+                    {%- if btn_text != blank -%}<span class="btn-preset-{{ section.settings.button_preset }} snc-ap-banner-cta">{{ btn_text }}</span>{%- endif -%}
+                  {%- endif -%}
                 </div>
               </div>
-              {%- if banner_link != blank -%}</a>{%- endif -%}
+              {%- unless show_email -%}
+                {%- if banner_link != blank -%}</a>{%- endif -%}
+              {%- endunless -%}
 
             {%- else -%}
               <h3 class="snc-animated-product__name">{{ block_title }}</h3>
@@ -861,6 +1057,56 @@
       stickyContainer.style.height = `${stickyHeight}px`;
       section.style.height = `${sectionHeight}px`;
     }
+
+    // ── Banner email capture AJAX ──
+    section.querySelectorAll('[data-snc-ap-email-form]').forEach(function(form) {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var emailInput = form.querySelector('[type="email"]');
+        var btn = form.querySelector('[type="submit"]');
+        var errorEl = form.querySelector('[data-snc-ap-email-error]');
+        var wrap = form.closest('.snc-ap-banner-email-wrap');
+        var successEl = wrap ? wrap.querySelector('[data-snc-ap-email-success]') : null;
+
+        if (!emailInput || !emailInput.value.trim()) return;
+
+        var email = emailInput.value.trim();
+        // Basic email validation
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          if (errorEl) { errorEl.textContent = 'Please enter a valid email address.'; errorEl.hidden = false; }
+          return;
+        }
+        if (errorEl) { errorEl.textContent = ''; errorEl.hidden = true; }
+        if (btn) btn.disabled = true;
+
+        try {
+          var body = new URLSearchParams(new FormData(form)).toString();
+          var res = await fetch('/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body,
+            redirect: 'manual'
+          });
+
+          // opaqueredirect = Shopify redirected on success
+          var ok = res.type === 'opaqueredirect' || res.ok;
+
+          if (ok) {
+            try { localStorage.setItem('dlv_leather_waitlist', '1'); } catch (err) {}
+            form.hidden = true;
+            if (successEl) successEl.hidden = false;
+          } else {
+            if (errorEl) { errorEl.textContent = 'Something went wrong. Please try again.'; errorEl.hidden = false; }
+            if (btn) btn.disabled = false;
+          }
+        } catch (err) {
+          // Network error — set flag anyway so the user is not blocked on the other page
+          try { localStorage.setItem('dlv_leather_waitlist', '1'); } catch (e2) {}
+          form.hidden = true;
+          if (successEl) successEl.hidden = false;
+        }
+      });
+    });
 
     if (isMobile) {
       initMobileHorizontalScroll();

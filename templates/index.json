@@ -349,7 +349,12 @@
             "button_link": "shopify://pages/leathergoods",
             "image_1": "shopify://shop_images/De_Leville_Leathergood_header.png",
             "overlay_color": "#000000",
-            "overlay_opacity": 40
+            "overlay_opacity": 40,
+            "show_email_capture": true,
+            "email_placeholder": "Your email address",
+            "email_success_message": "You're on the list.",
+            "email_cta_label": "Explore Leather Goods",
+            "email_cta_link": "shopify://pages/leathergoods"
           }
         }
       },

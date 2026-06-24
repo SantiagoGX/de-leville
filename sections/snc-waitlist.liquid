@@ -276,6 +276,54 @@
     min-height: 16px;
   }
 
+  /* ── Scroll lock (applied to <html> by JS) ── */
+  html.dlv-scroll-locked {
+    overflow: hidden;
+    touch-action: none;
+  }
+  html.dlv-scroll-locked body {
+    overflow: hidden;
+  }
+
+  /* ── Scroll hint — double chevron ── */
+  @keyframes snc-wl-chevron-drop {
+    0%   { opacity: 0;    transform: translateY(-5px); }
+    40%  { opacity: 0.62; transform: translateY(0); }
+    80%  { opacity: 0;    transform: translateY(5px); }
+    100% { opacity: 0;    transform: translateY(5px); }
+  }
+
+  .snc-waitlist--scroll-hint {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+
+  .snc-waitlist--scroll-hint.is-hidden {
+    opacity: 0;
+  }
+
+  .snc-waitlist--scroll-hint svg {
+    display: block;
+    width: 22px;
+    height: 12px;
+    animation: snc-wl-chevron-drop 2.4s ease infinite;
+    opacity: 0;
+  }
+
+  .snc-waitlist--scroll-hint svg:nth-child(2) {
+    animation-delay: 0.32s;
+  }
+
   /* ─────────────────────────────────────────
      MOBILE — primary breakpoint
      font-size: 16px on inputs prevents iOS zoom-on-focus
@@ -335,7 +383,7 @@
   {%- assign has_image = true -%}
 {%- endif -%}
 
-<div class="snc-waitlist--root{% if has_image %} has-image{% endif %}"{% if has_image %} data-header-theme="light"{% endif %}>
+<div class="snc-waitlist--root{% if has_image %} has-image{% endif %}"{% if has_image %} data-header-theme="light"{% endif %}{% if section.settings.enable_scroll_lock %} data-snc-wl-lock{% endif %}>
 
   {%- if has_image -%}
     <div class="snc-waitlist--bg">
@@ -369,6 +417,9 @@
 
       {%- form 'customer', id: 'snc-waitlist-{{ section.id }}' -%}
         {%- if form.posted_successfully? -%}
+          {%- if section.settings.enable_scroll_lock -%}
+            <script>try{localStorage.setItem('dlv_leather_waitlist','1');}catch(e){}</script>
+          {%- endif -%}
           <p class="snc-waitlist--success">{{ section.settings.success_message | escape }}</p>
         {%- else -%}
           <div class="snc-waitlist--form">
@@ -406,7 +457,54 @@
 
     </div>
   </div>
+
+  {%- if section.settings.enable_scroll_lock and has_image -%}
+    <div class="snc-waitlist--scroll-hint" aria-hidden="true">
+      <svg viewBox="0 0 22 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L11 11L21 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <svg viewBox="0 0 22 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L11 11L21 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  {%- endif -%}
 </div>
+
+<script>
+(function () {
+  var root = document.querySelector('#shopify-section-{{ section.id }} [data-snc-wl-lock]');
+  if (!root) return;
+
+  var LS_KEY = 'dlv_leather_waitlist';
+
+  // Skip in Shopify theme editor
+  if (window.Shopify && window.Shopify.designMode) return;
+
+  // Already submitted — leave scroll free
+  try { if (localStorage.getItem(LS_KEY)) return; } catch (e) {}
+
+  // Lock scroll: desktop (overflow:hidden) + iOS (touchmove prevention)
+  function preventTouch(e) { e.preventDefault(); }
+
+  document.documentElement.classList.add('dlv-scroll-locked');
+  document.addEventListener('touchmove', preventTouch, { passive: false });
+
+  // Unlock after form submission (page reloads, localStorage is set before
+  // this JS runs, so this path is reached only on first-visit lock).
+  // As a safety valve: if somehow the key is set after load, unlock.
+  var _origSet = Storage.prototype.setItem;
+  Storage.prototype.setItem = function (k, v) {
+    _origSet.call(this, k, v);
+    if (k === LS_KEY) {
+      document.documentElement.classList.remove('dlv-scroll-locked');
+      document.removeEventListener('touchmove', preventTouch);
+      Storage.prototype.setItem = _origSet;
+      var hint = root.querySelector('.snc-waitlist--scroll-hint');
+      if (hint) hint.classList.add('is-hidden');
+    }
+  };
+})();
+</script>
 
 {% schema %}
 {
@@ -463,6 +561,17 @@
       "max": 80,
       "step": 5,
       "default": 55
+    },
+    {
+      "type": "header",
+      "content": "Scroll Lock"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_scroll_lock",
+      "label": "Lock scroll until email is submitted",
+      "default": false,
+      "info": "When enabled, the page cannot be scrolled until the visitor submits their email. The lock is remembered in the browser — visitors who already submitted are never blocked."
     },
     {
       "type": "header",

@@ -13,6 +13,7 @@
       "type": "snc-waitlist",
       "name": "SNC Waitlist",
       "settings": {
+        "enable_scroll_lock": true,
         "image": "shopify://shop_images/De_Leville_Leathergood_header.png",
         "image_position": "center center",
         "height_vh": 100,
