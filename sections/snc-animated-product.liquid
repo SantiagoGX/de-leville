@@ -287,9 +287,8 @@
         { "type": "header", "content": "Email Capture (single-image banner only)" },
         { "type": "checkbox", "id": "show_email_capture", "label": "Replace button with email capture form", "default": false },
         { "type": "text", "id": "email_placeholder", "label": "Input placeholder", "default": "Your email address" },
-        { "type": "text", "id": "email_success_message", "label": "Success message", "default": "You’re on the list." },
-        { "type": "text", "id": "email_cta_label", "label": "Post-submit link label", "default": "Explore Leather Goods" },
-        { "type": "url", "id": "email_cta_link", "label": "Post-submit link URL" }
+        { "type": "textarea", "id": "email_description", "label": "Description (shown below title)", "default": "Leave your email and we will take you straight to our leather collection." },
+        { "type": "url", "id": "email_cta_link", "label": "Redirect after submit" }
       ]
     }
   ],
@@ -728,6 +727,23 @@
     min-height: 16px;
   }
 
+  .snc-ap-banner-description {
+    font-family: 'Futura PT', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.60);
+    margin: 0;
+    max-width: 360px;
+  }
+
+  /* Submitting state — dim the form slightly */
+  .snc-ap-email-form.is-submitting .snc-ap-email-capsule {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
   @media (max-width: 767px) {
     .snc-ap-email-capsule {
       height: 58px;
@@ -872,8 +888,13 @@
                 <div class="snc-ap-banner-text">
                   {%- if block_title != blank -%}<h3 class="snc-ap-banner-name">{{ block_title }}</h3>{%- endif -%}
                   {%- if show_email -%}
+                    {%- if block.settings.email_description != blank -%}
+                      <p class="snc-ap-banner-description">{{ block.settings.email_description | escape }}</p>
+                    {%- endif -%}
                     <div class="snc-ap-banner-email-wrap">
-                      <form class="snc-ap-email-form" data-snc-ap-email-form action="/contact" method="post" novalidate>
+                      <form class="snc-ap-email-form" data-snc-ap-email-form
+                            action="/contact" method="post" novalidate
+                            data-redirect-url="{{ block.settings.email_cta_link }}">
                         <input type="hidden" name="form_type" value="customer">
                         <input type="hidden" name="utf8" value="✓">
                         <input type="hidden" name="contact[tags]" value="newsletter,leather-waitlist">
@@ -895,15 +916,6 @@
                         </div>
                         <p class="snc-ap-email-error" data-snc-ap-email-error hidden></p>
                       </form>
-                      <div class="snc-ap-email-success" data-snc-ap-email-success hidden>
-                        <p class="snc-ap-email-success-text">{{ block.settings.email_success_message | default: "You're on the list." | escape }}</p>
-                        {%- if block.settings.email_cta_link != blank -%}
-                          <a href="{{ block.settings.email_cta_link }}" class="snc-ap-email-success-cta">
-                            {{ block.settings.email_cta_label | default: 'Explore' | escape }}
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                          </a>
-                        {%- endif -%}
-                      </div>
                     </div>
                   {%- else -%}
                     {%- if btn_text != blank -%}<span class="btn-preset-{{ section.settings.button_preset }} snc-ap-banner-cta">{{ btn_text }}</span>{%- endif -%}
@@ -1058,53 +1070,48 @@
       section.style.height = `${sectionHeight}px`;
     }
 
-    // ── Banner email capture AJAX ──
+    // ── Banner email capture — submit → set flag → redirect ──
     section.querySelectorAll('[data-snc-ap-email-form]').forEach(function(form) {
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
         var emailInput = form.querySelector('[type="email"]');
         var btn = form.querySelector('[type="submit"]');
         var errorEl = form.querySelector('[data-snc-ap-email-error]');
-        var wrap = form.closest('.snc-ap-banner-email-wrap');
-        var successEl = wrap ? wrap.querySelector('[data-snc-ap-email-success]') : null;
+        var redirectUrl = form.dataset.redirectUrl || '/pages/leathergoods';
 
         if (!emailInput || !emailInput.value.trim()) return;
 
         var email = emailInput.value.trim();
-        // Basic email validation
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
           if (errorEl) { errorEl.textContent = 'Please enter a valid email address.'; errorEl.hidden = false; }
           return;
         }
         if (errorEl) { errorEl.textContent = ''; errorEl.hidden = true; }
+
+        // Dim form while submitting
+        form.classList.add('is-submitting');
         if (btn) btn.disabled = true;
 
+        // Set localStorage immediately — unlocks scroll on destination page
+        try { localStorage.setItem('dlv_leather_waitlist', '1'); } catch (err) {}
+
+        // Fire to Shopify in background (max 4s), then redirect regardless
         try {
-          var body = new URLSearchParams(new FormData(form)).toString();
-          var res = await fetch('/contact', {
+          var controller = new AbortController();
+          var t = setTimeout(function() { controller.abort(); }, 4000);
+          await fetch('/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: body,
-            redirect: 'manual'
+            body: new URLSearchParams(new FormData(form)).toString(),
+            redirect: 'manual',
+            signal: controller.signal
           });
-
-          // opaqueredirect = Shopify redirected on success
-          var ok = res.type === 'opaqueredirect' || res.ok;
-
-          if (ok) {
-            try { localStorage.setItem('dlv_leather_waitlist', '1'); } catch (err) {}
-            form.hidden = true;
-            if (successEl) successEl.hidden = false;
-          } else {
-            if (errorEl) { errorEl.textContent = 'Something went wrong. Please try again.'; errorEl.hidden = false; }
-            if (btn) btn.disabled = false;
-          }
+          clearTimeout(t);
         } catch (err) {
-          // Network error — set flag anyway so the user is not blocked on the other page
-          try { localStorage.setItem('dlv_leather_waitlist', '1'); } catch (e2) {}
-          form.hidden = true;
-          if (successEl) successEl.hidden = false;
+          // timeout or network error — localStorage already set, proceed
         }
+
+        window.location.href = redirectUrl;
       });
     });
 
