@@ -352,7 +352,7 @@
             "overlay_opacity": 40,
             "show_email_capture": true,
             "email_placeholder": "Your email address",
-            "email_description": "Leave your email to discover our leather collection — we will take you straight there.",
+            "email_description": "Leave your email to discover our leather collection. We will take you straight there.",
             "email_cta_link": "shopify://pages/leathergoods"
           }
         }

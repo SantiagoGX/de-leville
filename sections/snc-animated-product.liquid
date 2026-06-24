@@ -287,7 +287,7 @@
         { "type": "header", "content": "Email Capture (single-image banner only)" },
         { "type": "checkbox", "id": "show_email_capture", "label": "Replace button with email capture form", "default": false },
         { "type": "text", "id": "email_placeholder", "label": "Input placeholder", "default": "Your email address" },
-        { "type": "textarea", "id": "email_description", "label": "Description (shown below title)", "default": "Leave your email and we will take you straight to our leather collection." },
+        { "type": "textarea", "id": "email_description", "label": "Description (shown below title)", "default": "Leave your email to discover our leather collection. We will take you straight there." },
         { "type": "url", "id": "email_cta_link", "label": "Redirect after submit" }
       ]
     }
@@ -736,6 +736,14 @@
     color: rgba(255, 255, 255, 0.60);
     margin: 0;
     max-width: 360px;
+    text-align: left;
+  }
+
+  .snc-ap-left-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 45%, rgba(0,0,0,0) 75%);
+    pointer-events: none;
   }
 
   /* Submitting state — dim the form slightly */
@@ -885,6 +893,7 @@
               <div class="snc-animated-product__banner-wrap">
                 {{ block.settings.image_1 | image_url: width: 2000 | image_tag: class: 'snc-animated-product__banner-img', loading: 'eager' }}
                 <div class="snc-animated-product__banner-overlay" style="background-color:{{ overlay_color }};opacity:{{ overlay_opacity }};"></div>
+                {%- if show_email -%}<div class="snc-ap-left-gradient"></div>{%- endif -%}
                 <div class="snc-ap-banner-text">
                   {%- if block_title != blank -%}<h3 class="snc-ap-banner-name">{{ block_title }}</h3>{%- endif -%}
                   {%- if show_email -%}
