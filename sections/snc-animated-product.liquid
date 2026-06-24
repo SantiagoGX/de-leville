@@ -652,6 +652,18 @@
     box-shadow: none !important;
   }
 
+  /* Override browser autofill background — covers hover/focus/active states */
+  .snc-ap-email-input:-webkit-autofill,
+  .snc-ap-email-input:-webkit-autofill:hover,
+  .snc-ap-email-input:-webkit-autofill:focus,
+  .snc-ap-email-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0) inset !important;
+    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
   .snc-ap-email-btn {
     flex-shrink: 0;
     width: 42px;
