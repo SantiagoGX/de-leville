@@ -2847,46 +2847,6 @@
                 {%- endif -%}
               {%- endif -%}
             {%- endif -%}
-            {%- comment -%} De Leville: Ring size selector — disclosure with pill grid {%- endcomment -%}
-            <div class="pdp-hero--size-selector" data-size-selector data-pdp-size-zone data-unit="US">
-              <div class="pdp-hero--size-label-row">
-                <span class="pdp-hero--size-label-text">Select your size</span>
-                <div class="pdp-hero--size-label-right">
-                  <div class="pdp-hero--size-unit-toggle" role="group" aria-label="Size unit">
-                    <button type="button" class="is-active" data-unit-btn="US" aria-pressed="true">US</button>
-                    <span aria-hidden="true">/</span>
-                    <button type="button" data-unit-btn="EU" aria-pressed="false">EU</button>
-                  </div>
-                  <a href="/pages/sizing-guide" class="pdp-hero--size-guide">Size guide</a>
-                </div>
-              </div>
-              <button type="button" class="pdp-hero--size-trigger" data-size-trigger aria-expanded="false" aria-controls="pdp-size-panel">
-                <span class="pdp-hero--size-trigger-label" data-size-trigger-label>Select a size</span>
-                <svg class="pdp-hero--size-trigger-chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-              <div class="pdp-hero--size-panel" id="pdp-size-panel" data-size-panel aria-hidden="true">
-                <div class="pdp-hero--size-panel-inner">
-                <div class="pdp-hero--size-pills" data-size-pills role="radiogroup" aria-label="Ring size">
-                  <button type="button" class="pdp-hero--size-pill" data-us="5"    data-eu="49" role="radio" aria-checked="false"><span class="pill-us">5</span><span class="pill-eu">49</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="5.5"  data-eu="50" role="radio" aria-checked="false"><span class="pill-us">5½</span><span class="pill-eu">50</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="6"    data-eu="51" role="radio" aria-checked="false"><span class="pill-us">6</span><span class="pill-eu">51</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="6.5"  data-eu="53" role="radio" aria-checked="false"><span class="pill-us">6½</span><span class="pill-eu">53</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="7"    data-eu="54" role="radio" aria-checked="false"><span class="pill-us">7</span><span class="pill-eu">54</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="7.5"  data-eu="55" role="radio" aria-checked="false"><span class="pill-us">7½</span><span class="pill-eu">55</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="8"    data-eu="57" role="radio" aria-checked="false"><span class="pill-us">8</span><span class="pill-eu">57</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="8.5"  data-eu="58" role="radio" aria-checked="false"><span class="pill-us">8½</span><span class="pill-eu">58</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="9"    data-eu="59" role="radio" aria-checked="false"><span class="pill-us">9</span><span class="pill-eu">59</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="9.5"  data-eu="60" role="radio" aria-checked="false"><span class="pill-us">9½</span><span class="pill-eu">60</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="10"   data-eu="62" role="radio" aria-checked="false"><span class="pill-us">10</span><span class="pill-eu">62</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="10.5" data-eu="63" role="radio" aria-checked="false"><span class="pill-us">10½</span><span class="pill-eu">63</span></button>
-                  <button type="button" class="pdp-hero--size-pill" data-us="11"   data-eu="64" role="radio" aria-checked="false"><span class="pill-us">11</span><span class="pill-eu">64</span></button>
-                </div>
-                </div>
-              </div>
-              <input type="hidden" data-ring-size value="">
-              <div class="pdp-hero--size-error" data-size-error>Please select a size.</div>
-            </div>
-
             <a href="/pages/digital-soul" class="pdp-digital-soul-badge">
               Every piece carries a Digital Soul
             </a>
@@ -4525,7 +4485,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 {% schema %}
 {
-  "name": "SNC PDP Hero",
+  "name": "SNC PDP Hero (Bags)",
   "class": "section--pdp-hero",
   "settings": [
     {

@@ -2196,7 +2196,7 @@ upcart-cart-drawer,
 }
 
 .custom-header--root {
-  --custom-header-announcement-height: 0px;
+  --custom-header-announcement-height: {% if announcement_enabled %}36px{% else %}0px{% endif %};
   background-color: var(--custom-header-background);
   position: relative;
   z-index: 1000;

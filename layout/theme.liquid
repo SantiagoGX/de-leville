@@ -127,6 +127,11 @@
       * { margin: 0; }
       img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
       body { background-color: var(--color-background); overflow-x: hidden; }
+      {% if template == 'index' %}
+        /* De Leville: homepage opens on a full-bleed dark hero — match its background
+           immediately so there's no white flash before the hero section's own CSS paints. */
+        body { background-color: #000; }
+      {% endif %}
       p, h1, h2, h3, h4, h5, h6, span, button, a, input, textarea, select { letter-spacing: -0.04em; overflow-wrap: break-word; }
       .shopify-section { position: relative; display: grid; width: 100%;
         --content-width: min(calc(var(--page-width) - var(--page-margin) * 2), calc(100% - var(--page-margin) * 2));
@@ -423,6 +428,86 @@
     </style>
 
     <!-- De Leville: urgency/trust CSS injections removed -->
+
+    {%- comment -%}
+      De Leville · Header mode controller (April 20, 2026)
+      Decides whether the header is transparent or solid based on:
+      1. Page type. Pages with a dark hero at top get transparent mode when
+         the hero is in view; everyone else stays solid.
+      2. Scroll. Once the user scrolls past any element marked
+         data-dl-dark-hero, flip to solid. Returning to the hero flips back.
+
+      Moved into <head> (July 10, 2026): must run and set data-dl-header-mode
+      on <html> BEFORE the header section (rendered in <body>) is parsed/painted.
+      Previously this ran after the header, so the header's CSS fallback for a
+      missing data-dl-header-mode attribute (solid white) painted first —
+      causing a white flash on every page load with a dark hero.
+    {%- endcomment -%}
+
+    {%- comment -%}
+      De Leville header hero-theme flag:
+        'dark'   — hero image / video is mostly dark → use WHITE logo + icons when transparent
+        'light'  — hero is mostly light/white → use BLACK logo + icons when transparent
+        'none'   — no hero → header stays solid from the top
+    {%- endcomment -%}
+    {%- assign dl_hero_theme = 'none' -%}
+    {%- assign dl_force_solid_header_suffixes = 'the-maison,pelletteria-di-lusso,product-care,shipping-policy,returns-and-exchanges,sizing-guide,about' | split: ',' -%}
+    {%- assign dl_dark_hero_page_suffixes = 'chains,bags,classico,incontro,mezza-luna' | split: ',' -%}
+    {%- assign dl_always_transparent_dark_suffixes = 'nft' | split: ',' -%}
+    {%- if template.name == 'page' and dl_force_solid_header_suffixes contains template.suffix -%}
+      {%- assign dl_hero_theme = 'none' -%}
+    {%- elsif template.name == 'page' and dl_always_transparent_dark_suffixes contains template.suffix -%}
+      {%- assign dl_hero_theme = 'always-dark' -%}
+    {%- elsif template.name == 'page' and dl_dark_hero_page_suffixes contains template.suffix -%}
+      {%- assign dl_hero_theme = 'dark' -%}
+    {%- elsif template.name == 'index' -%}
+      {%- assign dl_hero_theme = 'dark' -%}
+    {%- elsif template.name == 'collection' -%}
+      {%- comment -%}
+        All collection templates now use snc-plp (white bg grid, no dark hero).
+        Solid header from the top — black logo + icons.
+      {%- endcomment -%}
+      {%- assign dl_hero_theme = 'none' -%}
+    {%- elsif template.name == 'list-collections' -%}
+      {%- comment -%}
+        /collections page uses Collections Editorial section with white background.
+        Solid header from the top — black logo + icons.
+      {%- endcomment -%}
+      {%- assign dl_hero_theme = 'none' -%}
+    {%- endif -%}
+
+    <script>
+      (function () {
+        var html = document.documentElement;
+        var heroTheme = {{ dl_hero_theme | json }};
+
+        // Expose for applyAutoTheme() in snc-header.liquid so it knows which pages
+        // allow scroll-driven updates to data-dl-header-mode.
+        window.__dlHeroTheme = heroTheme;
+
+        function setMode(mode) {
+          if (html.getAttribute('data-dl-header-mode') !== mode) {
+            html.setAttribute('data-dl-header-mode', mode);
+          }
+        }
+
+        if (heroTheme === 'none') {
+          setMode('solid');
+          return;
+        }
+
+        // Pages that must stay transparent-dark regardless of scroll (e.g. Digital Soul).
+        if (heroTheme === 'always-dark') {
+          setMode('transparent-dark');
+          return;
+        }
+
+        // Set initial mode only. applyAutoTheme() in snc-header.liquid owns all
+        // scroll-based updates via data-dl-header-mode.
+        var transparentMode = 'transparent-' + heroTheme;
+        setMode(transparentMode);
+      })();
+    </script>
 </head>
 
   <body class="template-{{ template.name }}{% if template.suffix != blank %} template-suffix-{{ template.suffix }}{% endif %}">
@@ -602,80 +687,6 @@
         });
 
         targets.forEach(function (t) { io.observe(t); });
-      })();
-    </script>
-
-    {%- comment -%}
-      De Leville · Header mode controller (April 20, 2026)
-      Decides whether the header is transparent or solid based on:
-      1. Page type. Pages with a dark hero at top get transparent mode when
-         the hero is in view; everyone else stays solid.
-      2. Scroll. Once the user scrolls past any element marked
-         data-dl-dark-hero, flip to solid. Returning to the hero flips back.
-    {%- endcomment -%}
-
-    {%- comment -%}
-      De Leville header hero-theme flag:
-        'dark'   — hero image / video is mostly dark → use WHITE logo + icons when transparent
-        'light'  — hero is mostly light/white → use BLACK logo + icons when transparent
-        'none'   — no hero → header stays solid from the top
-    {%- endcomment -%}
-    {%- assign dl_hero_theme = 'none' -%}
-    {%- assign dl_force_solid_header_suffixes = 'the-maison,pelletteria-di-lusso,product-care,shipping-policy,returns-and-exchanges,sizing-guide,about' | split: ',' -%}
-    {%- assign dl_dark_hero_page_suffixes = 'chains,bags,classico,incontro,mezza-luna' | split: ',' -%}
-    {%- assign dl_always_transparent_dark_suffixes = 'nft' | split: ',' -%}
-    {%- if template.name == 'page' and dl_force_solid_header_suffixes contains template.suffix -%}
-      {%- assign dl_hero_theme = 'none' -%}
-    {%- elsif template.name == 'page' and dl_always_transparent_dark_suffixes contains template.suffix -%}
-      {%- assign dl_hero_theme = 'always-dark' -%}
-    {%- elsif template.name == 'page' and dl_dark_hero_page_suffixes contains template.suffix -%}
-      {%- assign dl_hero_theme = 'dark' -%}
-    {%- elsif template.name == 'index' -%}
-      {%- assign dl_hero_theme = 'dark' -%}
-    {%- elsif template.name == 'collection' -%}
-      {%- comment -%}
-        All collection templates now use snc-plp (white bg grid, no dark hero).
-        Solid header from the top — black logo + icons.
-      {%- endcomment -%}
-      {%- assign dl_hero_theme = 'none' -%}
-    {%- elsif template.name == 'list-collections' -%}
-      {%- comment -%}
-        /collections page uses Collections Editorial section with white background.
-        Solid header from the top — black logo + icons.
-      {%- endcomment -%}
-      {%- assign dl_hero_theme = 'none' -%}
-    {%- endif -%}
-
-    <script>
-      (function () {
-        var html = document.documentElement;
-        var heroTheme = {{ dl_hero_theme | json }};
-
-        // Expose for applyAutoTheme() in snc-header.liquid so it knows which pages
-        // allow scroll-driven updates to data-dl-header-mode.
-        window.__dlHeroTheme = heroTheme;
-
-        function setMode(mode) {
-          if (html.getAttribute('data-dl-header-mode') !== mode) {
-            html.setAttribute('data-dl-header-mode', mode);
-          }
-        }
-
-        if (heroTheme === 'none') {
-          setMode('solid');
-          return;
-        }
-
-        // Pages that must stay transparent-dark regardless of scroll (e.g. Digital Soul).
-        if (heroTheme === 'always-dark') {
-          setMode('transparent-dark');
-          return;
-        }
-
-        // Set initial mode only. applyAutoTheme() in snc-header.liquid owns all
-        // scroll-based updates via data-dl-header-mode.
-        var transparentMode = 'transparent-' + heroTheme;
-        setMode(transparentMode);
       })();
     </script>
 

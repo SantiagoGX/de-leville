@@ -194,6 +194,26 @@
     opacity: 0.6;
   }
 
+  /* Override browser autofill background — keeps the pill transparent/glassy instead of the browser's default blue/yellow box */
+  .snc-waitlist--input:-webkit-autofill,
+  .snc-waitlist--input:-webkit-autofill:hover,
+  .snc-waitlist--input:-webkit-autofill:focus,
+  .snc-waitlist--input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0) inset !important;
+    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0) inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  .snc-waitlist--root.has-image .snc-waitlist--input:-webkit-autofill {
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff;
+  }
+
+  .snc-waitlist--root:not(.has-image) .snc-waitlist--input:-webkit-autofill {
+    -webkit-text-fill-color: {{ section.settings.title_color }} !important;
+    caret-color: {{ section.settings.title_color }};
+  }
+
   .snc-waitlist--btn {
     flex-shrink: 0;
     width: 44px;

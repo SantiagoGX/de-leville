@@ -1,0 +1,192 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "snc-pdp-hero-bags",
+      "blocks": {
+        "primary_actions_aN9Fze": {
+          "type": "primary_actions",
+          "settings": {
+            "add_to_cart_text": "Add to Bag",
+            "buy_now_text": "Buy now",
+            "advisor_label": "Contact an Advisor",
+            "advisor_href": "",
+            "buttons_layout": "column",
+            "buttons_order": "cart_first",
+            "show_buy_now_button": false,
+            "show_add_to_cart_button": true,
+            "add_to_cart_bg_color": "#000000",
+            "add_to_cart_text_color": "#ffffff",
+            "add_to_cart_border_color": "#000000",
+            "buy_now_bg_color": "#000000",
+            "buy_now_text_color": "#ffffff",
+            "buy_now_border_color": "#000000",
+            "button_padding_y": 16,
+            "button_padding_x": 25,
+            "button_border_radius": 50,
+            "button_border_width": 0,
+            "button_font_size": 14,
+            "show_payment_icons": false,
+            "payment_icons_gap": 10,
+            "show_secure_badge": false,
+            "secure_badge_text": ""
+          }
+        },
+        "description_CMgjhy": {
+          "type": "description",
+          "settings": {
+            "custom_description": "",
+            "truncate_length": 150,
+            "fallback_text": "Product description.",
+            "read_more_text": "Read more",
+            "read_less_text": "Read less",
+            "read_more_color": "#000000"
+          }
+        },
+        "accordion_digital_soul": {
+          "type": "accordion",
+          "settings": {
+            "background_color": "rgba(0,0,0,0)",
+            "border_radius": 0,
+            "border_color": "#e5e5e5",
+            "border_width": 1,
+            "margin_top": 0,
+            "border_position": "bottom",
+            "title_color": "#767676",
+            "title_hover_bg_color": "rgba(0,0,0,0)",
+            "title_size": 17,
+            "title_weight": 500,
+            "title_text_transform": "none",
+            "button_padding_vertical": 14,
+            "button_padding_horizontal": 0,
+            "content_padding_vertical": 20,
+            "content_padding_horizontal": 20,
+            "title": "Digital Soul",
+            "use_metafield": false,
+            "content": "<p>Every De Leville piece carries a Digital Soul. A blockchain-authenticated certificate of origin, ownership, and provenance. Activated thirty days after purchase. Permanent. Transferable.</p>"
+          }
+        },
+        "accordion_W6VR7c": {
+          "type": "accordion",
+          "settings": {
+            "background_color": "rgba(0,0,0,0)",
+            "border_radius": 0,
+            "border_color": "#e5e5e5",
+            "border_width": 1,
+            "margin_top": 0,
+            "border_position": "bottom",
+            "title_color": "#767676",
+            "title_hover_bg_color": "rgba(0,0,0,0)",
+            "title_size": 17,
+            "title_weight": 500,
+            "title_text_transform": "none",
+            "button_padding_vertical": 14,
+            "button_padding_horizontal": 0,
+            "content_padding_vertical": 20,
+            "content_padding_horizontal": 20,
+            "title": "Specifications",
+            "use_metafield": true,
+            "content": "<p><strong>Materials</strong><br/>Full-grain leather<br/>Solid 18-karat gold hardware</p><p><strong>Dimensions</strong><br/>See individual product.</p><p><strong>Craftsmanship</strong><br/>Made by hand.</p><p><strong>Includes</strong><br/>De Leville signature packaging<br/>Certificate of authenticity<br/>Digital Soul, activated thirty days after purchase<br/>Care cloth</p>"
+          }
+        },
+        "accordion_9AYnTj": {
+          "type": "accordion",
+          "settings": {
+            "background_color": "rgba(0,0,0,0)",
+            "border_radius": 0,
+            "border_color": "#e5e5e5",
+            "border_width": 1,
+            "margin_top": 0,
+            "border_position": "bottom",
+            "title_color": "#767676",
+            "title_hover_bg_color": "rgba(0,0,0,0)",
+            "title_size": 17,
+            "title_weight": 500,
+            "title_text_transform": "none",
+            "button_padding_vertical": 14,
+            "button_padding_horizontal": 0,
+            "content_padding_vertical": 20,
+            "content_padding_horizontal": 20,
+            "title": "Delivery & Returns",
+            "use_metafield": false,
+            "content": "<p><strong>Shipping</strong><br/>Complimentary worldwide insured shipping.<br/>All orders sent with signature confirmation.<br/>Each piece is made to order. Contact our concierge for a delivery estimate.</p><p><strong>Returns</strong><br/>Thirty days from delivery.<br/>Items must be unworn and in original packaging.<br/>Write to concierge@deleville.co to initiate a return.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "primary_actions_aN9Fze",
+        "description_CMgjhy",
+        "accordion_digital_soul",
+        "accordion_W6VR7c",
+        "accordion_9AYnTj"
+      ],
+      "settings": {
+        "header_theme": "light",
+        "show_breadcrumb": true,
+        "breadcrumb_font_size": 11,
+        "breadcrumb_padding_y": 16,
+        "breadcrumb_padding_x": 40,
+        "title_font_size": 32,
+        "title_font_size_mobile": 28,
+        "title_font_weight": "500",
+        "title_color": "#000000",
+        "title_text_transform": "capitalize",
+        "title_sub_font_size": 16,
+        "title_sub_font_size_mobile": 14,
+        "title_sub_font_weight": "300",
+        "title_sub_color": "#8c8c8c",
+        "made_to_order_text": "",
+        "descriptor_font_size": 13,
+        "descriptor_color": "#8c8c8c",
+        "accordion_body_font_size": 14,
+        "advisor_link_margin_top": 14,
+        "advisor_link_margin_bottom": 28,
+        "toast_text": "Added to your bag",
+        "show-limited-edition": false,
+        "content_width_percent": 50,
+        "content_padding_vertical": 100,
+        "content_padding_horizontal": 200,
+        "mobile_content_padding_vertical": 20,
+        "mobile_content_padding_horizontal": 30,
+        "grid_gap": 5,
+        "mobile_image_height": 400,
+        "mobile_gap": 5,
+        "image_brightness": 100,
+        "image_border_radius": 0,
+        "price_color": "#000000",
+        "discount_badge_bg_color": "#e5e5e5",
+        "discount_badge_text_color": "#000000",
+        "discount_badge_border_radius": 7
+      }
+    },
+    "snc_pdp_recommended_001": {
+      "type": "snc-pdp-recommended",
+      "settings": {
+        "eyebrow": "From the same collection",
+        "title": "You may also carry",
+        "header_alignment": "center",
+        "header_gap": 48,
+        "manual_collection": "",
+        "fallback_collection": "",
+        "products_to_show": 4,
+        "show_price": true,
+        "image_border_radius": 0,
+        "show_divider": false,
+        "padding_top": 40,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "main",
+    "snc_pdp_recommended_001"
+  ]
+}
