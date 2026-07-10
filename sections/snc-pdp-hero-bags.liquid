@@ -863,6 +863,18 @@
     overflow-x: hidden;
   }
 
+  /* De Leville: tighter spacing above the fold — desktop only.
+     Mobile keeps the original spacing (margin-top: auto / padding-top: 20px). */
+  @media (min-width: 769px) {
+    .pdp-hero--price-container {
+      margin-bottom: 0;
+    }
+    .pdp-hero--info-bottom {
+      margin-top: 0;
+      padding-top: 0;
+    }
+  }
+
   .pdp-hero--option-wrapper {
     display: flex;
     align-items: start;
@@ -3951,73 +3963,16 @@ document.addEventListener('DOMContentLoaded', function() {
   {%- endcomment -%}
   {%- if product and section.settings.show_breadcrumb != false -%}
 
-    {%- comment -%} Family: prefer Shopify collection assignment, fall back to title parsing. {%- endcomment -%}
-    {%- assign bc_family = '' -%}
-    {%- assign bc_family_url = '/collections/all' -%}
-    {%- if product.collections.size > 0 -%}
-      {%- assign bc_family = product.collections.first.title -%}
-      {%- assign bc_family_url = product.collections.first.url -%}
-    {%- endif -%}
-
-    {%- assign bc_parts = product.title | split: ',' -%}
-    {%- assign bc_left = bc_parts[0] | strip -%}
-    {%- assign bc_color = bc_parts[1] | default: '' | strip -%}
-
-    {%- if bc_family == blank -%}
-      {%- if bc_left contains 'Mezza Luna' -%}
-        {%- assign bc_family = 'Mezza Luna' -%}
-        {%- assign bc_family_url = '/collections/mezza-luna' -%}
-      {%- elsif bc_left contains ' ' -%}
-        {%- assign bc_words = bc_left | split: ' ' -%}
-        {%- assign bc_family = bc_words | first -%}
-        {%- assign bc_family_url = '/collections/' | append: bc_family | downcase -%}
-      {%- else -%}
-        {%- assign bc_family = bc_left -%}
-      {%- endif -%}
-    {%- endif -%}
-
-    {%- assign bc_sub = bc_left | remove_first: bc_family | strip -%}
-    {%- assign bc_type_singular = product.type | default: '' | strip -%}
-    {%- if bc_type_singular != blank -%}
-      {%- assign bc_sub = bc_sub | remove: bc_type_singular | strip -%}
-      {%- assign bc_type_plural = bc_type_singular | append: 's' -%}
-      {%- assign bc_sub = bc_sub | remove: bc_type_plural | strip -%}
-    {%- endif -%}
-
-    {%- assign bc_type = '' -%}
-    {%- if bc_type_singular != blank -%}
-      {%- assign bc_last_char = bc_type_singular | slice: -1 -%}
-      {%- if bc_last_char == 's' -%}
-        {%- assign bc_type = bc_type_singular -%}
-      {%- else -%}
-        {%- assign bc_type = bc_type_singular | append: 's' -%}
-      {%- endif -%}
-    {%- endif -%}
-
-    {%- assign bc_type_handle = bc_type | downcase -%}
-    {%- assign bc_type_url = '' -%}
-    {%- if bc_type_handle != blank and collections[bc_type_handle] != blank -%}
-      {%- assign bc_type_url = '/collections/' | append: bc_type_handle -%}
-    {%- endif -%}
-
-    {%- assign bc_current = '' -%}
-    {%- if bc_sub != blank and bc_color != blank -%}
-      {%- assign bc_current = bc_sub | append: ', ' | append: bc_color -%}
-    {%- elsif bc_sub != blank -%}
-      {%- assign bc_current = bc_sub -%}
-    {%- elsif bc_color != blank -%}
-      {%- assign bc_current = bc_color -%}
-    {%- endif -%}
+    {%- comment -%}
+      De Leville · Bags breadcrumb — simple Home / Product Title.
+      (The ring template's family/color title-parsing heuristic assumed names
+      like "Mezza Luna, Yellow Gold" and breaks on plain titles like
+      "The Lilly Hobo", splitting off "The" as its own crumb.)
+    {%- endcomment -%}
     <nav class="pdp-hero--breadcrumb pdp-hero--breadcrumb--bottom" data-pdp-breadcrumb aria-label="Breadcrumb">
       <a href="{{ routes.root_url | default: '/' }}">Home</a>
-      {%- if bc_family != blank -%}
-        <span class="pdp-hero--breadcrumb-sep" aria-hidden="true">/</span>
-        <a href="{{ bc_family_url }}">{{ bc_family }}</a>
-      {%- endif -%}
-      {%- if bc_current != blank -%}
-        <span class="pdp-hero--breadcrumb-sep" aria-hidden="true">/</span>
-        <span aria-current="page">{{ bc_current }}</span>
-      {%- endif -%}
+      <span class="pdp-hero--breadcrumb-sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ product.title }}</span>
     </nav>
 
     <script type="application/ld+json">
@@ -4026,24 +3981,7 @@ document.addEventListener('DOMContentLoaded', function() {
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ shop.url }}/" },
-        { "@type": "ListItem", "position": 2, "name": "Collections", "item": "{{ shop.url }}/collections" }
-        {%- assign bc_pos = 2 -%}
-        {%- if bc_family != blank -%}
-          {%- assign bc_pos = bc_pos | plus: 1 -%}
-        , { "@type": "ListItem", "position": {{ bc_pos }}, "name": "{{ bc_family | escape }}", "item": "{{ shop.url }}{{ bc_family_url }}" }
-        {%- endif -%}
-        {%- if bc_type != blank -%}
-          {%- assign bc_pos = bc_pos | plus: 1 -%}
-        , { "@type": "ListItem", "position": {{ bc_pos }}, "name": "{{ bc_type | escape }}"{% if bc_type_url != blank %}, "item": "{{ shop.url }}{{ bc_type_url }}"{% endif %} }
-        {%- endif -%}
-        {%- if bc_sub != blank -%}
-          {%- assign bc_pos = bc_pos | plus: 1 -%}
-        , { "@type": "ListItem", "position": {{ bc_pos }}, "name": "{{ bc_sub | escape }}" }
-        {%- endif -%}
-        {%- if bc_color != blank -%}
-          {%- assign bc_pos = bc_pos | plus: 1 -%}
-        , { "@type": "ListItem", "position": {{ bc_pos }}, "name": "{{ bc_color | escape }}" }
-        {%- endif -%}
+        { "@type": "ListItem", "position": 2, "name": "{{ product.title | escape }}", "item": "{{ shop.url }}{{ product.url }}" }
       ]
     }
     </script>

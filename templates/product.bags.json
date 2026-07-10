@@ -147,7 +147,7 @@
         "descriptor_font_size": 13,
         "descriptor_color": "#8c8c8c",
         "accordion_body_font_size": 14,
-        "advisor_link_margin_top": 14,
+        "advisor_link_margin_top": 0,
         "advisor_link_margin_bottom": 28,
         "toast_text": "Added to your bag",
         "show-limited-edition": false,
