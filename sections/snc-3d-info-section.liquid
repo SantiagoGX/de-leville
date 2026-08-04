@@ -65,6 +65,12 @@
       "label": "Image 2 (Emerging)"
     },
     {
+      "type": "url",
+      "id": "image_2_link",
+      "label": "Image 2 link (Optional)",
+      "info": "Where tapping/clicking this image goes (e.g. a product page). Leave empty for no link."
+    },
+    {
       "type": "range",
       "id": "image_2_width",
       "min": 20,
@@ -452,7 +458,13 @@
     {% endif %}
 
     {% if section.settings.image_2 != blank %}
-      {{ section.settings.image_2 | image_url: width: 1200 | image_tag: class: 'snc-3d-info-image-2', loading: 'lazy' }}
+      {% if section.settings.image_2_link != blank %}
+        <a href="{{ section.settings.image_2_link }}" style="display: contents;">
+          {{ section.settings.image_2 | image_url: width: 1200 | image_tag: class: 'snc-3d-info-image-2', loading: 'lazy', data-link: section.settings.image_2_link }}
+        </a>
+      {% else %}
+        {{ section.settings.image_2 | image_url: width: 1200 | image_tag: class: 'snc-3d-info-image-2', loading: 'lazy' }}
+      {% endif %}
     {% endif %}
 
     <div class="snc-3d-side-content">
@@ -652,7 +664,17 @@
     img4.src = secondImg.src;
     img4.alt = secondImg.alt || '';
     img4.style.cssText = 'width:100%; display:block;';
-    b4.appendChild(img4);
+
+    var link4 = secondImg.dataset.link;
+    if (link4) {
+      var a4 = document.createElement('a');
+      a4.href = link4;
+      a4.style.cssText = 'display:block; width:100%;';
+      a4.appendChild(img4);
+      b4.appendChild(a4);
+    } else {
+      b4.appendChild(img4);
+    }
     stack.appendChild(b4);
   }
 

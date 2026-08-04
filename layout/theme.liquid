@@ -514,15 +514,15 @@
 
     {%- comment -%}
       De Leville — Page loader (Glow pulse).
-      Appears ONLY when a page genuinely takes time to render.
       - Skipped on the homepage (IntroVideo handles the index opener).
-      - On other pages: hidden initially; shown only if the page has not
-        finished rendering after 200ms. Fast loads never flash the loader.
+      - On other pages: visible immediately (covers the raw/unfinished page
+        behind it from the very first paint — no delay before it shows, so
+        slow-loading pages never flash their unstyled content underneath).
       - Fades out immediately on window.load. Safety timeout at 3500ms.
       - Respects prefers-reduced-motion.
     {%- endcomment -%}
     {%- unless template.name == 'index' -%}
-    <div class="dl-site-loader" id="dlSiteLoader" aria-hidden="true">
+    <div class="dl-site-loader is-visible" id="dlSiteLoader" aria-hidden="true">
       <img class="dl-site-loader__mark" src="{{ 'Monogram_De_Leville.png' | asset_url }}" alt="" width="60" height="54">
     </div>
 
@@ -562,19 +562,17 @@
       (function () {
         var loader = document.getElementById('dlSiteLoader');
         if (!loader) return;
-        var REVEAL_AFTER_MS = 200;   // only show if page hasn't rendered in this time
-        var MAX_WAIT = 3500;
-        var finished = false;
-        var revealTimer = setTimeout(function () {
-          if (!finished) loader.classList.add('is-visible');
-        }, REVEAL_AFTER_MS);
+        /* Hides on whichever comes first: DOM is interactive (the page's own
+           layout/fonts/colors are inline and ready almost immediately), full
+           window.load, or this cap — below-the-fold videos load lazily and
+           shouldn't hold the curtain open, so this never feels like a long wait. */
+        var MAX_WAIT = 1200;
         function hide() {
-          finished = true;
-          clearTimeout(revealTimer);
           loader.classList.add('is-done');
         }
-        if (document.readyState === 'complete') hide();
-        else window.addEventListener('load', hide);
+        if (document.readyState === 'complete' || document.readyState === 'interactive') hide();
+        else document.addEventListener('DOMContentLoaded', hide, { once: true });
+        window.addEventListener('load', hide, { once: true });
         setTimeout(hide, MAX_WAIT);
       })();
     </script>

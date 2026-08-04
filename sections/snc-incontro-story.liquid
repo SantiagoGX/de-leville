@@ -306,6 +306,11 @@
     object-fit: contain !important;
     will-change: auto;
   }
+  /* Hidden until JS has seeked past frame 0 (mid-spin) — avoids a visible pop
+     from the video's raw starting frame to its seeked position. */
+  .sis__mob-wrap .sis__vid--pending {
+    opacity: 0 !important;
+  }
 
   /* Split text: large, centered — fills the space between the rings */
   .sis__split-text {
@@ -382,7 +387,7 @@
             {{ block.settings.cat_video | video_tag:
                 autoplay: false, loop: true, muted: true,
                 controls: false, playsinline: true, preload: 'none',
-                class: 'sis__vid',
+                class: 'sis__vid sis__vid--pending',
                 id: sis_mob_id }}
           </div>
         {%- endif -%}
@@ -867,8 +872,11 @@
     var splitText = document.getElementById('sis-split-text-' + sId);
     var barEl     = document.getElementById('sis-bar-' + sId);
 
-    /* ── Progressive loading: only load what's needed, seek to mid-spin ── */
-    function loadMobVideo(v) {
+    /* ── Progressive loading: only load what's needed, seek to mid-spin ──
+       Reveal (remove --pending) and play only AFTER the seek lands, so we
+       never show the video's raw starting frame(s) before it jumps to
+       mid-spin — that jump was the visible white/blue "pop" on load. */
+    function loadMobVideo(v, onReady) {
       if (!v) return;
       v.muted = true;
       v.setAttribute('playsinline', '');
@@ -876,17 +884,40 @@
         v.setAttribute('preload', 'auto');
         v.load();
       }
+
+      var revealed = false;
+      function reveal() {
+        if (revealed) return;
+        revealed = true;
+        v.classList.remove('sis__vid--pending');
+        if (onReady) onReady();
+      }
+      /* Safety net: never leave the video hidden forever if metadata/seek
+         events don't fire (slow network, autoplay restrictions, etc.). */
+      var fallbackTimer = setTimeout(reveal, 1200);
+
       function seekMidSpin() {
         if (v.duration && !isNaN(v.duration) && v.currentTime < 0.1) {
+          v.addEventListener('seeked', function () {
+            clearTimeout(fallbackTimer);
+            reveal();
+          }, { once: true });
           v.currentTime = v.duration * 0.30;
+        } else {
+          clearTimeout(fallbackTimer);
+          reveal();
         }
       }
       if (v.readyState >= 1 && v.duration) { seekMidSpin(); }
       else { v.addEventListener('loadedmetadata', seekMidSpin, { once: true }); }
     }
 
-    /* Load active + next video only */
-    if (mobWraps[0]) loadMobVideo(mobWraps[0].querySelector('video'));
+    /* Load active + next video only. First variant plays once revealed;
+       the next one just preloads/seeks quietly in the background. */
+    var firstWrap = mobWraps[0];
+    if (firstWrap) loadMobVideo(firstWrap.querySelector('video'), function () {
+      safePlay(firstWrap.querySelector('video'));
+    });
     if (mobWraps[1]) loadMobVideo(mobWraps[1].querySelector('video'));
 
     if (splitVid) {
@@ -895,10 +926,6 @@
       /* Split video: defer to preload="metadata" until Phase 2 approaches */
       if (splitVid.getAttribute('preload') === 'auto') splitVid.setAttribute('preload', 'metadata');
     }
-
-    /* Play first variant immediately */
-    var firstWrap = mobWraps[0];
-    if (firstWrap) safePlay(firstWrap.querySelector('video'));
 
     /* IntersectionObserver: play/pause when off-screen */
     var ioM = new IntersectionObserver(function (entries) {
