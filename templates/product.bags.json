@@ -130,6 +130,7 @@
       ],
       "settings": {
         "header_theme": "light",
+        "show_variant_selector": true,
         "show_breadcrumb": true,
         "breadcrumb_font_size": 11,
         "breadcrumb_padding_y": 16,
@@ -169,6 +170,7 @@
     },
     "snc_pdp_recommended_001": {
       "type": "snc-pdp-recommended",
+      "disabled": true,
       "settings": {
         "eyebrow": "From the same collection",
         "title": "You may also carry",

@@ -413,58 +413,7 @@ Estas páginas son las más "maison" del sitio. Tienen más licencia editorial p
 
 ---
 
-## 15. RESPONSIVE / MOBILE-FIRST
-
-**Regla absoluta: toda sección nueva se diseña y verifica en móvil. No es una adaptación posterior — es parte del diseño original.**
-
-### Principios
-
-- Diseñar desktop con excelencia, pero siempre con una perspectiva de mobile-first desde el inicio
-- Nunca se entrega una sección sin haber verificado su comportamiento en móvil (375px–430px)
-- Adaptar no es suficiente — la versión móvil debe sentirse igual de intencional que desktop
-
-### CSS obligatorio para heros de imagen en móvil
-
-```css
-/* Viewport height correcto para móvil (excluye chrome del browser) */
-@media (max-width: 767px) {
-  .hero {
-    min-height: 100vh;     /* fallback para browsers sin svh */
-    min-height: 100svh;    /* browsers modernos */
-  }
-
-  /* Prevenir zoom en iOS al hacer focus en inputs */
-  input {
-    font-size: 16px;
-  }
-}
-```
-
-### Tap targets
-
-```css
-/* Mínimo 54px de altura en botones e inputs en móvil */
-@media (max-width: 767px) {
-  .btn, input { height: 54px; }
-}
-```
-
-### Imágenes de fondo
-
-- Siempre ofrecer `mobile_image_position` como setting separado de desktop
-- El subject de la fotografía debe quedar visible en el recorte móvil (portrait 9:16)
-
-### Breakpoints usados en el tema
-
-| Breakpoint | Uso |
-|------------|-----|
-| `≤ 767px` | Mobile — breakpoint principal |
-| `≤ 560px` | No usar como único breakpoint; usar 767px |
-| `≥ 768px` | Desktop / tablet landscape |
-
----
-
-## 16. CHECKLIST PARA NUEVA SECCIÓN
+## 15. CHECKLIST PARA NUEVA SECCIÓN
 
 Antes de dar una sección por terminada, verificar:
 
@@ -478,11 +427,6 @@ Antes de dar una sección por terminada, verificar:
 - [ ] El Digital Soul badge / referencia está considerado si es contexto de producto
 - [ ] El "made to order" está comunicado si es contexto de producto o colección
 - [ ] No hay elementos de urgencia, countdown, o tono promo
-- [ ] **Verificado en móvil (≤ 767px) — no solo adaptado, diseñado**
-- [ ] **Inputs con `font-size: 16px` en móvil** (previene zoom iOS)
-- [ ] **Heros usan `min-height: 100svh`** con fallback `100vh`
-- [ ] **Tap targets ≥ 54px** en botones e inputs en móvil
-- [ ] **`mobile_image_position`** como setting independiente si hay imagen de fondo
 
 ---
 
